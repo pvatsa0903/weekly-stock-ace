@@ -1,7 +1,7 @@
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { WeeklyBanner } from "@/components/dashboard/WeeklyBanner";
+import { LiveWeeklyBanner } from "@/components/dashboard/LiveWeeklyBanner";
 import { StatCard } from "@/components/dashboard/StatCard";
-import { RecentPicks } from "@/components/dashboard/RecentPicks";
+import { LiveRecentPicks } from "@/components/dashboard/LiveRecentPicks";
 import { Target, TrendingUp, BarChart3, Calendar } from "lucide-react";
 
 const Index = () => {
@@ -14,20 +14,10 @@ const Index = () => {
           <p className="text-muted-foreground">Week of January 27, 2025</p>
         </div>
 
-        {/* This Week's Banner - Stock 1 */}
+        {/* This Week's Picks - Live Data */}
         <div className="grid lg:grid-cols-2 gap-4">
-          <WeeklyBanner
-            ticker="NVDA"
-            decision="PICK"
-            confidence={87}
-            eli5="NVIDIA is like the company that makes the best gaming graphics cards, but now everyone wants them for AI robots and smart computers. They're selling so many that they can't make them fast enough!"
-          />
-          <WeeklyBanner
-            ticker="TSLA"
-            decision="SKIP"
-            confidence={72}
-            eli5="Tesla makes cool electric cars, but right now they're having a tough time. Other companies are making similar cars, and people are buying fewer expensive things. It's like when too many ice cream shops open on the same street."
-          />
+          <LiveWeeklyBanner ticker="NVDA" />
+          <LiveWeeklyBanner ticker="TSLA" />
         </div>
 
         {/* Stats Grid */}
@@ -60,8 +50,8 @@ const Index = () => {
           />
         </div>
 
-        {/* Recent Picks */}
-        <RecentPicks />
+        {/* Market Watch - Live Data */}
+        <LiveRecentPicks />
       </div>
     </DashboardLayout>
   );
