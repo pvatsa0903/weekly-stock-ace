@@ -14,7 +14,150 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      fundamentals_snapshot: {
+        Row: {
+          cash: number | null
+          debt: number | null
+          ev_sales: number | null
+          fcf: number | null
+          id: string
+          net_margin: number | null
+          op_margin: number | null
+          pe: number | null
+          rev_cagr_3y: number | null
+          rev_yoy: number | null
+          risk_flags: string | null
+          ticker: string
+          week_ending: string
+        }
+        Insert: {
+          cash?: number | null
+          debt?: number | null
+          ev_sales?: number | null
+          fcf?: number | null
+          id?: string
+          net_margin?: number | null
+          op_margin?: number | null
+          pe?: number | null
+          rev_cagr_3y?: number | null
+          rev_yoy?: number | null
+          risk_flags?: string | null
+          ticker: string
+          week_ending: string
+        }
+        Update: {
+          cash?: number | null
+          debt?: number | null
+          ev_sales?: number | null
+          fcf?: number | null
+          id?: string
+          net_margin?: number | null
+          op_margin?: number | null
+          pe?: number | null
+          rev_cagr_3y?: number | null
+          rev_yoy?: number | null
+          risk_flags?: string | null
+          ticker?: string
+          week_ending?: string
+        }
+        Relationships: []
+      }
+      sentiment_items: {
+        Row: {
+          engagement: number
+          id: string
+          platform: string
+          sentiment_label: string
+          snippet: string
+          ticker: string
+          url: string
+          velocity: number | null
+          week_ending: string
+        }
+        Insert: {
+          engagement?: number
+          id?: string
+          platform: string
+          sentiment_label: string
+          snippet: string
+          ticker: string
+          url: string
+          velocity?: number | null
+          week_ending: string
+        }
+        Update: {
+          engagement?: number
+          id?: string
+          platform?: string
+          sentiment_label?: string
+          snippet?: string
+          ticker?: string
+          url?: string
+          velocity?: number | null
+          week_ending?: string
+        }
+        Relationships: []
+      }
+      tickers: {
+        Row: {
+          avg_dollar_volume: number
+          company_name: string
+          market_cap: number
+          price: number
+          sector: string
+          ticker: string
+        }
+        Insert: {
+          avg_dollar_volume: number
+          company_name: string
+          market_cap: number
+          price: number
+          sector: string
+          ticker: string
+        }
+        Update: {
+          avg_dollar_volume?: number
+          company_name?: string
+          market_cap?: number
+          price?: number
+          sector?: string
+          ticker?: string
+        }
+        Relationships: []
+      }
+      weekly_decisions: {
+        Row: {
+          created_at: string
+          decision: Database["public"]["Enums"]["decision_type"]
+          eli5_summary: string
+          id: string
+          pick1: string | null
+          pick2: string | null
+          week_ending: string
+          why_summary: string
+        }
+        Insert: {
+          created_at?: string
+          decision: Database["public"]["Enums"]["decision_type"]
+          eli5_summary: string
+          id?: string
+          pick1?: string | null
+          pick2?: string | null
+          week_ending: string
+          why_summary: string
+        }
+        Update: {
+          created_at?: string
+          decision?: Database["public"]["Enums"]["decision_type"]
+          eli5_summary?: string
+          id?: string
+          pick1?: string | null
+          pick2?: string | null
+          week_ending?: string
+          why_summary?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +166,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      decision_type: "PICK" | "SKIP"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +293,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      decision_type: ["PICK", "SKIP"],
+    },
   },
 } as const
