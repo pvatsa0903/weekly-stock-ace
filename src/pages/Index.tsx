@@ -4,11 +4,13 @@ import { StatCard } from "@/components/dashboard/StatCard";
 import { LiveRecentPicks } from "@/components/dashboard/LiveRecentPicks";
 import { SentimentMovers } from "@/components/dashboard/SentimentMovers";
 import { Target, TrendingUp, BarChart3, Calendar } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const getWeekStart = () => {
   const now = new Date();
   const day = now.getDay();
-  const diff = day === 0 ? 6 : day - 1; // Monday as start
+  const diff = day === 0 ? 6 : day - 1;
   const monday = new Date(now);
   monday.setDate(now.getDate() - diff);
   return monday.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
@@ -29,6 +31,25 @@ const getNextSunday = () => {
 const Index = () => {
   const nextUpdate = getNextSunday();
 
+  const { data: stats } = useQuery({
+    queryKey: ["pick_stats"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("pick_performance")
+        .select("*");
+      if (error) throw error;
+
+      const total = data.length;
+      const wins = data.filter((d) => d.is_win).length;
+      const winRate = total > 0 ? Math.round((wins / total) * 100) : 0;
+      const avgReturn = total > 0
+        ? (data.reduce((sum, d) => sum + Number(d.return_pct), 0) / total).toFixed(1)
+        : "0.0";
+
+      return { winRate, avgReturn: Number(avgReturn), total };
+    },
+  });
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -48,22 +69,22 @@ const Index = () => {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
             title="Win Rate"
-            value="73%"
-            subtitle="Last 12 weeks"
+            value={stats ? `${stats.winRate}%` : "—"}
+            subtitle="All time"
             icon={Target}
-            trend={{ value: 5, isPositive: true }}
+            trend={stats && stats.winRate >= 50 ? { value: stats.winRate - 50, isPositive: true } : undefined}
           />
           <StatCard
             title="Avg Return"
-            value="+12.4%"
+            value={stats ? `${stats.avgReturn >= 0 ? "+" : ""}${stats.avgReturn}%` : "—"}
             subtitle="Per pick"
             icon={TrendingUp}
-            trend={{ value: 2.1, isPositive: true }}
+            trend={stats ? { value: Math.abs(stats.avgReturn), isPositive: stats.avgReturn >= 0 } : undefined}
           />
           <StatCard
             title="Total Picks"
-            value="48"
-            subtitle="This year"
+            value={stats?.total ?? "—"}
+            subtitle="All time"
             icon={BarChart3}
           />
           <StatCard
