@@ -2,6 +2,7 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { LiveWeeklyBanner } from "@/components/dashboard/LiveWeeklyBanner";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { LiveRecentPicks } from "@/components/dashboard/LiveRecentPicks";
+import { SentimentMovers } from "@/components/dashboard/SentimentMovers";
 import { Target, TrendingUp, BarChart3, Calendar } from "lucide-react";
 
 const Index = () => {
@@ -50,8 +51,13 @@ const Index = () => {
           />
         </div>
 
-        {/* Market Watch - Live Data */}
-        <LiveRecentPicks />
+        {/* Sentiment Movers + Market Watch */}
+        <div className="grid lg:grid-cols-3 gap-4">
+          <SentimentMovers />
+          <div className="lg:col-span-2">
+            <LiveRecentPicks />
+          </div>
+        </div>
       </div>
     </DashboardLayout>
   );
