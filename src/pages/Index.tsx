@@ -45,7 +45,7 @@ const Index = () => {
           />
           <StatCard
             title="Next Update"
-            value="3 days"
+            value="Tomorrow"
             subtitle="Sunday, Feb 15"
             icon={Calendar}
           />
