@@ -1,11 +1,12 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { LayoutDashboard, Table2, LineChart, Settings, TrendingUp, Menu, X } from "lucide-react";
+import { LayoutDashboard, Table2, LineChart, Settings, TrendingUp, Menu, X, Activity } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/decisions", icon: Table2, label: "Weekly Decisions" },
+  { to: "/sentiment", icon: Activity, label: "Sentiment Radar" },
   { to: "/ticker", icon: LineChart, label: "Ticker Detail" },
   { to: "/settings", icon: Settings, label: "Settings" },
 ];
