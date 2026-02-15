@@ -119,6 +119,39 @@ export type Database = {
         }
         Relationships: []
       }
+      pick_performance: {
+        Row: {
+          created_at: string
+          entry_price: number
+          exit_price: number
+          id: string
+          is_win: boolean | null
+          return_pct: number | null
+          ticker: string
+          week_ending: string
+        }
+        Insert: {
+          created_at?: string
+          entry_price: number
+          exit_price: number
+          id?: string
+          is_win?: boolean | null
+          return_pct?: number | null
+          ticker: string
+          week_ending: string
+        }
+        Update: {
+          created_at?: string
+          entry_price?: number
+          exit_price?: number
+          id?: string
+          is_win?: boolean | null
+          return_pct?: number | null
+          ticker?: string
+          week_ending?: string
+        }
+        Relationships: []
+      }
       sentiment_items: {
         Row: {
           engagement: number
