@@ -5,14 +5,37 @@ import { LiveRecentPicks } from "@/components/dashboard/LiveRecentPicks";
 import { SentimentMovers } from "@/components/dashboard/SentimentMovers";
 import { Target, TrendingUp, BarChart3, Calendar } from "lucide-react";
 
+const getWeekStart = () => {
+  const now = new Date();
+  const day = now.getDay();
+  const diff = day === 0 ? 6 : day - 1; // Monday as start
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - diff);
+  return monday.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+};
+
+const getNextSunday = () => {
+  const now = new Date();
+  const day = now.getDay();
+  const daysUntil = day === 0 ? 0 : 7 - day;
+  const sunday = new Date(now);
+  sunday.setDate(now.getDate() + daysUntil);
+  const label = sunday.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
+  if (daysUntil === 0) return { value: "Today", label };
+  if (daysUntil === 1) return { value: "Tomorrow", label };
+  return { value: `${daysUntil} days`, label };
+};
+
 const Index = () => {
+  const nextUpdate = getNextSunday();
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
         {/* Page Header */}
         <div>
           <h1 className="text-2xl font-bold text-foreground">Weekly Overview</h1>
-          <p className="text-muted-foreground">Week of February 10, 2026</p>
+          <p className="text-muted-foreground">Week of {getWeekStart()}</p>
         </div>
 
         {/* This Week's Picks - Live Data */}
@@ -45,8 +68,8 @@ const Index = () => {
           />
           <StatCard
             title="Next Update"
-            value="Tomorrow"
-            subtitle="Sunday, Feb 15"
+            value={nextUpdate.value}
+            subtitle={nextUpdate.label}
             icon={Calendar}
           />
         </div>
