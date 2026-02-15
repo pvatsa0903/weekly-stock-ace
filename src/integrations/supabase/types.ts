@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      daily_sentiment: {
+        Row: {
+          confidence: number
+          created_at: string
+          date: string
+          id: string
+          reddit_confirmed: boolean
+          reddit_engagement: number
+          reddit_mentions: number
+          reddit_sentiment_score: number | null
+          reddit_velocity: number | null
+          sentiment_score: number
+          ticker: string
+          x_confirmed: boolean
+          x_engagement: number
+          x_mentions: number
+          x_sentiment_score: number | null
+          x_velocity: number | null
+        }
+        Insert: {
+          confidence?: number
+          created_at?: string
+          date: string
+          id?: string
+          reddit_confirmed?: boolean
+          reddit_engagement?: number
+          reddit_mentions?: number
+          reddit_sentiment_score?: number | null
+          reddit_velocity?: number | null
+          sentiment_score?: number
+          ticker: string
+          x_confirmed?: boolean
+          x_engagement?: number
+          x_mentions?: number
+          x_sentiment_score?: number | null
+          x_velocity?: number | null
+        }
+        Update: {
+          confidence?: number
+          created_at?: string
+          date?: string
+          id?: string
+          reddit_confirmed?: boolean
+          reddit_engagement?: number
+          reddit_mentions?: number
+          reddit_sentiment_score?: number | null
+          reddit_velocity?: number | null
+          sentiment_score?: number
+          ticker?: string
+          x_confirmed?: boolean
+          x_engagement?: number
+          x_mentions?: number
+          x_sentiment_score?: number | null
+          x_velocity?: number | null
+        }
+        Relationships: []
+      }
       fundamentals_snapshot: {
         Row: {
           cash: number | null
