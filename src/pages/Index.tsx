@@ -12,7 +12,7 @@ const Index = () => {
         {/* Page Header */}
         <div>
           <h1 className="text-2xl font-bold text-foreground">Weekly Overview</h1>
-          <p className="text-muted-foreground">Week of January 27, 2025</p>
+          <p className="text-muted-foreground">Week of February 10, 2026</p>
         </div>
 
         {/* This Week's Picks - Live Data */}
@@ -45,8 +45,8 @@ const Index = () => {
           />
           <StatCard
             title="Next Update"
-            value="5 days"
-            subtitle="Sunday, Feb 2"
+            value="3 days"
+            subtitle="Sunday, Feb 15"
             icon={Calendar}
           />
         </div>
