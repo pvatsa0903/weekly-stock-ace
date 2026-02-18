@@ -31,6 +31,20 @@ const getNextSunday = () => {
 const Index = () => {
   const nextUpdate = getNextSunday();
 
+  const { data: weeklyPicks } = useQuery({
+    queryKey: ["weekly_picks"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("weekly_decisions")
+        .select("pick1, pick2")
+        .order("week_ending", { ascending: false })
+        .limit(1)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const { data: stats } = useQuery({
     queryKey: ["pick_stats"],
     queryFn: async () => {
@@ -60,10 +74,12 @@ const Index = () => {
         </div>
 
         {/* This Week's Picks - Live Data */}
-        <div className="grid lg:grid-cols-2 gap-4">
-          <LiveWeeklyBanner ticker="NVDA" />
-          <LiveWeeklyBanner ticker="TSLA" />
-        </div>
+        {weeklyPicks?.pick1 && weeklyPicks?.pick2 && (
+          <div className="grid lg:grid-cols-2 gap-4">
+            <LiveWeeklyBanner ticker={weeklyPicks.pick1} />
+            <LiveWeeklyBanner ticker={weeklyPicks.pick2} />
+          </div>
+        )}
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
