@@ -32,6 +32,13 @@ serve(async (req) => {
   }
 
   try {
+    // Parse optional batch params
+    let body: any = {};
+    try { body = await req.json(); } catch { /* no body is fine */ }
+    const batchOffset = body.offset ?? 0;
+    const batchLimit = body.limit ?? 15;
+    const skipDiscovery = body.skipDiscovery ?? (batchOffset > 0);
+
     const FINNHUB_API_KEY = Deno.env.get("FINNHUB_API_KEY");
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -49,7 +56,7 @@ serve(async (req) => {
     sunday.setDate(now.getDate() + daysUntilSunday);
     const weekEnding = sunday.toISOString().split("T")[0];
 
-    const results = { discovered: 0, tickers: 0, sentiment: 0, fundamentals: 0, sentimentItems: 0, errors: [] as string[] };
+    const results = { discovered: 0, tickers: 0, sentiment: 0, fundamentals: 0, sentimentItems: 0, batchOffset, batchLimit, errors: [] as string[] };
 
     // ── Phase 1: Auto-discover trending tickers ──
     console.log("Phase 1: Discovering trending tickers...");
