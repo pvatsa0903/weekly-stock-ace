@@ -58,8 +58,8 @@ export const Sidebar = () => {
               <TrendingUp className="w-5 h-5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="font-bold text-foreground text-sm">2-Stock Shortlist</h1>
-              <p className="text-xs text-muted-foreground">Weekly Picks</p>
+              <h1 className="font-bold text-foreground text-sm">StockPulse</h1>
+              <p className="text-xs text-muted-foreground">AI-Powered Picks</p>
             </div>
           </div>
 
