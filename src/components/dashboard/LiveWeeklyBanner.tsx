@@ -110,24 +110,26 @@ export const LiveWeeklyBanner = ({ ticker, aiDecision, aiConfidence, aiEli5, aiW
               </div>
             </div>
 
-            {/* ELI5 Explanation */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 mt-4">
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
-                  <Lightbulb className="w-4 h-4" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold mb-1">ELI5 (Explain Like I'm 5)</p>
-                  <p className="text-sm opacity-90 leading-relaxed">{eli5}</p>
+            {/* Why this pick? */}
+            {aiWhy && (
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 mt-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
+                    <Lightbulb className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold mb-1">Why this pick?</p>
+                    <p className="text-sm opacity-90 leading-relaxed">{aiWhy}</p>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </Link>
 
-      {/* Why this pick? — expandable, outside the Link */}
-      {aiWhy && (
+      {/* ELI5 — expandable, outside the Link */}
+      {eli5 && (
         <div
           className={cn(
             "border-t border-white/10",
@@ -138,12 +140,12 @@ export const LiveWeeklyBanner = ({ ticker, aiDecision, aiConfidence, aiEli5, aiW
             onClick={() => setExpanded(!expanded)}
             className="w-full flex items-center justify-between px-6 py-3 text-white/90 hover:text-white transition-colors text-sm font-medium"
           >
-            <span>Why this pick?</span>
+            <span>ELI5 (Explain Like I'm 5)</span>
             {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>
           {expanded && (
             <div className="px-6 pb-4 text-white/85 text-sm leading-relaxed">
-              {aiWhy}
+              {eli5}
             </div>
           )}
         </div>
