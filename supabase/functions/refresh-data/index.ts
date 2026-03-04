@@ -58,7 +58,7 @@ serve(async (req) => {
 
     const results = { discovered: 0, tickers: 0, sentiment: 0, fundamentals: 0, sentimentItems: 0, batchOffset, batchLimit, errors: [] as string[] };
 
-    // ── Phase 1: Auto-discover trending tickers ──
+    if (!skipDiscovery) {
     console.log("Phase 1: Discovering trending tickers...");
     try {
       const [buzzData, trendData] = await Promise.all([
