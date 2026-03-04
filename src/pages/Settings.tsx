@@ -53,7 +53,7 @@ const Settings = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-foreground">Settings</h1>
-            <p className="text-muted-foreground">Configure your screening thresholds</p>
+            <p className="text-sm text-muted-foreground">Adjust screening thresholds and notification preferences that shape how picks are filtered</p>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={handleReset}>
