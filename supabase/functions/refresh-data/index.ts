@@ -113,9 +113,10 @@ serve(async (req) => {
           console.warn(`Skip discovery ${sym}:`, err);
         }
       }
-    } catch (err) {
-      console.warn("Discovery phase error (non-fatal):", err);
-    }
+    } // end skipDiscovery check
+
+    // ── Phase 2: Refresh tracked tickers (batched) ──
+    console.log(`Phase 2: Refreshing tickers (offset=${batchOffset}, limit=${batchLimit})...`);
 
     // ── Phase 2: Refresh all tracked tickers ──
     console.log("Phase 2: Refreshing all tracked tickers...");
