@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { getSentimentColor } from "@/lib/sentiment";
 import { ArrowUp, ArrowDown, CheckCircle2 } from "lucide-react";
 
 interface SentimentRow {
@@ -63,7 +64,7 @@ export const SentimentHeatmap = ({ data, date }: Props) => {
             {/* Ticker + Score */}
             <div className="flex items-center justify-between mb-3">
               <span className="ticker-badge">{row.ticker}</span>
-              <span className="text-2xl font-bold font-mono">{row.sentiment_score}</span>
+              <span className={cn("text-2xl font-bold font-mono", getSentimentColor(row.sentiment_score))}>{row.sentiment_score}</span>
             </div>
 
             {/* Score bar */}

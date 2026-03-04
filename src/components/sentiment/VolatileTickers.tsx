@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { getSentimentColor } from "@/lib/sentiment";
 import { TrendingUp, TrendingDown, Flame, Info } from "lucide-react";
 import {
   Tooltip,
@@ -88,7 +89,7 @@ export const VolatileTickers = ({ data }: Props) => {
               <TooltipProvider delayDuration={200}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="text-2xl font-bold font-mono text-foreground mb-2 cursor-help w-fit">{v.score}</div>
+                    <div className={cn("text-2xl font-bold font-mono mb-2 cursor-help w-fit", getSentimentColor(v.score))}>{v.score}</div>
                   </TooltipTrigger>
                   <TooltipContent side="top" className="text-xs">
                     Blended sentiment: 0 = bearish, 100 = bullish

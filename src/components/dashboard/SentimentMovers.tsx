@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowUp, ArrowDown, Activity, Radio, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getSentimentColor } from "@/lib/sentiment";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
@@ -149,7 +150,7 @@ export const SentimentMovers = () => {
                 <TooltipProvider delayDuration={200}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className="text-sm text-muted-foreground font-mono cursor-help">{m.sentiment_score}</span>
+                      <span className={cn("text-sm font-mono font-semibold cursor-help", getSentimentColor(m.sentiment_score))}>{m.sentiment_score}</span>
                     </TooltipTrigger>
                     <TooltipContent side="top" className="text-xs">
                       Sentiment score (0 = very bearish, 100 = very bullish)
