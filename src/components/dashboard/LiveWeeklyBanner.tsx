@@ -79,9 +79,31 @@ export const LiveWeeklyBanner = ({ ticker, aiDecision, aiConfidence, aiEli5, aiW
                 <p className="text-sm opacity-80 mt-1">{data.name}</p>
               </div>
 
-              <div className="text-right">
-                <p className="text-sm opacity-90">Confidence</p>
-                <p className="text-3xl font-bold font-mono">{confidence}%</p>
+              <div className="text-right flex flex-col items-end">
+                <p className="text-sm opacity-90 mb-1">Confidence</p>
+                {/* Radial confidence meter */}
+                <div className="relative w-16 h-16 sm:w-20 sm:h-20">
+                  <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
+                    <circle
+                      cx="18" cy="18" r="15.5"
+                      fill="none"
+                      stroke="rgba(255,255,255,0.15)"
+                      strokeWidth="3"
+                    />
+                    <circle
+                      cx="18" cy="18" r="15.5"
+                      fill="none"
+                      stroke="white"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeDasharray={`${(confidence / 100) * 97.4} 97.4`}
+                      className="transition-all duration-700"
+                    />
+                  </svg>
+                  <span className="absolute inset-0 flex items-center justify-center text-lg sm:text-xl font-bold font-mono">
+                    {confidence}%
+                  </span>
+                </div>
                 <p className="text-sm font-mono mt-1 opacity-90">
                   ${data.price.toFixed(2)} ({data.change >= 0 ? "+" : ""}{data.changePercent.toFixed(2)}%)
                 </p>
