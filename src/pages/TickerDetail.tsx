@@ -66,10 +66,7 @@ const TickerDetail = () => {
           <>
             <TickerHeader data={data} />
 
-            <div className="grid lg:grid-cols-2 gap-6">
-              <SentimentCard sentiment={data.sentiment} />
-              <FundamentalsCard fundamentals={data.fundamentals} />
-            </div>
+            <FundamentalsCard fundamentals={data.fundamentals} />
 
             <NewsCard news={data.recentNews} />
           </>
