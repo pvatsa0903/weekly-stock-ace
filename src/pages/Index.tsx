@@ -33,7 +33,41 @@ const getNextSunday = () => {
 
 const Index = () => {
   const nextUpdate = getNextSunday();
+  const queryClient = useQueryClient();
+  const [isRunningAI, setIsRunningAI] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
+  const runAIPicker = async () => {
+    setIsRunningAI(true);
+    toast.info("Running AI Stock Picker…");
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-stock-picker");
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast.success(`AI Picker done — ${data.decision}: ${[data.pick1, data.pick2].filter(Boolean).join(", ") || "No picks"}`);
+      queryClient.invalidateQueries({ queryKey: ["weekly_picks"] });
+    } catch (err: any) {
+      toast.error(err.message || "AI Picker failed");
+    } finally {
+      setIsRunningAI(false);
+    }
+  };
+
+  const runDataRefresh = async () => {
+    setIsRefreshing(true);
+    toast.info("Refreshing market data…");
+    try {
+      const { data, error } = await supabase.functions.invoke("refresh-data");
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast.success(`Refreshed ${data.tickers} tickers, ${data.sentiment} sentiment, ${data.discovered || 0} discovered`);
+      queryClient.invalidateQueries();
+    } catch (err: any) {
+      toast.error(err.message || "Data refresh failed");
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
   const { data: weeklyPicks } = useQuery({
     queryKey: ["weekly_picks"],
     queryFn: async () => {
