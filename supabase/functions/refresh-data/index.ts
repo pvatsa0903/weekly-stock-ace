@@ -32,6 +32,13 @@ serve(async (req) => {
   }
 
   try {
+    // Parse optional batch params
+    let body: any = {};
+    try { body = await req.json(); } catch { /* no body is fine */ }
+    const batchOffset = body.offset ?? 0;
+    const batchLimit = body.limit ?? 15;
+    const skipDiscovery = body.skipDiscovery ?? (batchOffset > 0);
+
     const FINNHUB_API_KEY = Deno.env.get("FINNHUB_API_KEY");
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -49,78 +56,68 @@ serve(async (req) => {
     sunday.setDate(now.getDate() + daysUntilSunday);
     const weekEnding = sunday.toISOString().split("T")[0];
 
-    const results = { discovered: 0, tickers: 0, sentiment: 0, fundamentals: 0, sentimentItems: 0, errors: [] as string[] };
+    const results = { discovered: 0, tickers: 0, sentiment: 0, fundamentals: 0, sentimentItems: 0, batchOffset, batchLimit, errors: [] as string[] };
 
-    // ── Phase 1: Auto-discover trending tickers ──
-    console.log("Phase 1: Discovering trending tickers...");
-    try {
-      const [buzzData, trendData] = await Promise.all([
-        finnhubFetch("/stock/social-sentiment/trending", FINNHUB_API_KEY),
-        finnhubFetch("/stock/market-status?exchange=US", FINNHUB_API_KEY),
-      ]);
-
-      const trendingSymbols = new Set<string>();
-
-      // Social buzz trending
-      if (Array.isArray(buzzData)) {
-        for (const item of buzzData.slice(0, 30)) {
-          if (item.symbol) trendingSymbols.add(item.symbol);
-        }
-      }
-
-      // Add symbols from social sentiment trending
-      await delay(1200);
+    if (!skipDiscovery) {
+      console.log("Phase 1: Discovering trending tickers...");
       try {
-        const redditBuzz = await finnhubFetch("/stock/social-sentiment/buzz", FINNHUB_API_KEY);
-        if (redditBuzz?.buzz) {
-          // buzz returns aggregates, not symbols — skip
-        }
-      } catch { /* optional */ }
+        const [buzzData] = await Promise.all([
+          finnhubFetch("/stock/social-sentiment/trending", FINNHUB_API_KEY),
+          finnhubFetch("/stock/market-status?exchange=US", FINNHUB_API_KEY),
+        ]);
 
-      // For each discovered symbol, upsert into tickers if not already there
-      const { data: existingTickers } = await supabase.from("tickers").select("ticker");
-      const existingSet = new Set((existingTickers || []).map((t: any) => t.ticker));
-
-      for (const sym of trendingSymbols) {
-        if (existingSet.has(sym)) continue;
-        try {
-          await delay(1200);
-          const profile = await finnhubFetch(`/stock/profile2?symbol=${sym}`, FINNHUB_API_KEY);
-          if (profile?.name && profile?.marketCapitalization > 0) {
-            await delay(1200);
-            const quote = await finnhubFetch(`/quote?symbol=${sym}`, FINNHUB_API_KEY);
-            if (quote?.c > 0) {
-              await supabase.from("tickers").upsert({
-                ticker: sym,
-                company_name: profile.name,
-                sector: profile.finnhubIndustry || "Unknown",
-                price: quote.c,
-                market_cap: profile.marketCapitalization || 0,
-                avg_dollar_volume: (profile.shareOutstanding || 0) * quote.c * 0.01,
-              }, { onConflict: "ticker" });
-              results.discovered++;
-              console.log(`🆕 Discovered: ${sym} (${profile.name})`);
-            }
+        const trendingSymbols = new Set<string>();
+        if (Array.isArray(buzzData)) {
+          for (const item of buzzData.slice(0, 30)) {
+            if (item.symbol) trendingSymbols.add(item.symbol);
           }
-        } catch (err) {
-          console.warn(`Skip discovery ${sym}:`, err);
         }
+
+        const { data: existingTickers } = await supabase.from("tickers").select("ticker");
+        const existingSet = new Set((existingTickers || []).map((t: any) => t.ticker));
+
+        for (const sym of trendingSymbols) {
+          if (existingSet.has(sym)) continue;
+          try {
+            await delay(1200);
+            const profile = await finnhubFetch(`/stock/profile2?symbol=${sym}`, FINNHUB_API_KEY);
+            if (profile?.name && profile?.marketCapitalization > 0) {
+              await delay(1200);
+              const quote = await finnhubFetch(`/quote?symbol=${sym}`, FINNHUB_API_KEY);
+              if (quote?.c > 0) {
+                await supabase.from("tickers").upsert({
+                  ticker: sym,
+                  company_name: profile.name,
+                  sector: profile.finnhubIndustry || "Unknown",
+                  price: quote.c,
+                  market_cap: profile.marketCapitalization || 0,
+                  avg_dollar_volume: (profile.shareOutstanding || 0) * quote.c * 0.01,
+                }, { onConflict: "ticker" });
+                results.discovered++;
+                console.log(`🆕 Discovered: ${sym} (${profile.name})`);
+              }
+            }
+          } catch (err) {
+            console.warn(`Skip discovery ${sym}:`, err);
+          }
+        }
+      } catch (err) {
+        console.warn("Discovery phase error (non-fatal):", err);
       }
-    } catch (err) {
-      console.warn("Discovery phase error (non-fatal):", err);
     }
 
-    // ── Phase 2: Refresh all tracked tickers ──
-    console.log("Phase 2: Refreshing all tracked tickers...");
+    // ── Phase 2: Refresh tracked tickers (batched) ──
+    console.log(`Phase 2: Refreshing tickers (offset=${batchOffset}, limit=${batchLimit})...`);
+
     const { data: allTickers, error: tickErr } = await supabase
       .from("tickers")
       .select("ticker")
       .order("avg_dollar_volume", { ascending: false })
-      .limit(60); // Process top 60 by volume to stay within rate limits
+      .range(batchOffset, batchOffset + batchLimit - 1);
     if (tickErr) throw new Error(`Failed to fetch tickers: ${tickErr.message}`);
 
     const symbols = (allTickers || []).map((t: any) => t.ticker);
-    console.log(`Refreshing ${symbols.length} tickers...`);
+    console.log(`Processing ${symbols.length} tickers...`);
 
     for (const symbol of symbols) {
       try {

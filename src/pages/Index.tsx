@@ -55,12 +55,19 @@ const Index = () => {
 
   const runDataRefresh = async () => {
     setIsRefreshing(true);
-    toast.info("Refreshing market data…");
+    toast.info("Refreshing market data in batches…");
     try {
-      const { data, error } = await supabase.functions.invoke("refresh-data");
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      toast.success(`Refreshed ${data.tickers} tickers, ${data.sentiment} sentiment, ${data.discovered || 0} discovered`);
+      let totalTickers = 0, totalSentiment = 0;
+      for (let offset = 0; offset < 60; offset += 10) {
+        const { data, error } = await supabase.functions.invoke("refresh-data", {
+          body: { offset, limit: 10, skipDiscovery: offset > 0 },
+        });
+        if (error) throw error;
+        if (data?.error) throw new Error(data.error);
+        totalTickers += data.tickers || 0;
+        totalSentiment += data.sentiment || 0;
+      }
+      toast.success(`Refreshed ${totalTickers} tickers, ${totalSentiment} sentiment records`);
       queryClient.invalidateQueries();
     } catch (err: any) {
       toast.error(err.message || "Data refresh failed");
