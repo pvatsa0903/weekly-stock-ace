@@ -1,4 +1,4 @@
-# 2-Stock Shortlist
+# StockPulse
 
 > An AI-driven stock recommendation engine that surfaces **two actionable weekly picks** from a universe of 50 high-volume stocks — with multi-source sentiment analysis and human-in-the-loop oversight.
 
