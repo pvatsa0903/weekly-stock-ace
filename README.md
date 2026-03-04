@@ -1,73 +1,134 @@
-# Welcome to your Lovable project
+# 2-Stock Shortlist
 
-## Project info
+> An AI-driven stock recommendation engine that surfaces **two actionable weekly picks** from a universe of 50 high-volume stocks — with multi-source sentiment analysis and human-in-the-loop oversight.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+🔗 **Live App**: [weekly-stock-ace.lovable.app](https://weekly-stock-ace.lovable.app)
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## What It Does
 
-**Use Lovable**
+Every week, the system:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+1. **Ingests market data** — prices, fundamentals, and social sentiment from Reddit, X, and StockTwits
+2. **Runs AI analysis** — a large language model scores each ticker on fundamentals, momentum, and sentiment
+3. **Surfaces 2 picks** — with confidence scores, ELI5 summaries, and full rationale
+4. **Tracks performance** — entry/exit prices, win rate, and ROI are logged automatically
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## Screenshots
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+| Dashboard | Sentiment Radar |
+|-----------|-----------------|
+| Weekly picks, stat cards, top movers | Top 5 volatile tickers, 7-day trendlines |
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## Features
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- **AI-Powered Analysis** — LLM-driven scoring with custom prompt engineering (Gemini via Lovable AI Gateway)
+- **Multi-Source Sentiment** — Aggregated from Reddit, X (Twitter), and StockTwits with AI-estimated fallbacks
+- **Sentiment Radar** — Top 5 most volatile tickers with 7-day trendline charts
+- **Real-Time Updates** — PostgreSQL realtime subscriptions push live data to the UI
+- **Weekly Cron Job** — Automated data refresh every Monday at 6:00 AM UTC
+- **Performance Tracking** — Win rate, average return, and historical pick audit trail
+- **ELI5 Summaries** — Plain-English explanations for every AI recommendation
+- **Responsive Design** — Optimized for mobile, tablet, and desktop
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+---
 
-# Step 3: Install the necessary dependencies.
-npm i
+## Tech Stack
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | React 18 · TypeScript · Tailwind CSS · shadcn/ui |
+| **Charts** | Recharts |
+| **Routing** | React Router v6 |
+| **State** | TanStack React Query |
+| **Backend** | Lovable Cloud (Edge Functions + PostgreSQL) |
+| **AI** | Gemini 2.5 Flash Lite via Lovable AI Gateway |
+| **Data Sources** | Finnhub API · StockTwits API · AI-estimated sentiment |
+| **Scheduling** | pg_cron + pg_net → Edge Function triggers |
+| **Build** | Vite |
+
+---
+
+## Architecture
+
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for the full system design, data pipeline, and database schema.
+
+```
+Data Ingestion → AI Sentiment Analysis → Multi-Source Blend → Database
+                                                                  ↓
+Dashboard ← Realtime Subscriptions ← PostgreSQL ← Weekly AI Picker
+```
+
+---
+
+## Project Structure
+
+```
+src/
+├── pages/              # Route-level pages
+│   ├── Index.tsx        # Dashboard — weekly picks, stats, movers
+│   ├── Decisions.tsx    # Historical PICK/SKIP decisions table
+│   ├── Sentiment.tsx    # Sentiment Radar — volatile tickers + trendlines
+│   ├── TickerDetail.tsx # Individual ticker deep-dive
+│   ├── About.tsx        # Project overview + pipeline explanation
+│   └── Settings.tsx     # App settings
+├── components/
+│   ├── dashboard/       # LiveWeeklyBanner, StatCard, SentimentMovers
+│   ├── layout/          # Sidebar, DashboardLayout
+│   ├── sentiment/       # VolatileTickers, SentimentTrendlines, Heatmap
+│   └── ticker/          # FundamentalsCard, SentimentCard, NewsCard
+├── hooks/               # useStockData, use-mobile
+└── integrations/        # Supabase client & types (auto-generated)
+
+supabase/functions/
+├── ai-stock-picker/     # LLM-powered weekly pick generation
+├── refresh-data/        # Multi-source data ingestion pipeline
+└── stock-data/          # On-demand stock data fetching
+```
+
+---
+
+## Data Pipeline
+
+The `refresh-data` Edge Function runs weekly (Monday 6 AM UTC) and:
+
+1. Fetches price/profile data from **Finnhub**
+2. Pulls StockTwits stream for real-time social sentiment
+3. Calls **Gemini AI** to analyze news headlines and generate sentiment scores
+4. Computes a **weighted blend**: AI (30%) + News (20%) + Reddit (15%) + X (15%) + StockTwits (20%)
+5. Upserts results into `daily_sentiment` with confidence scores
+
+When social APIs return empty data (common on free tiers), the system **estimates** mention counts from AI analysis and cross-source data — ensuring the UI always shows meaningful values.
+
+---
+
+## Local Development
+
+```bash
+git clone <repo-url>
+cd 2-stock-shortlist
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Requires environment variables for Supabase and Finnhub (see `.env` template).
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+---
 
-**Use GitHub Codespaces**
+## Author
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+**Phalguni Vatsa**
 
-## What technologies are used for this project?
+- [LinkedIn](https://www.linkedin.com/in/phalgunivatsa/)
+- [GitHub](https://github.com/pvatsa0903)
 
-This project is built with:
+---
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## License
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+See [LICENSE](./LICENSE) for details.
