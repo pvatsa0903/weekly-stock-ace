@@ -1,6 +1,6 @@
-# Contributing to StockPulse
+# Contributing to 2-Stock Shortlist
 
-Thank you for your interest in contributing to **StockPulse** — an AI-driven stock recommendation engine with human-in-the-loop oversight.
+Thank you for your interest in contributing to **2-Stock Shortlist** — an AI-driven stock recommendation engine with multi-source sentiment analysis and human-in-the-loop oversight.
 
 ---
 
