@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [1.2.0] — 2026-03-04
+
+### Added
+- `SOUL.md` — project philosophy and design rationale in human tone
+- Comprehensive `ARCHITECTURE.md` with system design, data flow, and schema docs
+- Enhanced `SECURITY.md` with architecture security notes
+- Updated `CONTRIBUTING.md` with full project structure and contribution guidelines
+- Updated `README.md` with features, tech stack, and pipeline overview
+
+### Changed
+- About page redesigned with pipeline visualization, sentiment scoring table, and tech stack section
+- All GitHub-facing documentation aligned with current v1.1 feature set
+
+---
+
 ## [1.1.0] — 2026-03-04
 
 ### Added
