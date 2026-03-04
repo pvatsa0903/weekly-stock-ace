@@ -141,6 +141,7 @@ const Index = () => {
         {/* This Week's Picks - Live Data */}
         {weeklyPicks?.pick1 && weeklyPicks?.pick2 && (() => {
           const eli5Parts = weeklyPicks.eli5_summary?.split(" | ") || [];
+          const whyParts = weeklyPicks.why_summary?.split(" | ") || [];
           return (
             <div className="grid md:grid-cols-2 gap-4">
               <LiveWeeklyBanner
@@ -148,12 +149,14 @@ const Index = () => {
                 aiDecision={weeklyPicks.decision}
                 aiConfidence={weeklyPicks.pick1_confidence ?? undefined}
                 aiEli5={eli5Parts[0]}
+                aiWhy={whyParts[0] || weeklyPicks.why_summary}
               />
               <LiveWeeklyBanner
                 ticker={weeklyPicks.pick2}
                 aiDecision={weeklyPicks.decision}
                 aiConfidence={weeklyPicks.pick2_confidence ?? undefined}
                 aiEli5={eli5Parts[1]}
+                aiWhy={whyParts[1] || weeklyPicks.why_summary}
               />
             </div>
           );
