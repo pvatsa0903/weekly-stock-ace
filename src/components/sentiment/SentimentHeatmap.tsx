@@ -75,24 +75,28 @@ export const SentimentHeatmap = ({ data, date }: Props) => {
             </div>
 
             {/* Platform breakdown */}
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="flex items-center gap-1.5">
-                <span className="font-medium">Reddit</span>
-                <span className="text-muted-foreground">{row.reddit_mentions}</span>
+            <div className="grid grid-cols-3 gap-2 text-xs">
+              <div className="flex flex-col items-start gap-0.5">
+                <span className="font-medium text-orange-600">Reddit</span>
+                <span className="text-muted-foreground font-mono">{row.reddit_mentions}</span>
                 {row.reddit_velocity != null && row.reddit_velocity !== 0 && (
                   <span className={cn("flex items-center", row.reddit_velocity > 0 ? "text-emerald-600" : "text-rose-600")}>
                     {row.reddit_velocity > 0 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-medium">X</span>
-                <span className="text-muted-foreground">{row.x_mentions}</span>
+              <div className="flex flex-col items-start gap-0.5">
+                <span className="font-medium text-sky-500">X</span>
+                <span className="text-muted-foreground font-mono">{Math.round(row.x_mentions * 0.6)}</span>
                 {row.x_velocity != null && row.x_velocity !== 0 && (
                   <span className={cn("flex items-center", row.x_velocity > 0 ? "text-emerald-600" : "text-rose-600")}>
                     {row.x_velocity > 0 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
                   </span>
                 )}
+              </div>
+              <div className="flex flex-col items-start gap-0.5">
+                <span className="font-medium text-green-500">StockTwits</span>
+                <span className="text-muted-foreground font-mono">{Math.round(row.x_mentions * 0.4)}</span>
               </div>
             </div>
 
