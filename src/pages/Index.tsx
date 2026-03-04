@@ -112,12 +112,12 @@ const Index = () => {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Page Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Weekly Overview</h1>
-            <p className="text-muted-foreground">Week of {getWeekStart()}</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground">Weekly Overview</h1>
+            <p className="text-sm text-muted-foreground">Week of {getWeekStart()}</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 w-full sm:w-auto">
             <Button
               variant="outline"
               size="sm"
@@ -142,7 +142,7 @@ const Index = () => {
         {weeklyPicks?.pick1 && weeklyPicks?.pick2 && (() => {
           const eli5Parts = weeklyPicks.eli5_summary?.split(" | ") || [];
           return (
-            <div className="grid lg:grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 gap-4">
               <LiveWeeklyBanner
                 ticker={weeklyPicks.pick1}
                 aiDecision={weeklyPicks.decision}
@@ -190,9 +190,9 @@ const Index = () => {
         </div>
 
         {/* Sentiment Movers + Market Watch */}
-        <div className="grid lg:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           <SentimentMovers />
-          <div className="lg:col-span-2">
+          <div className="md:col-span-1 lg:col-span-2">
             <LiveRecentPicks />
           </div>
         </div>

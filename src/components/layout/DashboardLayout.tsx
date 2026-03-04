@@ -9,7 +9,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     <div className="min-h-screen bg-background">
       <Sidebar />
       <main className="lg:ml-64 pt-16 lg:pt-0 min-h-screen flex flex-col">
-        <div className="p-4 lg:p-6 max-w-7xl mx-auto flex-1">
+        <div className="p-3 sm:p-4 lg:p-6 max-w-7xl mx-auto w-full flex-1">
           {children}
         </div>
         <footer className="p-4 lg:p-6 text-center text-xs text-muted-foreground border-t border-border">

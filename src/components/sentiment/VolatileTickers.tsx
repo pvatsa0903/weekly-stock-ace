@@ -42,7 +42,7 @@ export const VolatileTickers = ({ data }: Props) => {
         {formatDate(data[0]?.previousDate)} → {formatDate(data[0]?.latestDate)} · sentiment swing ranking
       </p>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+      <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
         {data.map((v, i) => {
           const isUp = v.change >= 0;
           return (

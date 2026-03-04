@@ -60,7 +60,7 @@ export const SentimentTrendlines = ({ data, tickers }: Props) => {
         Tracking the 5 most volatile tickers over the past week
       </p>
 
-      <ResponsiveContainer width="100%" height={360}>
+      <ResponsiveContainer width="100%" height={280} className="sm:!h-[360px]">
         <LineChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
           <XAxis
