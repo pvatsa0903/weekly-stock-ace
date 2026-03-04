@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowUp, ArrowDown, Activity, Radio, Info } from "lucide-react";
@@ -12,7 +12,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-const SourceTooltip = ({ label, fullName, description }: { label: string; fullName: string; description: string }) => (
+const SourceTooltip = ({ label, fullName, description }: { label: ReactNode; fullName: string; description: string }) => (
   <TooltipProvider delayDuration={200}>
     <Tooltip>
       <TooltipTrigger asChild>
