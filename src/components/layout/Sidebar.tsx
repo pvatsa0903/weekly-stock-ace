@@ -2,7 +2,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { LayoutDashboard, Table2, LineChart, Settings, TrendingUp, Menu, X, Activity, Info } from "lucide-react";
 import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
-import { formatDistanceToNow } from "date-fns";
+
 
 const navItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
