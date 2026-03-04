@@ -80,7 +80,7 @@ const Index = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("weekly_decisions")
-        .select("pick1, pick2, decision, eli5_summary, why_summary")
+        .select("pick1, pick2, decision, eli5_summary, why_summary, pick1_confidence, pick2_confidence")
         .order("week_ending", { ascending: false })
         .limit(1)
         .single();
