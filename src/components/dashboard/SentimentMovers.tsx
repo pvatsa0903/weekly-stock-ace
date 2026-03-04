@@ -1,41 +1,57 @@
-import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowUp, ArrowDown, Activity } from "lucide-react";
+import { ArrowUp, ArrowDown, Activity, Radio } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const SentimentMovers = () => {
+  const queryClient = useQueryClient();
+
+  // Realtime subscription
+  useEffect(() => {
+    const channel = supabase
+      .channel("dashboard_sentiment_movers")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "daily_sentiment" },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["sentiment_movers"] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+
   const { data: movers = [], isLoading } = useQuery({
     queryKey: ["sentiment_movers"],
     queryFn: async () => {
-      // Get the latest date available
-      const { data: latest } = await supabase
+      // Get the 2 most recent distinct dates
+      const { data: dateRows } = await supabase
         .from("daily_sentiment")
         .select("date")
         .order("date", { ascending: false })
-        .limit(1);
+        .limit(500);
 
-      if (!latest?.length) return [];
+      if (!dateRows?.length) return [];
 
-      const latestDate = latest[0].date;
+      const uniqueDates = [...new Set(dateRows.map((d) => d.date))].sort().reverse();
+      if (uniqueDates.length < 2) return [];
 
-      // Get previous date's data for comparison
+      const [latestDate, prevDate] = uniqueDates;
+
       const { data } = await supabase
         .from("daily_sentiment")
         .select("*")
-        .gte("date", (() => {
-          const d = new Date(latestDate + "T00:00:00");
-          d.setDate(d.getDate() - 1);
-          return d.toISOString().split("T")[0];
-        })())
-        .order("date", { ascending: true });
+        .in("date", [latestDate, prevDate]);
 
       if (!data?.length) return [];
 
-      // Calculate day-over-day change
       const todayRows = data.filter((d) => d.date === latestDate);
-      const prevDate = data.find((d) => d.date !== latestDate)?.date;
-      const prevRows = prevDate ? data.filter((d) => d.date === prevDate) : [];
+      const prevRows = data.filter((d) => d.date === prevDate);
 
       const withChange = todayRows.map((t) => {
         const prev = prevRows.find((p) => p.ticker === t.ticker);
@@ -43,7 +59,6 @@ export const SentimentMovers = () => {
         return { ...t, change };
       });
 
-      // Sort by absolute change descending, take top 3
       return withChange
         .sort((a, b) => Math.abs(b.change) - Math.abs(a.change))
         .slice(0, 3);
@@ -68,6 +83,10 @@ export const SentimentMovers = () => {
       <div className="flex items-center gap-2 mb-4">
         <Activity className="w-5 h-5 text-primary" />
         <h2 className="text-lg font-semibold text-foreground">Top Sentiment Movers</h2>
+        <span className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 ml-auto">
+          <Radio className="w-2.5 h-2.5 animate-pulse" />
+          Live
+        </span>
       </div>
       <div className="space-y-3">
         {movers.map((m) => {
@@ -79,10 +98,10 @@ export const SentimentMovers = () => {
             >
               <div className="flex items-center gap-3">
                 <span className="ticker-badge">{m.ticker}</span>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <span className="text-orange-600 font-medium">R:{m.reddit_mentions}</span>
-                  <span className="text-sky-500 font-medium">X:{Math.round(m.x_mentions * 0.6)}</span>
-                  <span className="text-green-500 font-medium">ST:{Math.round(m.x_mentions * 0.4)}</span>
+                <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                  <span className="text-orange-600 font-semibold">R:{m.reddit_mentions}</span>
+                  <span className="text-sky-500 font-semibold">X:{Math.round(m.x_mentions * 0.6)}</span>
+                  <span className="text-green-500 font-semibold">ST:{Math.round(m.x_mentions * 0.4)}</span>
                 </div>
               </div>
               <div className="flex items-center gap-2">
