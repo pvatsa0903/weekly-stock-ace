@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { LayoutDashboard, Table2, LineChart, Settings, TrendingUp, Menu, X, Activity } from "lucide-react";
+import { LayoutDashboard, Table2, LineChart, Settings, TrendingUp, Menu, X, Activity, Info } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -8,6 +8,7 @@ const navItems = [
   { to: "/decisions", icon: Table2, label: "Weekly Decisions" },
   { to: "/sentiment", icon: Activity, label: "Sentiment Radar" },
   { to: "/ticker", icon: LineChart, label: "Ticker Detail" },
+  { to: "/about", icon: Info, label: "How It Works" },
   { to: "/settings", icon: Settings, label: "Settings" },
 ];
 
