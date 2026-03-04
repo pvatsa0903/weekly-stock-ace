@@ -146,13 +146,13 @@ const Index = () => {
               <LiveWeeklyBanner
                 ticker={weeklyPicks.pick1}
                 aiDecision={weeklyPicks.decision}
-                aiConfidence={undefined}
+                aiConfidence={weeklyPicks.pick1_confidence ?? undefined}
                 aiEli5={eli5Parts[0]}
               />
               <LiveWeeklyBanner
                 ticker={weeklyPicks.pick2}
                 aiDecision={weeklyPicks.decision}
-                aiConfidence={undefined}
+                aiConfidence={weeklyPicks.pick2_confidence ?? undefined}
                 aiEli5={eli5Parts[1]}
               />
             </div>
