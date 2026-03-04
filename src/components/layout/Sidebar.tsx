@@ -1,7 +1,8 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { LayoutDashboard, Table2, LineChart, Settings, TrendingUp, Menu, X, Activity, Info } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
+import { formatDistanceToNow } from "date-fns";
 
 const navItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
@@ -83,8 +84,8 @@ export const Sidebar = () => {
           {/* Footer */}
           <div className="p-4 border-t border-sidebar-border">
             <div className="text-xs text-muted-foreground">
-              <p>Week of Jan 27, 2025</p>
-              <p className="mt-1">Last updated: 2h ago</p>
+              <p>Week of {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</p>
+              <p className="mt-1">Last updated: {formatDistanceToNow(new Date(), { addSuffix: false })} ago</p>
             </div>
           </div>
         </div>
