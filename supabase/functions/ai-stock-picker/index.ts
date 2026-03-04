@@ -216,6 +216,8 @@ Remember: Only PICK when ALL THREE layers align. Otherwise, zero picks this week
     const decision = pickCount > 0 ? "PICK" : "SKIP";
     const pick1 = result.pick1?.ticker || null;
     const pick2 = result.pick2?.ticker || null;
+    const pick1Confidence = result.pick1?.confidence || null;
+    const pick2Confidence = result.pick2?.confidence || null;
     const eli5Summary = pickCount > 0
       ? [result.pick1?.eli5, result.pick2?.eli5].filter(Boolean).join(" | ")
       : result.overall_summary || "No strong picks this week — layers did not align.";
@@ -232,6 +234,8 @@ Remember: Only PICK when ALL THREE layers align. Otherwise, zero picks this week
           decision,
           pick1,
           pick2,
+          pick1_confidence: pick1Confidence,
+          pick2_confidence: pick2Confidence,
           eli5_summary: eli5Summary,
           why_summary: whySummary,
         },
@@ -240,19 +244,20 @@ Remember: Only PICK when ALL THREE layers align. Otherwise, zero picks this week
 
     if (upsertErr) {
       console.error("Failed to save decision:", upsertErr);
-      // Insert instead if upsert fails (no unique constraint)
       const { error: insertErr } = await supabase.from("weekly_decisions").insert({
         week_ending: weekEnding,
         decision,
         pick1,
         pick2,
+        pick1_confidence: pick1Confidence,
+        pick2_confidence: pick2Confidence,
         eli5_summary: eli5Summary,
         why_summary: whySummary,
       });
       if (insertErr) throw new Error(`Failed to save decision: ${insertErr.message}`);
     }
 
-    console.log(`Weekly decision saved: ${decision}, picks: ${pick1}, ${pick2}`);
+    console.log(`Weekly decision saved: ${decision}, picks: ${pick1}(${pick1Confidence}%), ${pick2}(${pick2Confidence}%)`);
 
     return new Response(
       JSON.stringify({

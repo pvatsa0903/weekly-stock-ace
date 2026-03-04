@@ -222,7 +222,9 @@ export type Database = {
           eli5_summary: string
           id: string
           pick1: string | null
+          pick1_confidence: number | null
           pick2: string | null
+          pick2_confidence: number | null
           week_ending: string
           why_summary: string
         }
@@ -232,7 +234,9 @@ export type Database = {
           eli5_summary: string
           id?: string
           pick1?: string | null
+          pick1_confidence?: number | null
           pick2?: string | null
+          pick2_confidence?: number | null
           week_ending: string
           why_summary: string
         }
@@ -242,7 +246,9 @@ export type Database = {
           eli5_summary?: string
           id?: string
           pick1?: string | null
+          pick1_confidence?: number | null
           pick2?: string | null
+          pick2_confidence?: number | null
           week_ending?: string
           why_summary?: string
         }

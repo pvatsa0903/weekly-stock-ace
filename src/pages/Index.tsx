@@ -80,7 +80,7 @@ const Index = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("weekly_decisions")
-        .select("pick1, pick2, decision, eli5_summary, why_summary")
+        .select("pick1, pick2, decision, eli5_summary, why_summary, pick1_confidence, pick2_confidence")
         .order("week_ending", { ascending: false })
         .limit(1)
         .single();
@@ -146,13 +146,13 @@ const Index = () => {
               <LiveWeeklyBanner
                 ticker={weeklyPicks.pick1}
                 aiDecision={weeklyPicks.decision}
-                aiConfidence={undefined}
+                aiConfidence={weeklyPicks.pick1_confidence ?? undefined}
                 aiEli5={eli5Parts[0]}
               />
               <LiveWeeklyBanner
                 ticker={weeklyPicks.pick2}
                 aiDecision={weeklyPicks.decision}
-                aiConfidence={undefined}
+                aiConfidence={weeklyPicks.pick2_confidence ?? undefined}
                 aiEli5={eli5Parts[1]}
               />
             </div>
