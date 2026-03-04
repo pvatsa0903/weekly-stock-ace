@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { SentimentHeatmap } from "@/components/sentiment/SentimentHeatmap";
 import { SentimentTrendlines } from "@/components/sentiment/SentimentTrendlines";
+import { VolatileTickers } from "@/components/sentiment/VolatileTickers";
+import { RecentSentimentFeed } from "@/components/sentiment/RecentSentimentFeed";
 import { Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,7 +36,6 @@ const Sentiment = () => {
     },
   });
 
-  // Get latest day's data for heatmap
   const latestDate = useMemo(() => {
     if (sentimentData.length === 0) return null;
     return sentimentData.reduce((max, d) => (d.date > max ? d.date : max), sentimentData[0].date);
@@ -45,7 +46,6 @@ const Sentiment = () => {
     [sentimentData, latestDate]
   );
 
-  // Get unique tickers
   const tickers = useMemo(() => {
     const set = new Set(sentimentData.map((d) => d.ticker));
     return Array.from(set).sort();
@@ -59,7 +59,7 @@ const Sentiment = () => {
           <div>
             <h1 className="text-2xl font-bold text-foreground">Sentiment Radar</h1>
             <p className="text-muted-foreground">
-              Daily sentiment scores from Reddit &amp; X across top tickers
+              Daily sentiment from Reddit, X &amp; StockTwits across top tickers
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -105,6 +105,12 @@ const Sentiment = () => {
 
         {!isLoading && !error && sentimentData.length > 0 && (
           <>
+            {/* Top 5 Volatile + Recent Feed side by side */}
+            <div className="grid lg:grid-cols-2 gap-6">
+              <VolatileTickers />
+              <RecentSentimentFeed />
+            </div>
+
             {/* Heatmap */}
             <SentimentHeatmap data={todayData} date={latestDate!} />
 
