@@ -8,31 +8,56 @@ interface TickerHeaderProps {
 
 export const TickerHeader = ({ data }: TickerHeaderProps) => {
   const isPositive = data.change >= 0;
+  const isPick = data.decision === "PICK";
 
   return (
-    <div className="bg-card rounded-xl border border-border p-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div
+      className={cn(
+        "rounded-xl border p-6 relative overflow-hidden",
+        isPick
+          ? "bg-gradient-to-br from-emerald-50 to-card border-emerald-200/60"
+          : "bg-gradient-to-br from-rose-50 to-card border-rose-200/60"
+      )}
+    >
+      {/* Subtle accent glow */}
+      <div
+        className={cn(
+          "absolute -top-16 -right-16 w-48 h-48 rounded-full blur-3xl opacity-20",
+          isPick ? "bg-emerald-400" : "bg-rose-400"
+        )}
+      />
+
+      <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3 mb-2">
             {data.logo && (
-              <img 
-                src={data.logo} 
-                alt={data.name} 
-                className="w-10 h-10 rounded-lg object-contain bg-white"
+              <img
+                src={data.logo}
+                alt={data.name}
+                className="w-12 h-12 rounded-xl object-contain bg-white shadow-sm border border-border p-1"
               />
             )}
             <span className="ticker-badge text-lg px-3 py-1.5">{data.ticker}</span>
             <span
               className={cn(
-                "text-sm font-semibold px-3 py-1 rounded-full",
-                data.decision === "PICK"
-                  ? "bg-emerald-100 text-emerald-700"
-                  : "bg-rose-100 text-rose-700"
+                "text-sm font-bold px-3 py-1 rounded-full",
+                isPick
+                  ? "bg-emerald-500 text-white"
+                  : "bg-rose-500 text-white"
               )}
             >
               {data.decision}
             </span>
-            <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+            <span
+              className={cn(
+                "text-xs font-semibold px-2.5 py-1 rounded-full border",
+                data.confidence >= 70
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                  : data.confidence >= 50
+                  ? "bg-amber-50 text-amber-700 border-amber-200"
+                  : "bg-rose-50 text-rose-700 border-rose-200"
+              )}
+            >
               {data.confidence}% confidence
             </span>
           </div>
@@ -45,11 +70,11 @@ export const TickerHeader = ({ data }: TickerHeaderProps) => {
           <p className="text-3xl font-bold font-mono">${data.price.toFixed(2)}</p>
           <div
             className={cn(
-              "flex items-center justify-end gap-1 text-lg font-mono font-medium",
-              isPositive ? "text-gain" : "text-loss"
+              "flex items-center justify-end gap-1 text-lg font-mono font-semibold",
+              isPositive ? "text-emerald-600" : "text-rose-600"
             )}
           >
-            {isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
+            {isPositive ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
             {isPositive ? "+" : ""}{data.change.toFixed(2)} ({isPositive ? "+" : ""}{data.changePercent.toFixed(2)}%)
           </div>
           <p className="text-xs text-muted-foreground mt-1">
