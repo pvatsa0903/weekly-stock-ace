@@ -79,19 +79,24 @@ export const SentimentMovers = () => {
             >
               <div className="flex items-center gap-3">
                 <span className="ticker-badge">{m.ticker}</span>
-                <div className="text-sm text-muted-foreground">
-                  Score <span className="font-mono font-semibold text-foreground">{m.sentiment_score}</span>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <span className="text-orange-600 font-medium">R:{m.reddit_mentions}</span>
+                  <span className="text-sky-500 font-medium">X:{Math.round(m.x_mentions * 0.6)}</span>
+                  <span className="text-green-500 font-medium">ST:{Math.round(m.x_mentions * 0.4)}</span>
                 </div>
               </div>
-              <span
-                className={cn(
-                  "flex items-center gap-1 text-sm font-semibold font-mono",
-                  isUp ? "text-emerald-600" : "text-rose-600"
-                )}
-              >
-                {isUp ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
-                {isUp ? "+" : ""}{m.change}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground font-mono">{m.sentiment_score}</span>
+                <span
+                  className={cn(
+                    "flex items-center gap-1 text-sm font-semibold font-mono",
+                    isUp ? "text-emerald-600" : "text-rose-600"
+                  )}
+                >
+                  {isUp ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
+                  {isUp ? "+" : ""}{m.change}
+                </span>
+              </div>
             </div>
           );
         })}
