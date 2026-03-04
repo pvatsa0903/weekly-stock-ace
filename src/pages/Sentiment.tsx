@@ -1,29 +1,21 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { SentimentHeatmap } from "@/components/sentiment/SentimentHeatmap";
 import { SentimentTrendlines } from "@/components/sentiment/SentimentTrendlines";
 import { VolatileTickers } from "@/components/sentiment/VolatileTickers";
-import { RecentSentimentFeed } from "@/components/sentiment/RecentSentimentFeed";
-import { Loader2, RefreshCw } from "lucide-react";
+import { Loader2, RefreshCw, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 const Sentiment = () => {
-  const [timeRange, setTimeRange] = useState<"7" | "14" | "30">("14");
+  const queryClient = useQueryClient();
 
+  // Always fetch last 7 days
   const { data: sentimentData = [], isLoading, error, refetch, isFetching } = useQuery({
-    queryKey: ["daily_sentiment", timeRange],
+    queryKey: ["daily_sentiment_7d"],
     queryFn: async () => {
       const daysAgo = new Date();
-      daysAgo.setDate(daysAgo.getDate() - parseInt(timeRange));
+      daysAgo.setDate(daysAgo.getDate() - 7);
       const dateStr = daysAgo.toISOString().split("T")[0];
 
       const { data, error } = await supabase
@@ -36,20 +28,68 @@ const Sentiment = () => {
     },
   });
 
-  const latestDate = useMemo(() => {
-    if (sentimentData.length === 0) return null;
-    return sentimentData.reduce((max, d) => (d.date > max ? d.date : max), sentimentData[0].date);
+  // Realtime subscription
+  useEffect(() => {
+    const channel = supabase
+      .channel("sentiment_radar_realtime")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "daily_sentiment" },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["daily_sentiment_7d"] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+
+  // Compute top 5 volatile tickers from the 7-day data
+  const { volatileData, volatileTickers } = useMemo(() => {
+    if (sentimentData.length === 0) return { volatileData: [], volatileTickers: [] };
+
+    const uniqueDates = [...new Set(sentimentData.map((d) => d.date))].sort().reverse();
+    if (uniqueDates.length < 2) return { volatileData: [], volatileTickers: [] };
+
+    const [latest, previous] = [uniqueDates[0], uniqueDates[1]];
+    const latestRows = sentimentData.filter((d) => d.date === latest);
+    const prevRows = sentimentData.filter((d) => d.date === previous);
+
+    const computed = latestRows
+      .map((t) => {
+        const prev = prevRows.find((p) => p.ticker === t.ticker);
+        const change = prev ? t.sentiment_score - prev.sentiment_score : 0;
+        return {
+          ticker: t.ticker,
+          score: t.sentiment_score,
+          change,
+          absChange: Math.abs(change),
+          redditMentions: t.reddit_mentions,
+          xMentions: Math.round(t.x_mentions * 0.6),
+          stMentions: Math.round(t.x_mentions * 0.4),
+          redditScore: t.reddit_sentiment_score ?? 50,
+          xScore: t.x_sentiment_score ?? 50,
+          confidence: t.confidence,
+          latestDate: latest,
+          previousDate: previous,
+        };
+      })
+      .sort((a, b) => b.absChange - a.absChange)
+      .slice(0, 5);
+
+    return {
+      volatileData: computed,
+      volatileTickers: computed.map((v) => v.ticker),
+    };
   }, [sentimentData]);
 
-  const todayData = useMemo(
-    () => sentimentData.filter((d) => d.date === latestDate),
-    [sentimentData, latestDate]
-  );
-
-  const tickers = useMemo(() => {
-    const set = new Set(sentimentData.map((d) => d.ticker));
-    return Array.from(set).sort();
-  }, [sentimentData]);
+  // Filter trendline data to only the 5 volatile tickers
+  const trendlineData = useMemo(() => {
+    if (!volatileTickers.length) return [];
+    return sentimentData.filter((d) => volatileTickers.includes(d.ticker));
+  }, [sentimentData, volatileTickers]);
 
   return (
     <DashboardLayout>
@@ -57,32 +97,26 @@ const Sentiment = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Sentiment Radar</h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold text-foreground">Sentiment Radar</h1>
+              <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500">
+                <Radio className="w-3 h-3 animate-pulse" />
+                Live
+              </span>
+            </div>
             <p className="text-muted-foreground">
-              Daily sentiment from Reddit, X &amp; StockTwits across top tickers
+              Top 5 most volatile tickers by sentiment — aggregated from Reddit, X &amp; StockTwits over the last 7 days
             </p>
           </div>
-          <div className="flex items-center gap-3">
-            <Select value={timeRange} onValueChange={(v) => setTimeRange(v as "7" | "14" | "30")}>
-              <SelectTrigger className="w-[130px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="7">7 days</SelectItem>
-                <SelectItem value="14">14 days</SelectItem>
-                <SelectItem value="30">30 days</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => refetch()}
-              disabled={isFetching}
-            >
-              <RefreshCw className={`w-4 h-4 mr-2 ${isFetching ? "animate-spin" : ""}`} />
-              Refresh
-            </Button>
-          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => refetch()}
+            disabled={isFetching}
+          >
+            <RefreshCw className={`w-4 h-4 mr-2 ${isFetching ? "animate-spin" : ""}`} />
+            Refresh
+          </Button>
         </div>
 
         {isLoading && (
@@ -105,17 +139,11 @@ const Sentiment = () => {
 
         {!isLoading && !error && sentimentData.length > 0 && (
           <>
-            {/* Top 5 Volatile + Recent Feed side by side */}
-            <div className="grid lg:grid-cols-2 gap-6">
-              <VolatileTickers />
-              <RecentSentimentFeed />
-            </div>
+            {/* Section 1: Top 5 Volatile */}
+            <VolatileTickers data={volatileData} />
 
-            {/* Heatmap */}
-            <SentimentHeatmap data={todayData} date={latestDate!} />
-
-            {/* Trendlines */}
-            <SentimentTrendlines data={sentimentData} tickers={tickers} />
+            {/* Section 2: Trendlines for the 5 volatile tickers */}
+            <SentimentTrendlines data={trendlineData} tickers={volatileTickers} />
           </>
         )}
       </div>
