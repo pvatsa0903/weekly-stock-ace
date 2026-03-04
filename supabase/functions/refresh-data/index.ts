@@ -118,17 +118,15 @@ serve(async (req) => {
     // ── Phase 2: Refresh tracked tickers (batched) ──
     console.log(`Phase 2: Refreshing tickers (offset=${batchOffset}, limit=${batchLimit})...`);
 
-    // ── Phase 2: Refresh all tracked tickers ──
-    console.log("Phase 2: Refreshing all tracked tickers...");
     const { data: allTickers, error: tickErr } = await supabase
       .from("tickers")
       .select("ticker")
       .order("avg_dollar_volume", { ascending: false })
-      .limit(60); // Process top 60 by volume to stay within rate limits
+      .range(batchOffset, batchOffset + batchLimit - 1);
     if (tickErr) throw new Error(`Failed to fetch tickers: ${tickErr.message}`);
 
     const symbols = (allTickers || []).map((t: any) => t.ticker);
-    console.log(`Refreshing ${symbols.length} tickers...`);
+    console.log(`Processing ${symbols.length} tickers...`);
 
     for (const symbol of symbols) {
       try {
