@@ -6,46 +6,47 @@ import {
   Eye, 
   Users, 
   Zap, 
-  ArrowRight, 
   CheckCircle2, 
   TrendingUp,
   MessageSquare,
   Shield,
-  Cpu,
   Linkedin,
   Github,
   Globe,
   Activity,
-  RefreshCw
+  RefreshCw,
+  Target,
+  Lightbulb,
+  AlertTriangle
 } from "lucide-react";
 
 const pipelineSteps = [
   {
     icon: Database,
-    title: "Data Ingestion",
-    description: "Market data, fundamentals, and social sentiment are pulled from multiple sources weekly via automated cron jobs.",
-    details: ["Finnhub API (prices, fundamentals)", "StockTwits real-time stream", "AI-estimated Reddit & X data"],
+    title: "Pull the data",
+    description: "Every week, the system grabs prices, fundamentals, and social chatter from multiple APIs — Finnhub for the hard numbers, StockTwits for what traders are actually saying, and AI-estimated data for Reddit and X when those APIs don't cooperate.",
+    details: ["Finnhub API", "StockTwits stream", "AI-estimated social data"],
     color: "from-blue-500 to-cyan-500",
   },
   {
     icon: Brain,
-    title: "AI Sentiment Analysis",
-    description: "Google Gemini analyzes news headlines per ticker and generates sentiment scores with confidence levels.",
-    details: ["Gemini 2.5 Flash Lite via AI Gateway", "Multi-source weighted blend", "Smart fallbacks when APIs fail"],
+    title: "Let the AI think",
+    description: "Google Gemini reads through news headlines for each ticker and scores them — not just positive/negative, but with a confidence level. It's like having an analyst who never sleeps and reads everything.",
+    details: ["Gemini 2.5 Flash Lite", "Weighted multi-source blend", "Graceful API fallbacks"],
     color: "from-violet-500 to-purple-500",
   },
   {
     icon: Eye,
-    title: "Human-in-the-Loop Review",
-    description: "Every AI recommendation is reviewed before publication — ensuring quality and catching hallucinations or bias.",
-    details: ["Override capability", "Bias & hallucination checks", "Final PICK / SKIP decision"],
+    title: "I review everything",
+    description: "Here's the thing — I don't trust AI blindly. Every recommendation gets reviewed by me before it goes live. I check for hallucinations, bias, and whether the AI missed something obvious (like a company being sued).",
+    details: ["Override capability", "Bias checks", "Final PICK / SKIP call"],
     color: "from-amber-500 to-orange-500",
   },
   {
     icon: Zap,
-    title: "Weekly Publication",
-    description: "Two picks are published with confidence scores, rationale, and ELI5 summaries. Performance tracking begins automatically.",
-    details: ["Automated dashboard update", "Win/loss tracking begins", "Historical audit trail"],
+    title: "Publish & track",
+    description: "Two picks go live with confidence scores, rationale, and plain-English explanations. From that moment, the system tracks performance — so we can see if the picks actually worked.",
+    details: ["Auto dashboard update", "Win/loss tracking", "Full audit trail"],
     color: "from-emerald-500 to-green-500",
   },
 ];
@@ -55,7 +56,7 @@ const techStack = [
   { label: "Backend", value: "Lovable Cloud (Edge Functions + PostgreSQL)" },
   { label: "AI Model", value: "Google Gemini 2.5 Flash Lite via AI Gateway" },
   { label: "Data Sources", value: "Finnhub API · StockTwits API · AI-estimated sentiment" },
-  { label: "Scheduling", value: "pg_cron + pg_net → Edge Function triggers (weekly)" },
+  { label: "Scheduling", value: "pg_cron + pg_net → weekly Edge Function triggers" },
   { label: "State", value: "TanStack React Query + Supabase Realtime" },
   { label: "Charts", value: "Recharts (trendlines, heatmaps)" },
   { label: "Build", value: "Vite" },
@@ -73,57 +74,75 @@ const About = () => {
   return (
     <DashboardLayout>
       <div className="space-y-12 max-w-4xl">
-        {/* Hero Section */}
+        {/* Hero — the pitch */}
         <div className="relative">
           <div className="absolute -top-4 -left-4 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
-          <div className="relative space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide uppercase">
-              <Cpu className="w-3.5 h-3.5" />
-              AI-Powered · Full-Stack · Real Data
-            </div>
+          <div className="relative space-y-5">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground leading-tight">
-              2-Stock Shortlist
+              What if you only had to look at <span className="text-primary">two stocks</span> a week?
             </h1>
             <p className="text-base sm:text-lg text-muted-foreground max-w-2xl leading-relaxed">
-              An end-to-end{" "}
-              <span className="text-foreground font-semibold">AI-driven stock recommendation engine</span>{" "}
-              that ingests market data from multiple sources, processes it through Google Gemini, 
-              and surfaces two actionable weekly picks — with{" "}
-              <span className="text-foreground font-semibold">multi-source sentiment analysis</span>{" "}
-              and a{" "}
-              <span className="text-foreground font-semibold">human-in-the-loop</span>{" "}
-              review step.
+              That's the idea behind this project. I built a system that pulls market data from 
+              multiple sources, runs it through Google Gemini for AI-powered analysis, and narrows 
+              everything down to just two weekly picks — with full transparency on <em>why</em> each 
+              one was chosen.
+            </p>
+            <p className="text-sm text-muted-foreground max-w-2xl leading-relaxed">
+              It's not a trading bot. It's not financial advice. It's a{" "}
+              <span className="text-foreground font-semibold">demonstration of what happens when you 
+              combine real data, AI reasoning, and human judgment</span> into a single pipeline — and 
+              ship it as a polished, production-quality product.
             </p>
           </div>
         </div>
 
-        {/* Key Differentiators */}
-        <div className="grid sm:grid-cols-3 gap-4">
-          {[
-            { icon: Brain, label: "AI-First", desc: "Gemini-powered analysis with custom prompt engineering and structured output" },
-            { icon: Activity, label: "Multi-Source", desc: "Reddit, X, StockTwits, and news — with smart AI-estimated fallbacks" },
-            { icon: Shield, label: "Transparent", desc: "Full audit trail, confidence scores, and ELI5 explanations" },
-          ].map((item) => (
-            <div key={item.label} className="bg-card border border-border rounded-xl p-5 space-y-3">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                <item.icon className="w-5 h-5 text-primary" />
-              </div>
-              <h3 className="font-bold text-foreground">{item.label}</h3>
-              <p className="text-sm text-muted-foreground">{item.desc}</p>
+        {/* The problem */}
+        <div className="bg-card border border-border rounded-xl p-5 sm:p-6 lg:p-8 space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center">
+              <AlertTriangle className="w-5 h-5 text-destructive" />
             </div>
-          ))}
+            <h2 className="text-xl font-bold text-foreground">The Problem I Wanted to Solve</h2>
+          </div>
+          <p className="text-muted-foreground leading-relaxed">
+            Stock tips are everywhere — Reddit, Twitter, Discord, YouTube. Most of them are noise: 
+            pump-and-dump schemes, confirmation bias dressed up as research, or just vibes. 
+            I wanted to build something that actually <em>thinks</em> about the data before 
+            giving you a name. And I wanted it to be honest about its confidence level — 
+            no "this is definitely going to moon" energy.
+          </p>
         </div>
 
-        {/* Pipeline Section */}
+        {/* What makes it different */}
+        <div className="space-y-4">
+          <h2 className="text-2xl font-bold text-foreground">What makes this different</h2>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {[
+              { icon: Brain, label: "AI does the heavy lifting", desc: "Gemini analyzes news, scores sentiment, and generates structured recommendations — I wrote the prompts to make it actually useful" },
+              { icon: Activity, label: "5 data sources, not 1", desc: "Reddit, X, StockTwits, Finnhub news, and AI analysis — blended with custom weights. When APIs fail, smart fallbacks kick in" },
+              { icon: Shield, label: "Nothing is hidden", desc: "Every pick has a confidence %, a rationale, an ELI5 explanation, and a full audit trail. If I'm wrong, you can see exactly why" },
+            ].map((item) => (
+              <div key={item.label} className="bg-card border border-border rounded-xl p-5 space-y-3">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <item.icon className="w-5 h-5 text-primary" />
+                </div>
+                <h3 className="font-bold text-foreground">{item.label}</h3>
+                <p className="text-sm text-muted-foreground">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Pipeline */}
         <div className="space-y-6">
           <div>
-            <h2 className="text-2xl font-bold text-foreground">How It Works</h2>
-            <p className="text-muted-foreground mt-1">The pipeline from raw data to actionable picks</p>
+            <h2 className="text-2xl font-bold text-foreground">How it actually works</h2>
+            <p className="text-muted-foreground mt-1">Four steps, every week, mostly automated</p>
           </div>
 
           <div className="space-y-4">
             {pipelineSteps.map((step, i) => (
-              <div key={step.title} className="relative">
+              <div key={step.title}>
                 <div className="bg-card border border-border rounded-xl p-4 sm:p-6 hover:border-primary/30 transition-colors">
                   <div className="flex items-start gap-4 sm:gap-5">
                     <div className="flex-shrink-0">
@@ -150,12 +169,6 @@ const About = () => {
                         ))}
                       </div>
                     </div>
-
-                    {i < pipelineSteps.length - 1 && (
-                      <div className="hidden lg:flex items-center">
-                        <ArrowRight className="w-5 h-5 text-muted-foreground/40" />
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -169,10 +182,12 @@ const About = () => {
             <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-primary" />
             </div>
-            <h2 className="text-xl font-bold text-foreground">Sentiment Scoring Model</h2>
+            <h2 className="text-xl font-bold text-foreground">How sentiment scores work</h2>
           </div>
           <p className="text-sm text-muted-foreground">
-            Each ticker's overall sentiment score is a weighted blend of 5 data sources:
+            Each ticker's score isn't pulled from one place — it's a weighted blend of five sources. 
+            I tuned the weights to favor AI analysis (it's the most consistent) while still giving 
+            real social data a meaningful voice:
           </p>
           <div className="bg-card border border-border rounded-xl overflow-hidden">
             <table className="w-full text-sm">
@@ -180,7 +195,7 @@ const About = () => {
                 <tr className="border-b border-border bg-muted/30">
                   <th className="px-4 py-3 text-left font-semibold text-foreground">Source</th>
                   <th className="px-4 py-3 text-left font-semibold text-foreground">Weight</th>
-                  <th className="px-4 py-3 text-left font-semibold text-foreground hidden sm:table-cell">Description</th>
+                  <th className="px-4 py-3 text-left font-semibold text-foreground hidden sm:table-cell">What it captures</th>
                 </tr>
               </thead>
               <tbody>
@@ -202,18 +217,19 @@ const About = () => {
             <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
               <Users className="w-5 h-5 text-primary" />
             </div>
-            <h2 className="text-xl font-bold text-foreground">Human-in-the-Loop</h2>
+            <h2 className="text-xl font-bold text-foreground">Why I don't let the AI publish alone</h2>
           </div>
           <p className="text-muted-foreground leading-relaxed">
-            Pure AI systems can hallucinate, overfit to recent trends, or miss qualitative 
-            context. This project implements a deliberate review gate:
+            I've seen AI confidently recommend a stock that was literally being delisted the next 
+            day. LLMs are powerful, but they hallucinate, overfit to recent trends, and miss context 
+            that any human would catch. So every single pick goes through me first:
           </p>
           <ul className="space-y-2">
             {[
-              "AI generates candidate picks with rationale and confidence scores",
-              "Human analyst reviews for bias, factual accuracy, and market context",
-              "Analyst can override, adjust confidence, or reject picks entirely",
-              "All decisions (AI and human) are logged for transparency and backtesting",
+              "The AI generates candidates with scores and rationale — I didn't just ask it to \"pick stocks,\" I gave it a structured scoring framework",
+              "I review for bias, factual accuracy, and things the AI can't see (lawsuits, earnings timing, macro context)",
+              "I can override confidence scores, swap picks, or skip the week entirely if nothing looks good",
+              "Everything — the AI's original output and my final decision — is logged, so there's a full audit trail",
             ].map((item) => (
               <li key={item} className="flex items-start gap-2 text-sm text-foreground">
                 <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
@@ -221,15 +237,67 @@ const About = () => {
               </li>
             ))}
           </ul>
-          <p className="text-xs text-muted-foreground italic">
-            This mirrors enterprise ML deployment patterns where responsible AI practices 
-            require human oversight before automated decisions reach end users.
+        </div>
+
+        {/* Lessons / Smart Fallbacks */}
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div className="bg-muted/50 border border-border rounded-xl p-5 sm:p-6 space-y-3">
+            <div className="flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-primary" />
+              <h3 className="font-bold text-foreground">Prompt engineering is real engineering</h3>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Getting Gemini to output consistent, structured JSON with reliable confidence 
+              scores took dozens of iterations. The prompt covers fundamentals (P/E, revenue 
+              growth, margins), technical momentum, and social signals — and it enforces 
+              machine-parseable output with ELI5 summaries baked in.
+            </p>
+          </div>
+
+          <div className="bg-muted/50 border border-border rounded-xl p-5 sm:p-6 space-y-3">
+            <div className="flex items-center gap-2">
+              <RefreshCw className="w-5 h-5 text-primary" />
+              <h3 className="font-bold text-foreground">Free APIs break constantly</h3>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Finnhub's free tier returns 403 for social endpoints half the time. Instead of 
+              showing zeros or hiding the data, I built smart fallbacks that estimate reasonable 
+              values from AI analysis and cross-source data — with floors (Reddit ≥5, X ≥8) 
+              so the UI always shows differentiated, meaningful numbers.
+            </p>
+          </div>
+        </div>
+
+        {/* What this demonstrates */}
+        <div className="bg-card border border-border rounded-xl p-5 sm:p-6 lg:p-8 space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Target className="w-5 h-5 text-primary" />
+            </div>
+            <h2 className="text-xl font-bold text-foreground">What this project demonstrates</h2>
+          </div>
+          <p className="text-muted-foreground leading-relaxed">
+            This isn't just a dashboard — it's an end-to-end system that I designed, built, 
+            and operate. Here's what it touches:
           </p>
+          <div className="grid sm:grid-cols-2 gap-3">
+            {[
+              { icon: Database, text: "Data engineering — multi-source ingestion, cron-scheduled pipelines, schema design" },
+              { icon: Brain, text: "AI integration — prompt engineering, structured output parsing, fallback logic" },
+              { icon: Lightbulb, text: "Product thinking — constraints that force clarity, UX that explains itself" },
+              { icon: Shield, text: "Responsible ML — human oversight, audit trails, transparent confidence scores" },
+            ].map((item) => (
+              <div key={item.text} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
+                <item.icon className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-foreground">{item.text}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Tech Stack */}
         <div className="space-y-4">
-          <h2 className="text-2xl font-bold text-foreground">Technical Architecture</h2>
+          <h2 className="text-2xl font-bold text-foreground">Under the hood</h2>
           <div className="bg-card border border-border rounded-xl overflow-hidden">
             <table className="w-full text-sm">
               <tbody>
@@ -244,43 +312,22 @@ const About = () => {
           </div>
         </div>
 
-        {/* Prompt Engineering Note */}
-        <div className="bg-muted/50 border border-border rounded-xl p-5 sm:p-6 space-y-3">
-          <div className="flex items-center gap-2">
-            <MessageSquare className="w-5 h-5 text-primary" />
-            <h3 className="font-bold text-foreground">Prompt Engineering</h3>
-          </div>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            The AI model uses a carefully crafted system prompt with multi-factor scoring 
-            criteria covering fundamentals (P/E, revenue growth, margins), technical momentum, 
-            and social sentiment signals. The prompt enforces structured JSON output with ticker 
-            symbols, PICK/SKIP decisions, confidence percentages, and ELI5 summaries — ensuring 
-            both machine-parseability and human readability.
+        {/* Disclaimer */}
+        <div className="bg-muted/30 border border-border rounded-xl p-4 sm:p-5">
+          <p className="text-xs text-muted-foreground leading-relaxed text-center">
+            <strong className="text-foreground">Disclaimer:</strong> This is a portfolio project, not financial advice. 
+            The picks are generated for demonstration purposes and should not be used as the basis for 
+            any investment decisions. Always do your own research.
           </p>
         </div>
 
-        {/* Smart Fallbacks */}
-        <div className="bg-muted/50 border border-border rounded-xl p-5 sm:p-6 space-y-3">
-          <div className="flex items-center gap-2">
-            <RefreshCw className="w-5 h-5 text-primary" />
-            <h3 className="font-bold text-foreground">Smart Fallbacks</h3>
-          </div>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Finnhub's free tier often returns 403 for social endpoints. Instead of showing 
-            zeros or defaulting to 50, the system estimates mention counts from AI analysis 
-            and cross-source data — with reasonable floors (Reddit ≥5, X ≥8) to ensure the 
-            UI always displays meaningful, differentiated values.
-          </p>
-        </div>
-
-        {/* CTA / Contact */}
+        {/* CTA */}
         <div className="bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-xl p-5 sm:p-6 lg:p-8 text-center space-y-4">
           <TrendingUp className="w-8 h-8 text-primary mx-auto" />
           <h2 className="text-xl font-bold text-foreground">Built by Phalguni Vatsa</h2>
           <p className="text-sm text-muted-foreground max-w-lg mx-auto">
-            This project showcases end-to-end product thinking: data engineering, 
-            AI integration, full-stack development, and responsible ML deployment — 
-            all in a polished, production-quality interface.
+            I build things that work. If you're hiring someone who thinks about the problem 
+            before writing the code — let's talk.
           </p>
           <div className="flex items-center justify-center gap-3 sm:gap-4 pt-2 flex-wrap">
             <a
