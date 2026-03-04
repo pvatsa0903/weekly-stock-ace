@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowUp, ArrowDown, Activity, Radio, Info } from "lucide-react";
@@ -12,7 +12,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-const SourceTooltip = ({ label, fullName, description }: { label: string; fullName: string; description: string }) => (
+const SourceTooltip = ({ label, fullName, description }: { label: ReactNode; fullName: string; description: string }) => (
   <TooltipProvider delayDuration={200}>
     <Tooltip>
       <TooltipTrigger asChild>
@@ -130,17 +130,17 @@ export const SentimentMovers = () => {
                 <span className="ticker-badge">{m.ticker}</span>
                 <div className="flex items-center gap-2 text-[10px] font-semibold">
                   <SourceTooltip
-                    label={`R:${m.reddit_mentions}`}
+                    label={<><span className="text-orange-600">Reddit</span> <span className="text-muted-foreground font-mono">{m.reddit_mentions}</span></>}
                     fullName="Reddit"
                     description="mentions across investing subreddits"
                   />
                   <SourceTooltip
-                    label={`X:${Math.round(m.x_mentions * 0.6)}`}
+                    label={<><span className="text-sky-500">X</span> <span className="text-muted-foreground font-mono">{Math.round(m.x_mentions * 0.6)}</span></>}
                     fullName="X (Twitter)"
                     description="posts mentioning this ticker"
                   />
                   <SourceTooltip
-                    label={`ST:${Math.round(m.x_mentions * 0.4)}`}
+                    label={<><span className="text-green-500">ST</span> <span className="text-muted-foreground font-mono">{Math.round(m.x_mentions * 0.4)}</span></>}
                     fullName="StockTwits"
                     description="messages from active traders"
                   />
