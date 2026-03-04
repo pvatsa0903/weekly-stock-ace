@@ -166,6 +166,7 @@ const Index = () => {
             value={stats ? `${stats.winRate}%` : "—"}
             subtitle="All time"
             icon={Target}
+            tooltip="Percentage of AI picks that ended higher than their entry price"
             trend={stats && stats.winRate >= 50 ? { value: stats.winRate - 50, isPositive: true } : undefined}
           />
           <StatCard
@@ -173,6 +174,7 @@ const Index = () => {
             value={stats ? `${stats.avgReturn >= 0 ? "+" : ""}${stats.avgReturn}%` : "—"}
             subtitle="Per pick"
             icon={TrendingUp}
+            tooltip="Average price change from entry to exit across all picks"
             trend={stats ? { value: Math.abs(stats.avgReturn), isPositive: stats.avgReturn >= 0 } : undefined}
           />
           <StatCard
@@ -180,12 +182,14 @@ const Index = () => {
             value={stats?.total ?? "—"}
             subtitle="All time"
             icon={BarChart3}
+            tooltip="Total number of stocks the AI has recommended since launch"
           />
           <StatCard
             title="Next Update"
             value={nextUpdate.value}
             subtitle={nextUpdate.label}
             icon={Calendar}
+            tooltip="New picks are generated every week after fresh data is pulled"
           />
         </div>
 
