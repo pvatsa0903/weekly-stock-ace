@@ -6,9 +6,12 @@ import { Link } from "react-router-dom";
 
 interface LiveWeeklyBannerProps {
   ticker: string;
+  aiDecision?: "PICK" | "SKIP";
+  aiConfidence?: number;
+  aiEli5?: string;
 }
 
-export const LiveWeeklyBanner = ({ ticker }: LiveWeeklyBannerProps) => {
+export const LiveWeeklyBanner = ({ ticker, aiDecision, aiConfidence, aiEli5 }: LiveWeeklyBannerProps) => {
   const { data, isLoading, error, refetch } = useStockData(ticker);
 
   if (isLoading) {
@@ -35,7 +38,11 @@ export const LiveWeeklyBanner = ({ ticker }: LiveWeeklyBannerProps) => {
     );
   }
 
-  const isPick = data.decision === "PICK";
+  // Use AI-stored values if available, otherwise fall back to Finnhub
+  const decision = aiDecision ?? data.decision;
+  const confidence = aiConfidence ?? data.confidence;
+  const eli5 = aiEli5 ?? data.eli5;
+  const isPick = decision === "PICK";
 
   return (
     <Link to={`/ticker?symbol=${data.ticker}`} className="block">
@@ -63,7 +70,7 @@ export const LiveWeeklyBanner = ({ ticker }: LiveWeeklyBannerProps) => {
                   ) : (
                     <ThumbsDown className="w-5 h-5" />
                   )}
-                  {data.decision}
+                  {decision}
                 </div>
               </div>
               <p className="text-sm opacity-80 mt-1">{data.name}</p>
@@ -71,11 +78,8 @@ export const LiveWeeklyBanner = ({ ticker }: LiveWeeklyBannerProps) => {
 
             <div className="text-right">
               <p className="text-sm opacity-90">Confidence</p>
-              <p className="text-3xl font-bold font-mono">{data.confidence}%</p>
-              <p className={cn(
-                "text-sm font-mono mt-1",
-                data.change >= 0 ? "text-white/90" : "text-white/90"
-              )}>
+              <p className="text-3xl font-bold font-mono">{confidence}%</p>
+              <p className="text-sm font-mono mt-1 opacity-90">
                 ${data.price.toFixed(2)} ({data.change >= 0 ? "+" : ""}{data.changePercent.toFixed(2)}%)
               </p>
             </div>
@@ -89,7 +93,7 @@ export const LiveWeeklyBanner = ({ ticker }: LiveWeeklyBannerProps) => {
               </div>
               <div>
                 <p className="text-sm font-semibold mb-1">ELI5 (Explain Like I'm 5)</p>
-                <p className="text-sm opacity-90 leading-relaxed">{data.eli5}</p>
+                <p className="text-sm opacity-90 leading-relaxed">{eli5}</p>
               </div>
             </div>
           </div>
