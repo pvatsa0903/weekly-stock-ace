@@ -105,9 +105,30 @@ const Index = () => {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Page Header */}
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Weekly Overview</h1>
-          <p className="text-muted-foreground">Week of {getWeekStart()}</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Weekly Overview</h1>
+            <p className="text-muted-foreground">Week of {getWeekStart()}</p>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={runDataRefresh}
+              disabled={isRefreshing}
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? "animate-spin" : ""}`} />
+              {isRefreshing ? "Refreshing…" : "Refresh Data"}
+            </Button>
+            <Button
+              size="sm"
+              onClick={runAIPicker}
+              disabled={isRunningAI}
+            >
+              <Bot className={`h-4 w-4 mr-2 ${isRunningAI ? "animate-pulse" : ""}`} />
+              {isRunningAI ? "Running…" : "Run AI Picker"}
+            </Button>
+          </div>
         </div>
 
         {/* This Week's Picks - Live Data */}
