@@ -154,8 +154,8 @@ const About = () => {
         {/* Human-in-the-Loop Deep Dive */}
         <div className="bg-card border border-border rounded-xl p-6 lg:p-8 space-y-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
-              <Users className="w-5 h-5 text-amber-600" />
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Users className="w-5 h-5 text-primary" />
             </div>
             <h2 className="text-xl font-bold text-foreground">Human-in-the-Loop: Why It Matters</h2>
           </div>
