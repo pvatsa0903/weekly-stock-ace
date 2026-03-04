@@ -3,9 +3,12 @@ import { LiveWeeklyBanner } from "@/components/dashboard/LiveWeeklyBanner";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { LiveRecentPicks } from "@/components/dashboard/LiveRecentPicks";
 import { SentimentMovers } from "@/components/dashboard/SentimentMovers";
-import { Target, TrendingUp, BarChart3, Calendar } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { Target, TrendingUp, BarChart3, Calendar, Bot, RefreshCw } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { useState } from "react";
 
 const getWeekStart = () => {
   const now = new Date();
