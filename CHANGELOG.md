@@ -1,12 +1,33 @@
 # Changelog
 
-All notable changes to **StockPulse** will be documented in this file.
+All notable changes to **2-Stock Shortlist** will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
-## [1.0.0] — 2026-03-04
+## [1.1.0] — 2026-03-04
+
+### Added
+- Weekly cron job (Monday 6 AM UTC) for automated sentiment data refresh
+- AI-powered sentiment analysis using Gemini 2.5 Flash Lite via Lovable AI Gateway
+- Smart Reddit/X mention estimation when social APIs return empty data
+- Multi-source weighted sentiment blend: AI (30%) + News (20%) + Reddit (15%) + X (15%) + StockTwits (20%)
+- Responsive mobile and iPad layouts with adaptive grids and chart sizing
+- Dynamic sidebar footer with real-time week and date display
+
+### Changed
+- Renamed "How It Works" to "About" in navigation
+- Volatile tickers grid: 2 cols (mobile) → 3 cols (tablet) → 5 cols (desktop)
+- Dashboard buttons stack vertically on mobile
+
+### Fixed
+- Reddit mentions no longer show 0 — uses AI-estimated floor when APIs return empty
+- Sentiment scores no longer default to 50 — AI analysis provides differentiated values
+
+---
+
+## [1.0.0] — 2026-02-14
 
 ### Added
 - AI-driven stock recommendation engine with LLM-powered analysis
@@ -18,7 +39,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Ticker detail pages with fundamentals, sentiment, and news cards
 - Historical decisions table with PICK/SKIP tracking
 - Pick performance tracking with win-rate and ROI analysis
-- About / How It Works page explaining the full pipeline
+- About page explaining the full pipeline
 - Edge Functions: `ai-stock-picker`, `refresh-data`, `stock-data`
 - ELI5 plain-English summaries for every recommendation
 - Responsive sidebar navigation with dark theme

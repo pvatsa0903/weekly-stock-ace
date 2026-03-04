@@ -1,173 +1,185 @@
-# Architecture: AI-Driven Stock Recommendation Engine
+# Architecture: 2-Stock Shortlist
 
 ## Overview
 
-**2-Stock Shortlist** is an AI-driven stock recommendation engine that ingests market data, processes it through a large language model, and surfaces two actionable weekly stock picks — with a **human-in-the-loop** review step to ensure quality, accountability, and responsible AI deployment.
+**2-Stock Shortlist** is an AI-driven stock recommendation engine that ingests market data from multiple sources, processes it through an LLM-powered sentiment analysis pipeline, and surfaces two actionable weekly stock picks — with a **human-in-the-loop** review step for responsible AI deployment.
 
 ---
 
 ## System Architecture
 
 ```
-┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│  Data Ingestion  │────▶│  AI Analysis     │────▶│  Human Review   │────▶│  Publication    │
-│  (Scheduled)     │     │  Engine (LLM)    │     │  (Override Gate) │     │  (Dashboard)    │
-└─────────────────┘     └──────────────────┘     └─────────────────┘     └─────────────────┘
-        │                        │                        │                        │
-   Market data            Custom prompt             Bias checks             Weekly picks
-   Fundamentals           Multi-factor score        Factual review          Confidence scores
-   Social sentiment       ELI5 generation           Final decision          ELI5 summaries
+┌──────────────────┐    ┌──────────────────┐    ┌──────────────────┐    ┌──────────────────┐
+│  Data Ingestion   │───▶│  AI Sentiment    │───▶│  Human Review    │───▶│  Publication     │
+│  (Weekly Cron)    │    │  Analysis (LLM)  │    │  (Override Gate) │    │  (Dashboard)     │
+└──────────────────┘    └──────────────────┘    └──────────────────┘    └──────────────────┘
+        │                       │                       │                       │
+   Finnhub API            Gemini Flash Lite       Bias checks              Weekly picks
+   StockTwits API         News headline scoring   Factual review           Confidence scores
+   AI-estimated data      Multi-source blend      Final decision           ELI5 summaries
 ```
 
 ---
 
-## Data Pipeline
+## Data Pipeline (`refresh-data` Edge Function)
 
-### 1. Data Ingestion (Scheduled Cron)
+### Phase 1: Ticker Discovery
+- Fetches trending tickers from Finnhub social sentiment API
+- Discovers new high-volume stocks to add to the universe
+- Currently tracks ~50 tickers by dollar volume
 
-A scheduled Edge Function runs on a cron schedule to collect and refresh data:
+### Phase 2: Per-Ticker Data Collection
 
-| Data Source         | What's Collected                              | Storage Table           |
-|---------------------|-----------------------------------------------|--------------------------|
-| Market Data         | Price, volume, market cap, sector             | `tickers`               |
-| Fundamentals        | P/E, revenue growth, margins, FCF, debt/cash  | `fundamentals_snapshot` |
-| Social Sentiment    | Reddit & X mentions, engagement, velocity     | `daily_sentiment`       |
-| Sentiment Items     | Individual posts with sentiment labels         | `sentiment_items`       |
+For each tracked ticker, the pipeline executes sequentially:
 
-### 2. AI Analysis Engine
+| Step | Source | What's Collected | Fallback |
+|------|--------|-----------------|----------|
+| 1. Price & Profile | Finnhub `/quote` + `/profile2` | Price, market cap, sector | Skip ticker |
+| 2. News Sentiment | Finnhub `/news-sentiment` | Bullish %, article count | Default 50 |
+| 3. News Headlines | Finnhub `/company-news` | Recent headlines for AI | Empty array |
+| 4. AI Analysis | Lovable AI Gateway (Gemini) | Sentiment score + confidence | Score: 50 |
+| 5. Social Sentiment | Finnhub `/social-sentiment` | Reddit & X mentions | AI-estimated |
+| 6. StockTwits | StockTwits `/streams/symbol` | Mentions, bullish/bearish | AI-estimated |
 
-The core AI pipeline uses a **large language model** via the Lovable AI Gateway:
+### Phase 3: Score Computation
 
-- **Input**: Aggregated data from all tables (tickers, fundamentals, sentiment)
-- **Prompt**: A custom-engineered system prompt with multi-factor scoring criteria
-- **Output**: Structured JSON with:
-  - Two ticker symbols (picks of the week)
-  - PICK / SKIP decision per ticker
-  - Confidence percentage (0–100%)
-  - ELI5 (Explain Like I'm 5) plain-English summary
-  - Detailed rationale
+The overall sentiment score uses a **weighted blend**:
 
-#### Scoring Factors
+| Source | Weight | Description |
+|--------|--------|-------------|
+| AI Analysis | 30% | LLM analysis of news headlines |
+| Finnhub News | 20% | Finnhub's news sentiment score |
+| Reddit | 15% | Social mentions + sentiment |
+| X (Twitter) | 15% | Social mentions + sentiment |
+| StockTwits | 20% | Real-time trader sentiment |
 
-| Factor              | Weight | Source                    |
-|---------------------|--------|---------------------------|
-| Revenue Growth      | High   | `fundamentals_snapshot`   |
-| Profit Margins      | High   | `fundamentals_snapshot`   |
-| Valuation (P/E)     | Medium | `fundamentals_snapshot`   |
-| Social Sentiment    | Medium | `daily_sentiment`         |
-| Mention Velocity    | Low    | `daily_sentiment`         |
-| Risk Flags          | High   | `fundamentals_snapshot`   |
+**Confidence** is computed from: AI confidence (50%) + news volume (30%) + StockTwits activity (20%).
 
-### 3. Human-in-the-Loop Review
+### Smart Fallbacks
 
-Every AI recommendation passes through a human review gate before publication:
+When social APIs return empty data (common on Finnhub free tier):
 
-- **Why**: Pure AI systems can hallucinate, overfit to recent trends, or miss qualitative context
-- **What the reviewer checks**:
-  - Factual accuracy of AI rationale
-  - Bias detection (recency bias, sector concentration)
-  - Market context the model may have missed
-  - Confidence calibration
-- **Actions available**:
-  - ✅ Approve picks as-is
-  - ✏️ Adjust confidence scores
-  - 🔄 Override with different picks
-  - ❌ Reject and request re-analysis
-
-All decisions — both AI-generated and human-modified — are logged in `weekly_decisions` for full auditability.
-
-### 4. Publication
-
-Approved picks are written to the `weekly_decisions` table and immediately reflected on the dashboard:
-
-- `LiveWeeklyBanner` components fetch the latest picks dynamically
-- Performance tracking begins automatically via `pick_performance`
-- Historical data is preserved for backtesting
+- **Reddit mentions**: Estimated from news volume and StockTwits data with a floor of 5
+- **X mentions**: Estimated from news volume with a floor of 8
+- **Scores**: AI-generated score used as proxy with small random variation
 
 ---
 
-## Tech Stack
+## AI Integration
 
-| Layer            | Technology                                        |
-|------------------|---------------------------------------------------|
-| **Frontend**     | React 18 + TypeScript + Tailwind CSS              |
-| **UI Components**| shadcn/ui + Radix UI primitives                   |
-| **Charts**       | Recharts                                          |
-| **Routing**      | React Router v6                                   |
-| **State**        | TanStack React Query (server state)               |
-| **Backend**      | Lovable Cloud (Edge Functions + PostgreSQL)        |
-| **AI Model**     | LLM via Lovable AI Gateway (custom prompt)        |
-| **Scheduling**   | Cron-triggered Edge Functions                     |
-| **Build**        | Vite                                              |
+### Sentiment Analysis (Per-Ticker)
+- **Model**: `google/gemini-2.5-flash-lite` via Lovable AI Gateway
+- **Input**: Up to 8 recent news headlines per ticker
+- **Output**: `{ score: 0-100, confidence: 0.0-1.0 }`
+- **Temperature**: 0.1 (deterministic)
+- **Max tokens**: 100
+
+### Weekly Stock Picker
+- **Model**: LLM via Lovable AI Gateway
+- **Input**: Aggregated fundamentals, sentiment, and market data for all tickers
+- **Output**: Structured JSON with 2 picks, confidence %, ELI5 summaries, and rationale
+- **Scoring factors**: Revenue growth, margins, valuation, sentiment, velocity, risk flags
 
 ---
 
 ## Database Schema
 
 ### `tickers`
-Universe of tracked stocks with basic market data.
-
-### `fundamentals_snapshot`
-Weekly snapshot of financial fundamentals per ticker (P/E, margins, revenue growth, risk flags).
+Universe of tracked stocks: ticker, company name, sector, price, market cap, avg dollar volume.
 
 ### `daily_sentiment`
-Daily aggregated sentiment scores from Reddit and X, including mention counts, engagement, and velocity.
+Daily aggregated sentiment per ticker:
+- Reddit: mentions, engagement, velocity, sentiment score, confirmed flag
+- X: mentions, engagement, velocity, sentiment score, confirmed flag
+- Overall: blended sentiment score, confidence
+- Note: `x_mentions` field contains X + StockTwits combined mentions
+
+### `fundamentals_snapshot`
+Weekly financial metrics: P/E, revenue growth (YoY & 3Y CAGR), operating/net margins, FCF, EV/Sales, cash, debt, risk flags.
 
 ### `sentiment_items`
-Individual social media posts/comments with sentiment labels, snippets, and engagement metrics.
+Individual social posts: platform, sentiment label, snippet, URL, engagement, velocity.
 
 ### `weekly_decisions`
-The core output table — stores the AI's PICK/SKIP decision, ELI5 summary, rationale, and the two selected tickers.
+AI output: PICK/SKIP decision, pick1/pick2 tickers, confidence scores, ELI5 summary, detailed rationale.
 
 ### `pick_performance`
-Tracks entry/exit prices and returns for each historical pick, enabling win-rate and ROI analysis.
+Performance tracking: entry price, exit price, return %, win/loss flag.
+
+---
+
+## Scheduling
+
+Two `pg_cron` jobs run every Monday at 6:00 AM UTC:
+
+| Job | Schedule | Batch |
+|-----|----------|-------|
+| `weekly-sentiment-refresh-batch1` | `0 6 * * 1` | Tickers 0–24 |
+| `weekly-sentiment-refresh-batch2` | `5 6 * * 1` | Tickers 25–49 |
+
+Both call the `refresh-data` Edge Function via `pg_net.http_post()`.
+
+---
+
+## Frontend Architecture
+
+### State Management
+- **TanStack React Query** for all server state (queries, mutations, cache invalidation)
+- **Supabase Realtime** subscriptions for live updates on `daily_sentiment` and `weekly_decisions`
+
+### Responsive Design
+- Mobile-first layout with hamburger navigation
+- Breakpoints: mobile (< 640px), tablet (640–1024px), desktop (1024px+)
+- Volatile tickers grid: 2 cols (mobile) → 3 cols (tablet) → 5 cols (desktop)
+- Trendline chart height: 260px (mobile) → 360px (desktop)
+
+### Key Components
+
+| Component | Purpose |
+|-----------|---------|
+| `LiveWeeklyBanner` | Displays current week's AI pick with live price |
+| `SentimentMovers` | Top 3 sentiment movers with realtime badge |
+| `VolatileTickers` | Top 5 volatile tickers ranked by sentiment swing |
+| `SentimentTrendlines` | 7-day line chart for volatile tickers |
+| `SentimentHeatmap` | Grid of all tickers colored by sentiment score |
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 18 + TypeScript + Tailwind CSS |
+| UI Components | shadcn/ui + Radix UI |
+| Charts | Recharts |
+| Routing | React Router v6 |
+| State | TanStack React Query |
+| Backend | Lovable Cloud (Edge Functions + PostgreSQL) |
+| AI Model | Gemini 2.5 Flash Lite via Lovable AI Gateway |
+| Data APIs | Finnhub, StockTwits |
+| Scheduling | pg_cron + pg_net |
+| Build | Vite |
 
 ---
 
 ## Key Design Decisions
 
-1. **Human-in-the-loop over full automation**: Mirrors enterprise ML deployment patterns where responsible AI requires human oversight before automated decisions reach end users.
+1. **Multi-source sentiment blending** — No single source is reliable enough alone. The weighted blend with AI fallbacks ensures robust scores even when APIs return empty data.
 
-2. **ELI5 summaries**: Every pick includes a plain-English explanation, making the AI's reasoning transparent and accessible to non-technical users.
+2. **AI-estimated fallbacks** — Finnhub's free tier often returns 403 for social endpoints. Instead of showing zeros, the system estimates from available data sources with reasonable floors.
 
-3. **Structured JSON output**: The AI prompt enforces structured output, ensuring reliable parsing while maintaining human readability.
+3. **Human-in-the-loop** — Mirrors enterprise ML patterns where responsible AI requires human oversight before automated decisions reach users.
 
-4. **Separation of data and decisions**: Raw data (sentiment, fundamentals) is stored independently from decisions, enabling re-analysis and backtesting.
+4. **ELI5 summaries** — Every pick includes plain-English explanations, making AI reasoning transparent and accessible.
 
-5. **Performance tracking**: Automated win/loss tracking creates a feedback loop for evaluating and improving the AI's accuracy over time.
+5. **Batched processing** — Tickers are processed in batches of 3-25 to avoid Edge Function timeouts and API rate limits.
 
----
-
-## Project Structure
-
-```
-src/
-├── pages/
-│   ├── Index.tsx           # Dashboard with live weekly picks
-│   ├── Decisions.tsx       # Historical decisions table
-│   ├── Sentiment.tsx       # Sentiment radar & heatmaps
-│   ├── TickerDetail.tsx    # Individual ticker deep-dive
-│   ├── About.tsx           # How It Works page (for recruiters)
-│   └── Settings.tsx        # App settings
-├── components/
-│   ├── dashboard/          # Dashboard widgets (banners, stats, movers)
-│   ├── layout/             # Sidebar, DashboardLayout
-│   ├── sentiment/          # Heatmaps, trendlines
-│   └── ticker/             # Ticker detail cards
-├── hooks/
-│   └── useStockData.ts     # Stock data fetching hook
-└── integrations/
-    └── supabase/           # Auto-generated client & types
-
-supabase/
-└── functions/
-    └── stock-data/         # Edge function for stock data
-```
+6. **Separation of data and decisions** — Raw sentiment data is stored independently from AI decisions, enabling re-analysis and backtesting.
 
 ---
 
 ## Author
 
 **Phalguni Vatsa**
-- LinkedIn: [linkedin.com/in/phalgunivatsa](https://www.linkedin.com/in/phalgunivatsa/)
-- GitHub: [github.com/pvatsa0903](https://github.com/pvatsa0903)
+- [LinkedIn](https://www.linkedin.com/in/phalgunivatsa/)
+- [GitHub](https://github.com/pvatsa0903)
