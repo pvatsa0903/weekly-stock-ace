@@ -3,9 +3,12 @@ import { LiveWeeklyBanner } from "@/components/dashboard/LiveWeeklyBanner";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { LiveRecentPicks } from "@/components/dashboard/LiveRecentPicks";
 import { SentimentMovers } from "@/components/dashboard/SentimentMovers";
-import { Target, TrendingUp, BarChart3, Calendar } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { Target, TrendingUp, BarChart3, Calendar, Bot, RefreshCw } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { useState } from "react";
 
 const getWeekStart = () => {
   const now = new Date();
@@ -30,7 +33,41 @@ const getNextSunday = () => {
 
 const Index = () => {
   const nextUpdate = getNextSunday();
+  const queryClient = useQueryClient();
+  const [isRunningAI, setIsRunningAI] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
+  const runAIPicker = async () => {
+    setIsRunningAI(true);
+    toast.info("Running AI Stock Picker…");
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-stock-picker");
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast.success(`AI Picker done — ${data.decision}: ${[data.pick1, data.pick2].filter(Boolean).join(", ") || "No picks"}`);
+      queryClient.invalidateQueries({ queryKey: ["weekly_picks"] });
+    } catch (err: any) {
+      toast.error(err.message || "AI Picker failed");
+    } finally {
+      setIsRunningAI(false);
+    }
+  };
+
+  const runDataRefresh = async () => {
+    setIsRefreshing(true);
+    toast.info("Refreshing market data…");
+    try {
+      const { data, error } = await supabase.functions.invoke("refresh-data");
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast.success(`Refreshed ${data.tickers} tickers, ${data.sentiment} sentiment, ${data.discovered || 0} discovered`);
+      queryClient.invalidateQueries();
+    } catch (err: any) {
+      toast.error(err.message || "Data refresh failed");
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
   const { data: weeklyPicks } = useQuery({
     queryKey: ["weekly_picks"],
     queryFn: async () => {
@@ -68,9 +105,30 @@ const Index = () => {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Page Header */}
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Weekly Overview</h1>
-          <p className="text-muted-foreground">Week of {getWeekStart()}</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Weekly Overview</h1>
+            <p className="text-muted-foreground">Week of {getWeekStart()}</p>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={runDataRefresh}
+              disabled={isRefreshing}
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? "animate-spin" : ""}`} />
+              {isRefreshing ? "Refreshing…" : "Refresh Data"}
+            </Button>
+            <Button
+              size="sm"
+              onClick={runAIPicker}
+              disabled={isRunningAI}
+            >
+              <Bot className={`h-4 w-4 mr-2 ${isRunningAI ? "animate-pulse" : ""}`} />
+              {isRunningAI ? "Running…" : "Run AI Picker"}
+            </Button>
+          </div>
         </div>
 
         {/* This Week's Picks - Live Data */}
