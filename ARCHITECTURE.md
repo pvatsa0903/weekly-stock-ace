@@ -1,8 +1,8 @@
-# Architecture: 2-Stock Shortlist
+# Architecture: StockPulse
 
 ## Overview
 
-**2-Stock Shortlist** is an AI-driven stock recommendation engine that ingests market data from multiple sources, processes it through an LLM-powered sentiment analysis pipeline, and surfaces two actionable weekly stock picks — with a **human-in-the-loop** review step for responsible AI deployment.
+**StockPulse** is an AI-driven stock recommendation engine that ingests market data from multiple sources, processes it through an LLM-powered sentiment analysis pipeline, and surfaces two actionable weekly stock picks — with a **human-in-the-loop** review step for responsible AI deployment.
 
 ---
 

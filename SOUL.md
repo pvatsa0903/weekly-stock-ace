@@ -1,4 +1,4 @@
-# Soul of 2-Stock Shortlist
+# Soul of StockPulse
 
 ## Why This Exists
 
@@ -38,7 +38,7 @@ If you're a developer, feel free to fork it, learn from it, or tell me what I di
 
 ## The Name
 
-"2-Stock Shortlist" — because that's exactly what it is. No clever branding, no buzzwords. Two stocks. A shortlist. Updated weekly. The name tells you everything you need to know, and I think that's kind of beautiful in a world of AI-powered-blockchain-enabled-synergy-platforms.
+"StockPulse" — because it captures the pulse of the market. AI-driven sentiment, real data, two picks a week. The name says what it does: feel the market's heartbeat and act on it.
 
 ---
 
