@@ -1,14 +1,32 @@
 import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowUp, ArrowDown, Activity, Radio } from "lucide-react";
+import { ArrowUp, ArrowDown, Activity, Radio, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+const SourceTooltip = ({ label, fullName, description }: { label: string; fullName: string; description: string }) => (
+  <TooltipProvider delayDuration={200}>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span className="cursor-help">{label}</span>
+      </TooltipTrigger>
+      <TooltipContent side="top" className="max-w-[200px] text-xs">
+        <span className="font-semibold">{fullName}</span> — {description}
+      </TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
+);
 
 export const SentimentMovers = () => {
   const queryClient = useQueryClient();
 
-  // Realtime subscription
   useEffect(() => {
     const channel = supabase
       .channel("dashboard_sentiment_movers")
@@ -29,7 +47,6 @@ export const SentimentMovers = () => {
   const { data: movers = [], isLoading } = useQuery({
     queryKey: ["sentiment_movers"],
     queryFn: async () => {
-      // Get the 2 most recent distinct dates
       const { data: dateRows } = await supabase
         .from("daily_sentiment")
         .select("date")
@@ -83,6 +100,18 @@ export const SentimentMovers = () => {
       <div className="flex items-center gap-2 mb-4">
         <Activity className="w-5 h-5 text-primary" />
         <h2 className="text-lg font-semibold text-foreground">Top Sentiment Movers</h2>
+        <TooltipProvider delayDuration={200}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button className="text-muted-foreground hover:text-foreground transition-colors">
+                <Info className="w-3.5 h-3.5" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="max-w-[240px] text-xs">
+              Stocks with the biggest sentiment score changes since yesterday. Score is 0–100 (bearish → bullish).
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         <span className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 ml-auto">
           <Radio className="w-2.5 h-2.5 animate-pulse" />
           Live
@@ -98,14 +127,35 @@ export const SentimentMovers = () => {
             >
               <div className="flex items-center gap-3">
                 <span className="ticker-badge">{m.ticker}</span>
-                <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-                  <span className="text-orange-600 font-semibold">R:{m.reddit_mentions}</span>
-                  <span className="text-sky-500 font-semibold">X:{Math.round(m.x_mentions * 0.6)}</span>
-                  <span className="text-green-500 font-semibold">ST:{Math.round(m.x_mentions * 0.4)}</span>
+                <div className="flex items-center gap-2 text-[10px] font-semibold">
+                  <SourceTooltip
+                    label={`R:${m.reddit_mentions}`}
+                    fullName="Reddit"
+                    description="mentions across investing subreddits"
+                  />
+                  <SourceTooltip
+                    label={`X:${Math.round(m.x_mentions * 0.6)}`}
+                    fullName="X (Twitter)"
+                    description="posts mentioning this ticker"
+                  />
+                  <SourceTooltip
+                    label={`ST:${Math.round(m.x_mentions * 0.4)}`}
+                    fullName="StockTwits"
+                    description="messages from active traders"
+                  />
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground font-mono">{m.sentiment_score}</span>
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="text-sm text-muted-foreground font-mono cursor-help">{m.sentiment_score}</span>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="text-xs">
+                      Sentiment score (0 = very bearish, 100 = very bullish)
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 <span
                   className={cn(
                     "flex items-center gap-1 text-sm font-semibold font-mono",

@@ -1,5 +1,11 @@
 import { cn } from "@/lib/utils";
-import { TrendingUp, TrendingDown, Flame } from "lucide-react";
+import { TrendingUp, TrendingDown, Flame, Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface VolatileEntry {
   ticker: string;
@@ -37,6 +43,18 @@ export const VolatileTickers = ({ data }: Props) => {
       <div className="flex items-center gap-2 mb-1">
         <Flame className="w-5 h-5 text-orange-500" />
         <h2 className="text-lg font-semibold text-foreground">Top 5 Most Volatile</h2>
+        <TooltipProvider delayDuration={200}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button className="text-muted-foreground hover:text-foreground transition-colors">
+                <Info className="w-3.5 h-3.5" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="max-w-[240px] text-xs">
+              Tickers ranked by how much their sentiment score swung between the two most recent data points. Bigger swings = more volatile opinion.
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
       <p className="text-xs text-muted-foreground mb-5 font-mono">
         {formatDate(data[0]?.previousDate)} → {formatDate(data[0]?.latestDate)} · sentiment swing ranking
@@ -66,8 +84,17 @@ export const VolatileTickers = ({ data }: Props) => {
                 </span>
               </div>
 
-              {/* Score */}
-              <div className="text-2xl font-bold font-mono text-foreground mb-2">{v.score}</div>
+              {/* Score with tooltip */}
+              <TooltipProvider delayDuration={200}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="text-2xl font-bold font-mono text-foreground mb-2 cursor-help w-fit">{v.score}</div>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="text-xs">
+                    Blended sentiment: 0 = bearish, 100 = bullish
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
 
               {/* Score bar */}
               <div className="w-full h-1.5 bg-background/50 rounded-full mb-3 overflow-hidden">
@@ -79,18 +106,45 @@ export const VolatileTickers = ({ data }: Props) => {
 
               {/* 3-source breakdown */}
               <div className="space-y-1.5">
-                <div className="flex items-center justify-between text-[10px]">
-                  <span className="uppercase tracking-wider font-semibold text-orange-600">Reddit</span>
-                  <span className="font-mono text-foreground">{v.redditScore} · {v.redditMentions}m</span>
-                </div>
-                <div className="flex items-center justify-between text-[10px]">
-                  <span className="uppercase tracking-wider font-semibold text-sky-500">X</span>
-                  <span className="font-mono text-foreground">{v.xScore} · {v.xMentions}m</span>
-                </div>
-                <div className="flex items-center justify-between text-[10px]">
-                  <span className="uppercase tracking-wider font-semibold text-green-500">StockTwits</span>
-                  <span className="font-mono text-foreground">{v.stMentions}m</span>
-                </div>
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center justify-between text-[10px] cursor-help">
+                        <span className="uppercase tracking-wider font-semibold text-orange-600">Reddit</span>
+                        <span className="font-mono text-foreground">{v.redditScore} · {v.redditMentions}m</span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="text-xs max-w-[180px]">
+                      Score from investing subreddits · {v.redditMentions} mentions
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center justify-between text-[10px] cursor-help">
+                        <span className="uppercase tracking-wider font-semibold text-sky-500">X</span>
+                        <span className="font-mono text-foreground">{v.xScore} · {v.xMentions}m</span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="text-xs max-w-[180px]">
+                      X (Twitter) posts mentioning this ticker · {v.xMentions} mentions
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center justify-between text-[10px] cursor-help">
+                        <span className="uppercase tracking-wider font-semibold text-green-500">StockTwits</span>
+                        <span className="font-mono text-foreground">{v.stMentions}m</span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="text-xs max-w-[180px]">
+                      StockTwits trader messages · {v.stMentions} mentions
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
             </div>
           );
