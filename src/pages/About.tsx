@@ -102,7 +102,7 @@ const About = () => {
         {/* Pipeline Section */}
         <div className="space-y-6">
           <div>
-            <h2 className="text-2xl font-bold text-foreground">How It Works</h2>
+            <h2 className="text-2xl font-bold text-foreground">About</h2>
             <p className="text-muted-foreground mt-1">The pipeline from raw data to actionable picks</p>
           </div>
 
