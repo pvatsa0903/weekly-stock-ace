@@ -84,8 +84,14 @@ export const Sidebar = () => {
           {/* Footer */}
           <div className="p-4 border-t border-sidebar-border">
             <div className="text-xs text-muted-foreground">
-              <p>Week of {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</p>
-              <p className="mt-1">Last updated: {formatDistanceToNow(new Date(), { addSuffix: false })} ago</p>
+              <p>Week of {(() => {
+                const now = new Date();
+                const day = now.getDay();
+                const monday = new Date(now);
+                monday.setDate(now.getDate() - (day === 0 ? 6 : day - 1));
+                return monday.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+              })()}</p>
+              <p className="mt-1">Updated: {new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })}</p>
             </div>
           </div>
         </div>
