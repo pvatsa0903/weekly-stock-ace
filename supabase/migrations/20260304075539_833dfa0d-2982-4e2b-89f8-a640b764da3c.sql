@@ -1,0 +1,1 @@
+ALTER TABLE public.fundamentals_snapshot ADD CONSTRAINT fundamentals_snapshot_ticker_week_ending_key UNIQUE (ticker, week_ending);
