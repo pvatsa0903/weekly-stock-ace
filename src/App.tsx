@@ -8,6 +8,7 @@ import Decisions from "./pages/Decisions";
 import TickerDetail from "./pages/TickerDetail";
 import Settings from "./pages/Settings";
 import Sentiment from "./pages/Sentiment";
+import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/decisions" element={<Decisions />} />
           <Route path="/ticker" element={<TickerDetail />} />
           <Route path="/sentiment" element={<Sentiment />} />
+          <Route path="/about" element={<About />} />
           <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
