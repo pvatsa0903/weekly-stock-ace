@@ -36,7 +36,7 @@ const Index = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("weekly_decisions")
-        .select("pick1, pick2")
+        .select("pick1, pick2, decision, eli5_summary, why_summary")
         .order("week_ending", { ascending: false })
         .limit(1)
         .single();
@@ -74,12 +74,25 @@ const Index = () => {
         </div>
 
         {/* This Week's Picks - Live Data */}
-        {weeklyPicks?.pick1 && weeklyPicks?.pick2 && (
-          <div className="grid lg:grid-cols-2 gap-4">
-            <LiveWeeklyBanner ticker={weeklyPicks.pick1} />
-            <LiveWeeklyBanner ticker={weeklyPicks.pick2} />
-          </div>
-        )}
+        {weeklyPicks?.pick1 && weeklyPicks?.pick2 && (() => {
+          const eli5Parts = weeklyPicks.eli5_summary?.split(" | ") || [];
+          return (
+            <div className="grid lg:grid-cols-2 gap-4">
+              <LiveWeeklyBanner
+                ticker={weeklyPicks.pick1}
+                aiDecision={weeklyPicks.decision}
+                aiConfidence={undefined}
+                aiEli5={eli5Parts[0]}
+              />
+              <LiveWeeklyBanner
+                ticker={weeklyPicks.pick2}
+                aiDecision={weeklyPicks.decision}
+                aiConfidence={undefined}
+                aiEli5={eli5Parts[1]}
+              />
+            </div>
+          );
+        })()}
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
