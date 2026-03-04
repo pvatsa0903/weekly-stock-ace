@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   ResponsiveContainer,
   LineChart,
@@ -33,6 +34,7 @@ const COLORS = [
 ];
 
 export const SentimentTrendlines = ({ data, tickers }: Props) => {
+  const isMobile = useIsMobile();
   const chartData = useMemo(() => {
     const byDate: Record<string, Record<string, number>> = {};
     data.forEach((d) => {
@@ -60,7 +62,7 @@ export const SentimentTrendlines = ({ data, tickers }: Props) => {
         Tracking the 5 most volatile tickers over the past week
       </p>
 
-      <ResponsiveContainer width="100%" height={360}>
+      <ResponsiveContainer width="100%" height={isMobile ? 260 : 360}>
         <LineChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
           <XAxis
