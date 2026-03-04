@@ -146,9 +146,10 @@ serve(async (req) => {
 
         await delay(1200);
 
-        // 2. Social sentiment
+        // 2. Social sentiment (Reddit + X via Finnhub)
         let redditMentions = 0, redditEngagement = 0, redditScore = 50;
         let xMentions = 0, xEngagement = 0, xScore = 50;
+        let stocktwitsScore = 50, stocktwitsMentions = 0, stocktwitsEngagement = 0;
         let overallScore = 50, confidence = 0.5;
 
         try {
@@ -173,14 +174,53 @@ serve(async (req) => {
           }
         } catch { /* use defaults */ }
 
-        // News sentiment
+        // 2b. StockTwits sentiment (free public API, no key needed)
+        try {
+          await delay(500);
+          const stRes = await fetch(`https://api.stocktwits.com/api/2/streams/symbol/${symbol}.json`);
+          if (stRes.ok) {
+            const stData = await stRes.json();
+            const messages = stData.messages || [];
+            stocktwitsMentions = messages.length;
+            let bullish = 0, bearish = 0;
+            for (const msg of messages) {
+              stocktwitsEngagement += (msg.likes?.total || 0) + (msg.reshares?.reshared_count || 0);
+              if (msg.entities?.sentiment?.basic === "Bullish") bullish++;
+              if (msg.entities?.sentiment?.basic === "Bearish") bearish++;
+            }
+            const stTotal = bullish + bearish || 1;
+            stocktwitsScore = Math.round((bullish / stTotal) * 100);
+
+            // Save top StockTwits posts as sentiment_items
+            for (const msg of messages.slice(0, 2)) {
+              const label = msg.entities?.sentiment?.basic === "Bullish" ? "bullish"
+                : msg.entities?.sentiment?.basic === "Bearish" ? "bearish" : "neutral";
+              await supabase.from("sentiment_items").insert({
+                ticker: symbol,
+                week_ending: weekEnding,
+                platform: "stocktwits",
+                sentiment_label: label,
+                snippet: (msg.body || "").substring(0, 300),
+                url: `https://stocktwits.com/symbol/${symbol}`,
+                engagement: (msg.likes?.total || 0) + (msg.reshares?.reshared_count || 0),
+                velocity: null,
+              });
+              results.sentimentItems++;
+            }
+          }
+        } catch { /* StockTwits optional */ }
+
+        // News sentiment (Finnhub)
         try {
           await delay(1200);
           const newsData = await finnhubFetch(`/news-sentiment?symbol=${symbol}`, FINNHUB_API_KEY);
           if (!newsData.error) {
             const bullish = (newsData.sentiment?.bullishPercent || 0.5) * 100;
             const newsScore = (newsData.companyNewsScore || 0.5) * 100;
-            overallScore = Math.round(bullish * 0.3 + newsScore * 0.2 + redditScore * 0.25 + xScore * 0.25);
+            // Weighted blend: news 20%, reddit 20%, X 20%, StockTwits 20%, Finnhub news score 20%
+            overallScore = Math.round(
+              bullish * 0.2 + newsScore * 0.2 + redditScore * 0.2 + xScore * 0.2 + stocktwitsScore * 0.2
+            );
             confidence = Math.min(0.95, Math.max(0.4, overallScore / 100));
           }
         } catch { /* use defaults */ }
@@ -192,14 +232,14 @@ serve(async (req) => {
           reddit_engagement: redditEngagement,
           reddit_velocity: 0,
           reddit_sentiment_score: redditScore,
-          x_mentions: xMentions,
-          x_engagement: xEngagement,
+          x_mentions: xMentions + stocktwitsMentions,
+          x_engagement: xEngagement + stocktwitsEngagement,
           x_velocity: 0,
           x_sentiment_score: xScore,
           sentiment_score: overallScore,
           confidence,
           reddit_confirmed: redditMentions > 5,
-          x_confirmed: xMentions > 5,
+          x_confirmed: (xMentions + stocktwitsMentions) > 5,
         }, { onConflict: "date,ticker", ignoreDuplicates: false });
         results.sentiment++;
 
