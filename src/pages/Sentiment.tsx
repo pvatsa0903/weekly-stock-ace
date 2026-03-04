@@ -10,18 +10,27 @@ import { Button } from "@/components/ui/button";
 const Sentiment = () => {
   const queryClient = useQueryClient();
 
-  // Always fetch last 7 days
+  // Fetch sentiment data — find the last 7 distinct dates with data
   const { data: sentimentData = [], isLoading, error, refetch, isFetching } = useQuery({
     queryKey: ["daily_sentiment_7d"],
     queryFn: async () => {
-      const daysAgo = new Date();
-      daysAgo.setDate(daysAgo.getDate() - 7);
-      const dateStr = daysAgo.toISOString().split("T")[0];
+      // First, find the 7 most recent distinct dates
+      const { data: dateRows, error: dateErr } = await supabase
+        .from("daily_sentiment")
+        .select("date")
+        .order("date", { ascending: false })
+        .limit(500);
+      if (dateErr) throw dateErr;
+
+      const uniqueDates = [...new Set((dateRows || []).map((d) => d.date))].sort().reverse().slice(0, 7);
+      if (!uniqueDates.length) return [];
+
+      const oldestDate = uniqueDates[uniqueDates.length - 1];
 
       const { data, error } = await supabase
         .from("daily_sentiment")
         .select("*")
-        .gte("date", dateStr)
+        .gte("date", oldestDate)
         .order("date", { ascending: true });
       if (error) throw error;
       return data;
