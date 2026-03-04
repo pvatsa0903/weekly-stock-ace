@@ -11,7 +11,9 @@ import {
   TrendingUp,
   MessageSquare,
   Shield,
-  Cpu
+  Cpu,
+  Linkedin,
+  Github
 } from "lucide-react";
 
 const pipelineSteps = [
@@ -217,14 +219,34 @@ const About = () => {
         </div>
 
         {/* CTA / Contact */}
-        <div className="bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-xl p-6 lg:p-8 text-center space-y-3">
+        <div className="bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-xl p-6 lg:p-8 text-center space-y-4">
           <TrendingUp className="w-8 h-8 text-primary mx-auto" />
-          <h2 className="text-xl font-bold text-foreground">Built as a Portfolio Prototype</h2>
+          <h2 className="text-xl font-bold text-foreground">Built by Phalguni Vatsa</h2>
           <p className="text-sm text-muted-foreground max-w-lg mx-auto">
             This project showcases end-to-end product thinking: data engineering, 
             AI integration, full-stack development, and responsible ML deployment — 
             all in a polished, production-quality interface.
           </p>
+          <div className="flex items-center justify-center gap-4 pt-2">
+            <a
+              href="https://www.linkedin.com/in/phalgunivatsa/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+            >
+              <Linkedin className="w-4 h-4" />
+              LinkedIn
+            </a>
+            <a
+              href="https://github.com/pvatsa0903"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary text-secondary-foreground text-sm font-medium hover:opacity-90 transition-opacity border border-border"
+            >
+              <Github className="w-4 h-4" />
+              GitHub
+            </a>
+          </div>
         </div>
       </div>
     </DashboardLayout>
