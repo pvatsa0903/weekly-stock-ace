@@ -26,6 +26,12 @@ const TickerDetail = () => {
   return (
     <DashboardLayout>
       <div className="space-y-6">
+        {/* Page Header */}
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground">Ticker Detail</h1>
+          <p className="text-sm text-muted-foreground">Look up any tracked stock to see live price, fundamentals, and recent news</p>
+        </div>
+
         {/* Search */}
         <div className="flex gap-3 max-w-md">
           <Input
