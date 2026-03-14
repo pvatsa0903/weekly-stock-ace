@@ -23,7 +23,7 @@ interface WeeklyDecision {
 
 const Decisions = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterDecision, setFilterDecision] = useState<"ALL" | "PICK" | "SKIP">("ALL");
+  const [filterType, setFilterType] = useState<"ALL" | "PICK" | "SKIP" | "SELL" | "WATCH">("ALL");
   const queryClient = useQueryClient();
 
   // Realtime subscription
@@ -44,7 +44,7 @@ const Decisions = () => {
     };
   }, [queryClient]);
 
-  const { data: decisions = [], isLoading, error } = useQuery({
+  const { data: decisions = [], isLoading: decisionsLoading, error: decisionsError } = useQuery({
     queryKey: ["weekly_decisions"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -56,27 +56,63 @@ const Decisions = () => {
     },
   });
 
-  const filteredDecisions = decisions.filter((d) => {
-    const matchesSearch =
-      (d.pick1 || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (d.pick2 || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-      d.eli5_summary.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFilter = filterDecision === "ALL" || d.decision === filterDecision;
-    return matchesSearch && matchesFilter;
+  const { data: sellSignals = [], isLoading: signalsLoading } = useSellSignals(true);
+
+  // Unify rows into a single list
+  type UnifiedRow =
+    | { type: "decision"; data: WeeklyDecision; sortDate: string }
+    | { type: "signal"; data: SellSignal; sortDate: string };
+
+  const unifiedRows: UnifiedRow[] = [
+    ...decisions.map((d) => ({
+      type: "decision" as const,
+      data: d,
+      sortDate: d.created_at,
+    })),
+    ...sellSignals.map((s) => ({
+      type: "signal" as const,
+      data: s,
+      sortDate: s.created_at,
+    })),
+  ].sort((a, b) => new Date(b.sortDate).getTime() - new Date(a.sortDate).getTime());
+
+  const filteredRows = unifiedRows.filter((row) => {
+    const rowType = row.type === "decision" ? row.data.decision : (row.data as SellSignal).signal;
+
+    // Filter match
+    if (filterType !== "ALL" && rowType !== filterType) return false;
+
+    // Search match
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    if (row.type === "decision") {
+      const d = row.data as WeeklyDecision;
+      return (
+        (d.pick1 || "").toLowerCase().includes(q) ||
+        (d.pick2 || "").toLowerCase().includes(q) ||
+        d.eli5_summary.toLowerCase().includes(q)
+      );
+    } else {
+      const s = row.data as SellSignal;
+      return (
+        s.ticker.toLowerCase().includes(q) ||
+        s.reasoning.toLowerCase().includes(q) ||
+        (s.fundamental_flags || "").toLowerCase().includes(q)
+      );
+    }
   });
+
+  const isLoading = decisionsLoading || signalsLoading;
 
   const formatWeekRange = (weekEndingStr: string) => {
     const end = new Date(weekEndingStr + "T00:00:00");
     const start = new Date(end);
     start.setDate(end.getDate() - 6);
-
     const fmt = (d: Date) =>
       d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-
     const now = new Date();
     now.setHours(0, 0, 0, 0);
     const isCurrentWeek = now >= start && now <= end;
-
     return { range: `${fmt(start)} – ${fmt(end)}`, isCurrentWeek };
   };
 
@@ -89,6 +125,22 @@ const Decisions = () => {
     if (hrs < 24) return `${hrs}h ago`;
     const days = Math.floor(hrs / 24);
     return `${days}d ago`;
+  };
+
+  const typeBadge = (type: string) => {
+    const config: Record<string, { bg: string; icon: React.ReactNode }> = {
+      PICK: { bg: "bg-emerald-100 text-emerald-700", icon: null },
+      SKIP: { bg: "bg-rose-100 text-rose-700", icon: null },
+      SELL: { bg: "bg-rose-100 text-rose-700", icon: <TrendingDown className="w-3 h-3" /> },
+      WATCH: { bg: "bg-amber-100 text-amber-700", icon: <Eye className="w-3 h-3" /> },
+      HOLD: { bg: "bg-emerald-100 text-emerald-700", icon: <ShieldCheck className="w-3 h-3" /> },
+    };
+    const c = config[type] || config.SKIP;
+    return (
+      <span className={cn("inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full", c.bg)}>
+        {c.icon} {type}
+      </span>
+    );
   };
 
   return (
@@ -104,7 +156,7 @@ const Decisions = () => {
                 Live
               </span>
             </div>
-            <p className="text-muted-foreground">Historical record of all picks and skips — updates in real time</p>
+            <p className="text-muted-foreground">All picks, skips, and sell signals in one place</p>
           </div>
           <Button variant="outline" size="sm">
             <Download className="w-4 h-4 mr-2" />
@@ -117,19 +169,19 @@ const Decisions = () => {
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder="Search picks or summary..."
+              placeholder="Search tickers or summary..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-9"
             />
           </div>
-          <div className="flex gap-2">
-            {(["ALL", "PICK", "SKIP"] as const).map((filter) => (
+          <div className="flex gap-2 flex-wrap">
+            {(["ALL", "PICK", "SKIP", "SELL", "WATCH"] as const).map((filter) => (
               <Button
                 key={filter}
-                variant={filterDecision === filter ? "default" : "outline"}
+                variant={filterType === filter ? "default" : "outline"}
                 size="sm"
-                onClick={() => setFilterDecision(filter)}
+                onClick={() => setFilterType(filter)}
               >
                 {filter}
               </Button>
@@ -144,152 +196,110 @@ const Decisions = () => {
           </div>
         )}
 
-        {error && (
+        {decisionsError && (
           <div className="text-center py-12 text-destructive">
             Failed to load decisions. Please try again.
           </div>
         )}
 
-        {!isLoading && !error && filteredDecisions.length === 0 && (
+        {!isLoading && !decisionsError && filteredRows.length === 0 && (
           <div className="text-center py-12 text-muted-foreground">
-            {decisions.length === 0 ? "No decisions recorded yet." : "No results match your filters."}
+            {unifiedRows.length === 0 ? "No decisions recorded yet." : "No results match your filters."}
           </div>
         )}
 
-        {/* Table */}
-        {!isLoading && !error && filteredDecisions.length > 0 && (
+        {/* Consolidated Table */}
+        {!isLoading && !decisionsError && filteredRows.length > 0 && (
           <div className="bg-card rounded-xl border border-border overflow-hidden">
             <div className="overflow-x-auto">
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th>Week</th>
-                    <th>Decision</th>
-                    <th>Pick 1</th>
-                    <th>Pick 2</th>
-                    <th>ELI5 Summary</th>
+                    <th>Week / Date</th>
+                    <th>Type</th>
+                    <th>Tickers</th>
+                    <th>Summary / Reasoning</th>
                     <th>Published</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredDecisions.map((d) => {
-                    const { range, isCurrentWeek } = formatWeekRange(d.week_ending);
-                    return (
-                      <tr key={d.id}>
-                        <td className="font-mono text-sm whitespace-nowrap">
-                          <div className="flex items-center gap-2">
+                  {filteredRows.map((row) => {
+                    if (row.type === "decision") {
+                      const d = row.data as WeeklyDecision;
+                      const { range, isCurrentWeek } = formatWeekRange(d.week_ending);
+                      return (
+                        <tr key={`d-${d.id}`}>
+                          <td className="font-mono text-sm whitespace-nowrap">
+                            <div className="flex items-center gap-2">
+                              {isCurrentWeek && (
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
+                              )}
+                              <span>{range}</span>
+                            </div>
                             {isCurrentWeek && (
-                              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
+                              <span className="text-[10px] text-emerald-500 font-semibold uppercase tracking-wider">Current Week</span>
                             )}
-                            <span>{range}</span>
-                          </div>
-                          {isCurrentWeek && (
-                            <span className="text-[10px] text-emerald-500 font-semibold uppercase tracking-wider">Current Week</span>
-                          )}
-                        </td>
-                        <td>
-                          <span
-                            className={cn(
-                              "text-xs font-semibold px-2 py-1 rounded-full",
-                              d.decision === "PICK"
-                                ? "bg-emerald-100 text-emerald-700"
-                                : "bg-rose-100 text-rose-700"
-                            )}
-                          >
-                            {d.decision}
-                          </span>
-                        </td>
-                        <td>
-                          {d.pick1 ? (
-                            <div>
-                              <span className="ticker-badge">{d.pick1}</span>
-                              {d.pick1_confidence != null && (
-                                <span className="text-[10px] text-muted-foreground ml-1">{d.pick1_confidence}%</span>
+                          </td>
+                          <td>{typeBadge(d.decision)}</td>
+                          <td>
+                            <div className="flex flex-wrap gap-1.5">
+                              {d.pick1 && (
+                                <div className="flex items-center gap-1">
+                                  <span className="ticker-badge">{d.pick1}</span>
+                                  {d.pick1_confidence != null && (
+                                    <span className="text-[10px] text-muted-foreground">{d.pick1_confidence}%</span>
+                                  )}
+                                </div>
+                              )}
+                              {d.pick2 && (
+                                <div className="flex items-center gap-1">
+                                  <span className="ticker-badge">{d.pick2}</span>
+                                  {d.pick2_confidence != null && (
+                                    <span className="text-[10px] text-muted-foreground">{d.pick2_confidence}%</span>
+                                  )}
+                                </div>
+                              )}
+                              {!d.pick1 && !d.pick2 && (
+                                <span className="text-muted-foreground">—</span>
                               )}
                             </div>
-                          ) : (
-                            <span className="text-muted-foreground">—</span>
-                          )}
-                        </td>
-                        <td>
-                          {d.pick2 ? (
-                            <div>
-                              <span className="ticker-badge">{d.pick2}</span>
-                              {d.pick2_confidence != null && (
-                                <span className="text-[10px] text-muted-foreground ml-1">{d.pick2_confidence}%</span>
-                              )}
+                          </td>
+                          <td className="text-sm text-muted-foreground whitespace-normal">{d.eli5_summary}</td>
+                          <td className="text-xs text-muted-foreground whitespace-nowrap">{timeAgo(d.created_at)}</td>
+                        </tr>
+                      );
+                    } else {
+                      const s = row.data as SellSignal;
+                      return (
+                        <tr key={`s-${s.id}`}>
+                          <td className="font-mono text-sm whitespace-nowrap">
+                            {new Date(s.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                          </td>
+                          <td>{typeBadge(s.signal)}</td>
+                          <td>
+                            <div className="flex items-center gap-1">
+                              <span className="ticker-badge">{s.ticker}</span>
+                              <span className="text-[10px] text-muted-foreground">{s.confidence}%</span>
                             </div>
-                          ) : (
-                            <span className="text-muted-foreground">—</span>
-                          )}
-                        </td>
-                        <td className="text-sm text-muted-foreground whitespace-normal">{d.eli5_summary}</td>
-                        <td className="text-xs text-muted-foreground whitespace-nowrap">{timeAgo(d.created_at)}</td>
-                      </tr>
-                    );
+                          </td>
+                          <td className="text-sm text-muted-foreground whitespace-normal">
+                            <p>{s.reasoning}</p>
+                            {s.fundamental_flags && (
+                              <p className="text-xs mt-1 text-muted-foreground/70">{s.fundamental_flags}</p>
+                            )}
+                          </td>
+                          <td className="text-xs text-muted-foreground whitespace-nowrap">{timeAgo(s.created_at)}</td>
+                        </tr>
+                      );
+                    }
                   })}
                 </tbody>
               </table>
             </div>
           </div>
         )}
-
-        {/* Active Sell Signals Section */}
-        <SellSignalsSection />
       </div>
     </DashboardLayout>
-  );
-};
-
-const SellSignalsSection = () => {
-  const { data: signals = [], isLoading } = useSellSignals(true);
-
-  const sellAndWatch = signals.filter((s) => s.signal === "SELL" || s.signal === "WATCH");
-  if (isLoading || sellAndWatch.length === 0) return null;
-
-  const signalIcon = (signal: string) => {
-    if (signal === "SELL") return <TrendingDown className="w-3.5 h-3.5" />;
-    if (signal === "WATCH") return <Eye className="w-3.5 h-3.5" />;
-    return <ShieldCheck className="w-3.5 h-3.5" />;
-  };
-
-  return (
-    <div className="bg-card rounded-xl border border-border overflow-hidden">
-      <div className="px-4 py-3 border-b border-border bg-muted/30">
-        <h3 className="text-sm font-semibold text-foreground">Active Sell Signals</h3>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Ticker</th>
-              <th>Signal</th>
-              <th>Confidence</th>
-              <th>Reasoning</th>
-              <th>Risk Flags</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sellAndWatch.map((s) => (
-              <tr key={s.id}>
-                <td><span className="ticker-badge">{s.ticker}</span></td>
-                <td>
-                  <span className={cn(
-                    "inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full",
-                    s.signal === "SELL" ? "bg-rose-100 text-rose-700" : "bg-amber-100 text-amber-700"
-                  )}>
-                    {signalIcon(s.signal)} {s.signal}
-                  </span>
-                </td>
-                <td className="font-mono text-sm">{s.confidence}%</td>
-                <td className="text-sm text-muted-foreground whitespace-normal">{s.reasoning}</td>
-                <td className="text-xs text-muted-foreground whitespace-normal">{s.fundamental_flags || "—"}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
   );
 };
 
