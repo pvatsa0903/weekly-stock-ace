@@ -157,6 +157,7 @@ const TickerDetail = () => {
         {data && !isLoading && (
           <>
             <TickerHeader data={data} />
+            {sellSignal && <SellSignalCard signal={sellSignal} />}
             <FundamentalsCard fundamentals={data.fundamentals} />
             <NewsCard news={data.recentNews} />
           </>

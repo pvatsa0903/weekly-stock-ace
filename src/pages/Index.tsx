@@ -139,6 +139,9 @@ const Index = () => {
           </div>
         </div>
 
+        {/* Sell Alerts */}
+        <SellAlertsBanner />
+
         {/* This Week's Picks - Live Data */}
         {weeklyPicks?.pick1 && weeklyPicks?.pick2 && (() => {
           const eli5Parts = weeklyPicks.eli5_summary?.split(" | ") || [];
