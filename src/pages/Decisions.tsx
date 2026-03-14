@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { Download, Search, Loader2, Radio } from "lucide-react";
+import { Download, Search, Loader2, Radio, TrendingDown, Eye, ShieldCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useSellSignals, type SellSignal } from "@/hooks/useSellSignals";
 
 interface WeeklyDecision {
   id: string;
