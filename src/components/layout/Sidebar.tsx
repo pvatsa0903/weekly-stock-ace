@@ -7,10 +7,10 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/decisions", icon: Table2, label: "Weekly Decisions" },
+  { to: "/alerts", icon: AlertTriangle, label: "Sell Alerts" },
   { to: "/sentiment", icon: Activity, label: "Sentiment Radar" },
   { to: "/ticker", icon: LineChart, label: "Ticker Detail" },
   { to: "/about", icon: Info, label: "About" },
-  { to: "/alerts", icon: AlertTriangle, label: "Sell Alerts" },
   { to: "/settings", icon: Settings, label: "Settings" },
 ];
 
