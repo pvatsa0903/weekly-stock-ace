@@ -1,6 +1,5 @@
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { LiveWeeklyBanner } from "@/components/dashboard/LiveWeeklyBanner";
-import { SellAlertsBanner } from "@/components/dashboard/SellAlertsBanner";
+import { SuggestionCard, type SuggestionType } from "@/components/dashboard/SuggestionCard";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { LiveRecentPicks } from "@/components/dashboard/LiveRecentPicks";
 import { SentimentMovers } from "@/components/dashboard/SentimentMovers";
@@ -10,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useSellSignals } from "@/hooks/useSellSignals";
 
 const getWeekStart = () => {
   const now = new Date();
@@ -31,6 +31,15 @@ const getNextSunday = () => {
   if (daysUntil === 1) return { value: "Tomorrow", label };
   return { value: `${daysUntil} days`, label };
 };
+
+interface Suggestion {
+  ticker: string;
+  type: SuggestionType;
+  confidence?: number;
+  why?: string;
+  eli5?: string;
+  priority: number; // lower = higher priority
+}
 
 const Index = () => {
   const nextUpdate = getNextSunday();
@@ -76,6 +85,8 @@ const Index = () => {
       setIsRefreshing(false);
     }
   };
+
+  // Fetch weekly decisions
   const { data: weeklyPicks } = useQuery({
     queryKey: ["weekly_picks"],
     queryFn: async () => {
@@ -90,6 +101,10 @@ const Index = () => {
     },
   });
 
+  // Fetch sell signals
+  const { data: sellSignals = [] } = useSellSignals(true);
+
+  // Fetch stats
   const { data: stats } = useQuery({
     queryKey: ["pick_stats"],
     queryFn: async () => {
@@ -108,6 +123,64 @@ const Index = () => {
       return { winRate, avgReturn: Number(avgReturn), total };
     },
   });
+
+  // Build unified suggestions ranked by priority
+  // Priority: SELL (1) > PICK (2) > WATCH (3) > HOLD (4) > SKIP (5)
+  const suggestions: Suggestion[] = [];
+
+  // Add sell/watch/hold signals
+  sellSignals.forEach((s) => {
+    const priorityMap: Record<string, number> = { SELL: 1, WATCH: 3, HOLD: 4 };
+    suggestions.push({
+      ticker: s.ticker,
+      type: s.signal as SuggestionType,
+      confidence: s.confidence,
+      why: s.reasoning,
+      eli5: s.fundamental_flags
+        ? `Key risks: ${s.fundamental_flags}`
+        : undefined,
+      priority: priorityMap[s.signal] ?? 5,
+    });
+  });
+
+  // Add weekly picks
+  if (weeklyPicks) {
+    const eli5Parts = weeklyPicks.eli5_summary?.split(" | ") || [];
+    const whyParts = weeklyPicks.why_summary?.split(" | ") || [];
+    const decision = weeklyPicks.decision as SuggestionType;
+
+    if (weeklyPicks.pick1) {
+      suggestions.push({
+        ticker: weeklyPicks.pick1,
+        type: decision,
+        confidence: weeklyPicks.pick1_confidence ?? undefined,
+        why: whyParts[0] || weeklyPicks.why_summary,
+        eli5: eli5Parts[0],
+        priority: decision === "PICK" ? 2 : 5,
+      });
+    }
+    if (weeklyPicks.pick2) {
+      suggestions.push({
+        ticker: weeklyPicks.pick2,
+        type: decision,
+        confidence: weeklyPicks.pick2_confidence ?? undefined,
+        why: whyParts[1] || weeklyPicks.why_summary,
+        eli5: eli5Parts[1],
+        priority: decision === "PICK" ? 2 : 5,
+      });
+    }
+  }
+
+  // Sort by priority, dedupe by ticker (keep highest priority), take top 2
+  const seen = new Set<string>();
+  const topSuggestions = suggestions
+    .sort((a, b) => a.priority - b.priority)
+    .filter((s) => {
+      if (seen.has(s.ticker)) return false;
+      seen.add(s.ticker);
+      return true;
+    })
+    .slice(0, 2);
 
   return (
     <DashboardLayout>
@@ -139,32 +212,21 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Sell Alerts */}
-        <SellAlertsBanner />
-
-        {/* This Week's Picks - Live Data */}
-        {weeklyPicks?.pick1 && weeklyPicks?.pick2 && (() => {
-          const eli5Parts = weeklyPicks.eli5_summary?.split(" | ") || [];
-          const whyParts = weeklyPicks.why_summary?.split(" | ") || [];
-          return (
-            <div className="grid md:grid-cols-2 gap-4">
-              <LiveWeeklyBanner
-                ticker={weeklyPicks.pick1}
-                aiDecision={weeklyPicks.decision}
-                aiConfidence={weeklyPicks.pick1_confidence ?? undefined}
-                aiEli5={eli5Parts[0]}
-                aiWhy={whyParts[0] || weeklyPicks.why_summary}
+        {/* Top 2 Suggestions */}
+        {topSuggestions.length > 0 && (
+          <div className={`grid gap-4 ${topSuggestions.length === 2 ? "md:grid-cols-2" : ""}`}>
+            {topSuggestions.map((s) => (
+              <SuggestionCard
+                key={s.ticker}
+                ticker={s.ticker}
+                type={s.type}
+                confidence={s.confidence}
+                why={s.why}
+                eli5={s.eli5}
               />
-              <LiveWeeklyBanner
-                ticker={weeklyPicks.pick2}
-                aiDecision={weeklyPicks.decision}
-                aiConfidence={weeklyPicks.pick2_confidence ?? undefined}
-                aiEli5={eli5Parts[1]}
-                aiWhy={whyParts[1] || weeklyPicks.why_summary}
-              />
-            </div>
-          );
-        })()}
+            ))}
+          </div>
+        )}
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
