@@ -9,8 +9,8 @@ const navItems = [
   { to: "/decisions", icon: Table2, label: "Weekly Decisions" },
   { to: "/sentiment", icon: Activity, label: "Sentiment Radar" },
   { to: "/ticker", icon: LineChart, label: "Ticker Detail" },
-  { to: "/alerts", icon: AlertTriangle, label: "Sell Alerts" },
   { to: "/about", icon: Info, label: "About" },
+  { to: "/alerts", icon: AlertTriangle, label: "Sell Alerts" },
   { to: "/settings", icon: Settings, label: "Settings" },
 ];
 
