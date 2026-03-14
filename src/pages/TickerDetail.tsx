@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useStockData } from "@/hooks/useStockData";
 import { TickerHeader } from "@/components/ticker/TickerHeader";
+import { SellSignalCard } from "@/components/ticker/SellSignalCard";
+import { useSellSignalForTicker } from "@/hooks/useSellSignals";
 import { SentimentCard } from "@/components/ticker/SentimentCard";
 import { FundamentalsCard } from "@/components/ticker/FundamentalsCard";
 import { NewsCard } from "@/components/ticker/NewsCard";
@@ -23,6 +25,7 @@ const TickerDetail = () => {
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
   const { data, isLoading, error, refetch } = useStockData(activeTicker);
+  const { data: sellSignal } = useSellSignalForTicker(activeTicker);
 
   // Fetch all tickers for autocomplete
   const { data: allTickers = [] } = useQuery({
@@ -154,6 +157,7 @@ const TickerDetail = () => {
         {data && !isLoading && (
           <>
             <TickerHeader data={data} />
+            {sellSignal && <SellSignalCard signal={sellSignal} />}
             <FundamentalsCard fundamentals={data.fundamentals} />
             <NewsCard news={data.recentNews} />
           </>

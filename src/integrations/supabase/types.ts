@@ -152,6 +152,51 @@ export type Database = {
         }
         Relationships: []
       }
+      sell_signals: {
+        Row: {
+          confidence: number
+          created_at: string
+          fundamental_flags: string | null
+          id: string
+          is_active: boolean
+          price_at_signal: number | null
+          reasoning: string
+          resolved_at: string | null
+          sentiment_change: number | null
+          sentiment_score: number | null
+          signal: Database["public"]["Enums"]["sell_signal_type"]
+          ticker: string
+        }
+        Insert: {
+          confidence?: number
+          created_at?: string
+          fundamental_flags?: string | null
+          id?: string
+          is_active?: boolean
+          price_at_signal?: number | null
+          reasoning: string
+          resolved_at?: string | null
+          sentiment_change?: number | null
+          sentiment_score?: number | null
+          signal?: Database["public"]["Enums"]["sell_signal_type"]
+          ticker: string
+        }
+        Update: {
+          confidence?: number
+          created_at?: string
+          fundamental_flags?: string | null
+          id?: string
+          is_active?: boolean
+          price_at_signal?: number | null
+          reasoning?: string
+          resolved_at?: string | null
+          sentiment_change?: number | null
+          sentiment_score?: number | null
+          signal?: Database["public"]["Enums"]["sell_signal_type"]
+          ticker?: string
+        }
+        Relationships: []
+      }
       sentiment_items: {
         Row: {
           engagement: number
@@ -263,6 +308,7 @@ export type Database = {
     }
     Enums: {
       decision_type: "PICK" | "SKIP"
+      sell_signal_type: "SELL" | "HOLD" | "WATCH"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -391,6 +437,7 @@ export const Constants = {
   public: {
     Enums: {
       decision_type: ["PICK", "SKIP"],
+      sell_signal_type: ["SELL", "HOLD", "WATCH"],
     },
   },
 } as const
