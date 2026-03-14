@@ -25,6 +25,7 @@ const TickerDetail = () => {
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
   const { data, isLoading, error, refetch } = useStockData(activeTicker);
+  const { data: sellSignal } = useSellSignalForTicker(activeTicker);
 
   // Fetch all tickers for autocomplete
   const { data: allTickers = [] } = useQuery({
