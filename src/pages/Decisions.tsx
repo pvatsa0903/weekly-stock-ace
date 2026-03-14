@@ -233,8 +233,63 @@ const Decisions = () => {
             </div>
           </div>
         )}
+
+        {/* Active Sell Signals Section */}
+        <SellSignalsSection />
       </div>
     </DashboardLayout>
+  );
+};
+
+const SellSignalsSection = () => {
+  const { data: signals = [], isLoading } = useSellSignals(true);
+
+  const sellAndWatch = signals.filter((s) => s.signal === "SELL" || s.signal === "WATCH");
+  if (isLoading || sellAndWatch.length === 0) return null;
+
+  const signalIcon = (signal: string) => {
+    if (signal === "SELL") return <TrendingDown className="w-3.5 h-3.5" />;
+    if (signal === "WATCH") return <Eye className="w-3.5 h-3.5" />;
+    return <ShieldCheck className="w-3.5 h-3.5" />;
+  };
+
+  return (
+    <div className="bg-card rounded-xl border border-border overflow-hidden">
+      <div className="px-4 py-3 border-b border-border bg-muted/30">
+        <h3 className="text-sm font-semibold text-foreground">Active Sell Signals</h3>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Ticker</th>
+              <th>Signal</th>
+              <th>Confidence</th>
+              <th>Reasoning</th>
+              <th>Risk Flags</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sellAndWatch.map((s) => (
+              <tr key={s.id}>
+                <td><span className="ticker-badge">{s.ticker}</span></td>
+                <td>
+                  <span className={cn(
+                    "inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full",
+                    s.signal === "SELL" ? "bg-rose-100 text-rose-700" : "bg-amber-100 text-amber-700"
+                  )}>
+                    {signalIcon(s.signal)} {s.signal}
+                  </span>
+                </td>
+                <td className="font-mono text-sm">{s.confidence}%</td>
+                <td className="max-w-xs truncate text-sm text-muted-foreground">{s.reasoning}</td>
+                <td className="max-w-xs truncate text-xs text-muted-foreground">{s.fundamental_flags || "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 };
 
