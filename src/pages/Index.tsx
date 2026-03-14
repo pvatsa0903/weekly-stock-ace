@@ -1,5 +1,6 @@
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { LiveWeeklyBanner } from "@/components/dashboard/LiveWeeklyBanner";
+import { SellAlertsBanner } from "@/components/dashboard/SellAlertsBanner";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { LiveRecentPicks } from "@/components/dashboard/LiveRecentPicks";
 import { SentimentMovers } from "@/components/dashboard/SentimentMovers";
