@@ -223,7 +223,7 @@ const Decisions = () => {
                             <span className="text-muted-foreground">—</span>
                           )}
                         </td>
-                        <td className="max-w-xs truncate text-sm text-muted-foreground">{d.eli5_summary}</td>
+                        <td className="text-sm text-muted-foreground whitespace-normal">{d.eli5_summary}</td>
                         <td className="text-xs text-muted-foreground whitespace-nowrap">{timeAgo(d.created_at)}</td>
                       </tr>
                     );
@@ -282,8 +282,8 @@ const SellSignalsSection = () => {
                   </span>
                 </td>
                 <td className="font-mono text-sm">{s.confidence}%</td>
-                <td className="max-w-xs truncate text-sm text-muted-foreground">{s.reasoning}</td>
-                <td className="max-w-xs truncate text-xs text-muted-foreground">{s.fundamental_flags || "—"}</td>
+                <td className="text-sm text-muted-foreground whitespace-normal">{s.reasoning}</td>
+                <td className="text-xs text-muted-foreground whitespace-normal">{s.fundamental_flags || "—"}</td>
               </tr>
             ))}
           </tbody>
