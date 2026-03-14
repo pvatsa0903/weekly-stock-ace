@@ -9,6 +9,7 @@ import TickerDetail from "./pages/TickerDetail";
 import Settings from "./pages/Settings";
 import Sentiment from "./pages/Sentiment";
 import About from "./pages/About";
+import Alerts from "./pages/Alerts";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
