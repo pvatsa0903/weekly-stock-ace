@@ -104,16 +104,18 @@ const Decisions = () => {
 
   const isLoading = decisionsLoading || signalsLoading;
 
-  const formatWeekRange = (weekEndingStr: string) => {
+  const formatDate = (dateStr: string) => {
+    const d = new Date(dateStr.includes("T") ? dateStr : dateStr + "T00:00:00");
+    return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  };
+
+  const isCurrentWeek = (weekEndingStr: string) => {
     const end = new Date(weekEndingStr + "T00:00:00");
     const start = new Date(end);
     start.setDate(end.getDate() - 6);
-    const fmt = (d: Date) =>
-      d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
     const now = new Date();
     now.setHours(0, 0, 0, 0);
-    const isCurrentWeek = now >= start && now <= end;
-    return { range: `${fmt(start)} – ${fmt(end)}`, isCurrentWeek };
+    return now >= start && now <= end;
   };
 
   const timeAgo = (dateStr: string) => {
