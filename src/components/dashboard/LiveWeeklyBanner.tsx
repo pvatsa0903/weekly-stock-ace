@@ -132,20 +132,25 @@ export const LiveWeeklyBanner = ({ ticker, aiDecision, aiConfidence, aiEli5, aiW
       {eli5 && (
         <div
           className={cn(
-            "border-t border-white/10",
+            "border-t border-white/10 rounded-b-2xl",
             isPick ? "bg-emerald-700" : "bg-rose-700"
           )}
         >
           <button
             onClick={() => setExpanded(!expanded)}
-            className="w-full flex items-center justify-between px-6 py-3 text-white/90 hover:text-white transition-colors text-sm font-medium"
+            className="w-full flex items-center justify-between px-6 py-3 text-white/90 hover:text-white transition-colors text-sm font-medium min-h-[44px]"
           >
-            <span>ELI5 (Explain Like I'm 5)</span>
+            <span className="flex items-center gap-2">
+              <span className="text-base">🧒</span>
+              ELI5 (Explain Like I'm 5)
+            </span>
             {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>
           {expanded && (
-            <div className="px-6 pb-4 text-white/85 text-sm leading-relaxed">
-              {eli5}
+            <div className="px-6 pb-5">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/5">
+                <p className="text-white/90 text-sm leading-relaxed tracking-wide">{eli5}</p>
+              </div>
             </div>
           )}
         </div>
