@@ -206,7 +206,7 @@ const Signals = () => {
           </div>
           <div className="flex gap-2 flex-wrap flex-1">
             {filterTypes.map((f) => (
-              <Button key={f} variant={filterType === f ? "default" : "outline"} size="sm" onClick={() => setFilterType(f)}>
+              <Button key={f} variant={filterType === f ? "default" : "outline"} size="sm" className="min-h-[44px] min-w-[44px]" onClick={() => setFilterType(f)}>
                 {f}
               </Button>
             ))}
