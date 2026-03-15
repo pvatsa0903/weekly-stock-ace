@@ -167,7 +167,45 @@ const About = () => {
           </div>
         </div>
 
-        {/* Tech Stack */}
+        {/* How We Measure Performance */}
+        <div className="space-y-4">
+          <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-primary" />
+            How we measure performance
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Full transparency on how our numbers are calculated — no cherry-picking, no hidden methodology.
+          </p>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {[
+              {
+                title: "What counts as a win",
+                body: "A pick is a \"win\" if the exit price is higher than the entry price. Entry is recorded on the day a PICK signal is published; exit is the closing price at the end of that trading week (typically Friday close).",
+              },
+              {
+                title: "Holding period",
+                body: "The default tracking window is one trading week (~5 days). We compare entry price at signal time to the exit price at week's end. No cherry-picked sell dates.",
+              },
+              {
+                title: "Win rate calculation",
+                body: "Win rate = (winning picks ÷ total picks) × 100. The current 86% is based on 7 completed picks tracked since launch, with 6 wins and 1 loss. This will update as more data accumulates.",
+              },
+              {
+                title: "Signal coverage",
+                body: "Performance tracking covers PICK signals only. SELL, WATCH, and HOLD signals are advisory and not included in win/loss metrics. All historical signals remain visible on the Signals page.",
+              },
+            ].map((item) => (
+              <div key={item.title} className="bg-card border border-border rounded-xl p-5 space-y-2">
+                <h3 className="font-bold text-foreground text-sm">{item.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{item.body}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-[11px] text-muted-foreground/70">
+            Note: With a small sample size, win rate will fluctuate significantly. We'll update these stats weekly as more picks are tracked.
+          </p>
+        </div>
+
         <div className="space-y-4">
           <h2 className="text-xl font-bold text-foreground">Tech stack</h2>
           <div className="bg-card border border-border rounded-xl overflow-hidden">
