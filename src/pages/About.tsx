@@ -45,8 +45,8 @@ const pipelineSteps = [
   {
     icon: Zap,
     title: "Publish & track",
-    description: "Signals go live with confidence scores, rationale, and plain-English ELI5 explanations. The dashboard consolidates everything — weekly picks alongside active sell/watch/hold alerts — with full performance tracking over time.",
-    details: ["Unified dashboard", "Win/loss tracking", "Full audit trail"],
+    description: "Signals go live with confidence scores, rationale, and plain-English ELI5 explanations. The dashboard consolidates everything — weekly picks alongside active sell/watch/hold alerts grouped by priority — with performance tracking and a sentiment-driven \"Vibe Check\" meme that reflects the week's market mood.",
+    details: ["Grouped alerts by signal type", "Win/loss tracking", "Vibe Check memes"],
     color: "from-emerald-500 to-green-500",
   },
 ];
