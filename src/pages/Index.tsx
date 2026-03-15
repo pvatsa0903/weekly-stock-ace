@@ -294,14 +294,14 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Vibe Check — compact accent between stats and data */}
-        <SentimentMeme />
-
         {/* Sentiment Movers + Market Watch */}
         <div className="grid md:grid-cols-2 gap-4">
           <SentimentMovers />
           <LiveRecentPicks />
         </div>
+
+        {/* Vibe Check — compact accent at the bottom */}
+        <SentimentMeme />
       </div>
     </DashboardLayout>
   );

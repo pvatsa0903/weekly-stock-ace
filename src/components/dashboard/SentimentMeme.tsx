@@ -91,56 +91,53 @@ export const SentimentMeme = () => {
 
   return (
     <Card className={cn("overflow-hidden border", config.border)}>
-      {/* Header with mood indicator */}
-      <div className={cn("p-5 pb-0 bg-gradient-to-b", config.bg)}>
-        <div className="flex items-center justify-between mb-3">
+      <div className={cn("p-4 bg-gradient-to-b", config.bg)}>
+        <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2.5">
-            <Sparkles className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-semibold text-foreground">Vibe Check</h2>
+            <Sparkles className="w-4 h-4 text-primary" />
+            <h2 className="text-sm font-semibold text-foreground">Vibe Check</h2>
+            {/* Mood pill inline */}
+            <span className="flex items-center gap-1.5 ml-1">
+              <span className="relative flex h-2 w-2">
+                <span className={cn("animate-ping absolute inline-flex h-full w-full rounded-full opacity-75", config.pulse)} />
+                <span className={cn("relative inline-flex rounded-full h-2 w-2", config.pulse)} />
+              </span>
+              <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                {config.label} {config.emoji}
+              </span>
+            </span>
           </div>
           <Button
             variant="ghost"
             size="icon"
             onClick={shuffle}
-            className={cn("min-h-[44px] min-w-[44px] transition-transform", isShuffling && "animate-spin")}
+            className={cn("h-8 w-8 transition-transform", isShuffling && "animate-spin")}
           >
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw className="w-3.5 h-3.5" />
           </Button>
         </div>
 
-        {/* Mood pill */}
-        <div className="flex items-center gap-2 mb-4">
-          <span className="relative flex h-2.5 w-2.5">
-            <span className={cn("animate-ping absolute inline-flex h-full w-full rounded-full opacity-75", config.pulse)} />
-            <span className={cn("relative inline-flex rounded-full h-2.5 w-2.5", config.pulse)} />
-          </span>
-          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Mood: {config.label} {config.emoji}
-          </span>
+        <div className="flex items-center gap-4">
+          {/* Meme image — compact */}
+          <div className={cn(
+            "w-24 h-24 sm:w-32 sm:h-32 rounded-lg overflow-hidden border border-border shadow-sm flex-shrink-0 transition-all duration-300",
+            isShuffling ? "opacity-0 scale-95" : "opacity-100 scale-100"
+          )}>
+            <img
+              src={currentMeme.src}
+              alt={currentMeme.caption}
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+          </div>
+          {/* Caption */}
+          <p className={cn(
+            "text-sm font-medium text-foreground/80 italic transition-opacity duration-300 leading-relaxed",
+            isShuffling ? "opacity-0" : "opacity-100"
+          )}>
+            "{currentMeme.caption}"
+          </p>
         </div>
-      </div>
-
-      {/* Caption */}
-      <div className="px-5 py-3">
-        <p className={cn(
-          "text-sm font-medium text-center text-foreground/80 italic transition-opacity duration-300",
-          isShuffling ? "opacity-0" : "opacity-100"
-        )}>
-          "{currentMeme.caption}"
-        </p>
-      </div>
-
-      {/* Meme image */}
-      <div className={cn(
-        "mx-5 mb-5 rounded-xl overflow-hidden border border-border shadow-sm transition-all duration-300",
-        isShuffling ? "opacity-0 scale-95" : "opacity-100 scale-100"
-      )}>
-        <img
-          src={currentMeme.src}
-          alt={currentMeme.caption}
-          className="w-full h-auto"
-          loading="lazy"
-        />
       </div>
     </Card>
   );
