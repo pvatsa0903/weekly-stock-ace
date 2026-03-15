@@ -9,9 +9,6 @@ import {
   ShieldAlert,
   ArrowRight,
   BarChart3,
-  Brain,
-  Zap,
-  Eye,
 } from "lucide-react";
 
 const Landing = () => {
@@ -166,34 +163,18 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
-        <div className="text-center space-y-3 mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground">How it works</h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
-            Four steps, every week, mostly automated
-          </p>
-        </div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            { icon: BarChart3, step: "01", title: "Pull data", desc: "Prices, fundamentals, and social sentiment from Finnhub, StockTwits, and AI-estimated sources", color: "from-blue-500 to-cyan-500" },
-            { icon: Brain, step: "02", title: "AI analysis", desc: "Google Gemini scores sentiment, evaluates positions, and generates structured recommendations", color: "from-violet-500 to-purple-500" },
-            { icon: Eye, step: "03", title: "Human review", desc: "Every signal is reviewed for hallucinations, bias, and missed context before going live", color: "from-amber-500 to-orange-500" },
-            { icon: Zap, step: "04", title: "Publish", desc: "5 signal types go live — PICK, SKIP, SELL, WATCH, HOLD — with confidence scores and ELI5 summaries", color: "from-emerald-500 to-green-500" },
-          ].map((s) => (
-            <div key={s.step} className="bg-card border border-border rounded-xl p-6 space-y-4 hover:border-primary/30 transition-colors">
-              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center shadow-lg`}>
-                <s.icon className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <span className="text-xs font-mono text-muted-foreground">{s.step}</span>
-                <h3 className="text-lg font-bold text-foreground mt-1">{s.title}</h3>
-              </div>
-              <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
-            </div>
-          ))}
-        </div>
+      {/* How it works CTA */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20 text-center space-y-5">
+        <h2 className="text-3xl sm:text-4xl font-bold text-foreground">Curious how it works?</h2>
+        <p className="text-muted-foreground max-w-lg mx-auto">
+          From data ingestion to AI analysis to human review — the full pipeline explained.
+        </p>
+        <Link to="/about">
+          <Button variant="outline" size="lg" className="text-base px-8">
+            Read the full breakdown
+            <ArrowRight className="w-5 h-5 ml-2" />
+          </Button>
+        </Link>
       </section>
 
       {/* CTA */}
