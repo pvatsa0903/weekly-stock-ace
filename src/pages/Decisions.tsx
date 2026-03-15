@@ -56,7 +56,7 @@ const Decisions = () => {
     },
   });
 
-  const { data: sellSignals = [], isLoading: signalsLoading } = useSellSignals(true);
+  const { data: sellSignals = [], isLoading: signalsLoading } = useSellSignals(false);
 
   // Unify rows into a single list
   type UnifiedRow =
