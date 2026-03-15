@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
-  { to: "/decisions", icon: CalendarCheck, label: "Weekly Decisions" },
   { to: "/alerts", icon: Bell, label: "Weekly Alerts" },
+  { to: "/decisions", icon: CalendarCheck, label: "Weekly Decisions" },
   { to: "/sentiment", icon: Radar, label: "Sentiment Radar" },
   { to: "/ticker", icon: Search, label: "Ticker Detail" },
   { to: "/about", icon: BookOpen, label: "About" },
