@@ -143,7 +143,7 @@ serve(async (req) => {
     }
     console.log('Financials response:', financials);
 
-    // Fetch recent news
+    // Fetch recent news (filtered to ticker-specific articles)
     let news: any[] = [];
     try {
       const newsResponse = await fetch(
@@ -151,12 +151,24 @@ serve(async (req) => {
       );
       const newsData = await newsResponse.json();
       if (Array.isArray(newsData)) {
-        news = newsData;
+        // Filter to only include articles that mention the ticker or company name
+        const companyName = (profile.name || '').toLowerCase();
+        const tickerLower = upperSymbol.toLowerCase();
+        news = newsData.filter((n: any) => {
+          const headline = (n.headline || '').toLowerCase();
+          const summary = (n.summary || '').toLowerCase();
+          return (
+            headline.includes(tickerLower) ||
+            headline.includes(companyName) ||
+            summary.includes(tickerLower) ||
+            summary.includes(companyName)
+          );
+        });
       }
     } catch (e) {
       console.log('News fetch failed, using empty array');
     }
-    console.log('News count:', news.length);
+    console.log('News count (filtered):', news.length);
 
     // Calculate sentiment scores (0-100 scale)
     const bullishPercent = newsSentiment?.sentiment?.bullishPercent || 0.5;
