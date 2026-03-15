@@ -5,12 +5,10 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
-  { to: "/alerts", icon: Bell, label: "Weekly Alerts" },
-  { to: "/decisions", icon: CalendarCheck, label: "Weekly Decisions" },
+  { to: "/signals", icon: Bell, label: "Signals" },
   { to: "/sentiment", icon: Radar, label: "Sentiment Radar" },
   { to: "/ticker", icon: Search, label: "Ticker Detail" },
   { to: "/about", icon: BookOpen, label: "About" },
-  { to: "/settings", icon: Settings, label: "Settings" },
 ];
 
 export const Sidebar = () => {
