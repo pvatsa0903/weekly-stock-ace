@@ -274,7 +274,7 @@ const Index = () => {
               subtitle="All time"
               icon={Target}
               tooltip="Percentage of AI picks that ended higher than their entry price"
-              trend={stats && stats.winRate >= 50 ? { value: stats.winRate - 50, isPositive: true } : undefined}
+              trend={stats && stats.winRate >= 50 ? { value: stats.winRate - 50, isPositive: true, label: `+${stats.winRate - 50}% above 50% baseline` } : undefined}
             />
             <StatCard
               title="Avg Return"
@@ -282,7 +282,7 @@ const Index = () => {
               subtitle="Per pick"
               icon={TrendingUp}
               tooltip="Average price change from entry to exit across all picks"
-              trend={stats ? { value: Math.abs(stats.avgReturn), isPositive: stats.avgReturn >= 0 } : undefined}
+              trend={stats ? { value: Math.abs(stats.avgReturn), isPositive: stats.avgReturn >= 0, label: `${stats.avgReturn >= 0 ? "+" : ""}${stats.avgReturn}% average return per pick` } : undefined}
             />
             <StatCard
               title="Next Update"

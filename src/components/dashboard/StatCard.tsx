@@ -16,6 +16,7 @@ interface StatCardProps {
   trend?: {
     value: number;
     isPositive: boolean;
+    label?: string;
   };
   className?: string;
 }
@@ -43,16 +44,25 @@ export const StatCard = ({ title, value, subtitle, icon: Icon, tooltip, trend, c
             </TooltipProvider>
           )}
           {trend && (
-            <span
-              className={cn(
-                "text-xs font-semibold px-2 py-1 rounded-full",
-                trend.isPositive
-                  ? "bg-[hsl(var(--pick-badge-bg))] text-[hsl(var(--pick-badge-fg))]"
-                  : "bg-[hsl(var(--sell-badge-bg))] text-[hsl(var(--sell-badge-fg))]"
-              )}
-            >
-              {trend.isPositive ? "+" : ""}{trend.value}%
-            </span>
+            <TooltipProvider delayDuration={200}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span
+                    className={cn(
+                      "text-xs font-semibold px-2 py-1 rounded-full cursor-default",
+                      trend.isPositive
+                        ? "bg-[hsl(var(--pick-badge-bg))] text-[hsl(var(--pick-badge-fg))]"
+                        : "bg-[hsl(var(--sell-badge-bg))] text-[hsl(var(--sell-badge-fg))]"
+                    )}
+                  >
+                    {trend.isPositive ? "+" : ""}{trend.value}%
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="max-w-[220px] text-xs">
+                  {trend.label || `${trend.isPositive ? "+" : ""}${trend.value}% change`}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
         </div>
       </div>
