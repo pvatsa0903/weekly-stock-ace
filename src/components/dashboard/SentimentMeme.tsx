@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useSellSignals } from "@/hooks/useSellSignals";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
 
 interface MemeEntry {
   src: string;
@@ -14,21 +15,28 @@ interface MemeEntry {
 const memes: Record<string, MemeEntry[]> = {
   bullish: [
     { src: "/memes/stonks.png", caption: "Portfolio looking real good rn 📈" },
-    { src: "/memes/leo-pointing.png", caption: "Me seeing my picks go green" },
+    { src: "/memes/leo-pointing.png", caption: "Me seeing my picks go green 💚" },
   ],
   bearish: [
-    { src: "/memes/this-is-fine.png", caption: "2 sell signals? This is fine. 🔥" },
-    { src: "/memes/not-stonks.png", caption: "When the market said sike" },
-    { src: "/memes/panic-sell.png", caption: "Checking the portfolio this morning" },
+    { src: "/memes/this-is-fine.png", caption: "2 sell signals? This is fine. 🔥🐶" },
+    { src: "/memes/not-stonks.png", caption: "When the market said sike 📉💀" },
+    { src: "/memes/panic-sell.png", caption: "Checking the portfolio this morning 😱" },
   ],
   cautious: [
-    { src: "/memes/suspicious-squint.png", caption: "Not sure if dip or cliff 🤔" },
-    { src: "/memes/nervous-sweating.png", caption: "Me watching my watchlist" },
+    { src: "/memes/suspicious-squint.png", caption: "Not sure if dip or cliff 🤔🧐" },
+    { src: "/memes/nervous-sweating.png", caption: "Me watching my watchlist rn 😰💧" },
   ],
   neutral: [
-    { src: "/memes/zen-trader.png", caption: "Market's flat? Time to chill 😎" },
-    { src: "/memes/suspicious-squint.png", caption: "Waiting for the market to pick a direction" },
+    { src: "/memes/zen-trader.png", caption: "Market's flat? Time to chill 😎🧘" },
+    { src: "/memes/suspicious-squint.png", caption: "Waiting for the market to pick a direction 🫠" },
   ],
+};
+
+const moodConfig = {
+  bullish: { emoji: "🟢", label: "Feeling Good", bg: "from-emerald-500/10 to-emerald-500/5", border: "border-emerald-500/20", pulse: "bg-emerald-500" },
+  bearish: { emoji: "🔴", label: "Uh Oh", bg: "from-rose-500/10 to-rose-500/5", border: "border-rose-500/20", pulse: "bg-rose-500" },
+  cautious: { emoji: "🟡", label: "Eyes Open", bg: "from-amber-500/10 to-amber-500/5", border: "border-amber-500/20", pulse: "bg-amber-500" },
+  neutral: { emoji: "⚪", label: "Meh", bg: "from-slate-500/10 to-slate-500/5", border: "border-slate-500/20", pulse: "bg-slate-500" },
 };
 
 const pickRandom = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
@@ -52,44 +60,81 @@ export const SentimentMeme = () => {
   const sellCount = sellSignals.filter((s) => s.signal === "SELL").length;
   const watchCount = sellSignals.filter((s) => s.signal === "WATCH").length;
 
-  let mood = "neutral";
+  let mood: keyof typeof moodConfig = "neutral";
   if (sellCount >= 2) mood = "bearish";
   else if (decision?.decision === "PICK" && sellCount === 0) mood = "bullish";
   else if (watchCount >= 2) mood = "cautious";
 
+  const config = moodConfig[mood];
+
   const [currentMeme, setCurrentMeme] = useState<MemeEntry | null>(null);
+  const [isShuffling, setIsShuffling] = useState(false);
 
   useEffect(() => {
     setCurrentMeme(pickRandom(memes[mood]));
   }, [mood]);
 
   const shuffle = () => {
-    const pool = memes[mood];
-    let next = pickRandom(pool);
-    // Avoid showing the same meme twice in a row
-    if (pool.length > 1) {
-      while (next.src === currentMeme?.src) next = pickRandom(pool);
-    }
-    setCurrentMeme(next);
+    setIsShuffling(true);
+    setTimeout(() => {
+      const pool = memes[mood];
+      let next = pickRandom(pool);
+      if (pool.length > 1) {
+        while (next.src === currentMeme?.src) next = pickRandom(pool);
+      }
+      setCurrentMeme(next);
+      setIsShuffling(false);
+    }, 300);
   };
 
   if (!currentMeme) return null;
 
   return (
-    <Card className="p-5 space-y-3 overflow-hidden">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-primary" />
-          <h2 className="text-lg font-semibold text-foreground">Vibe Check 📊</h2>
+    <Card className={cn("overflow-hidden border", config.border)}>
+      {/* Header with mood indicator */}
+      <div className={cn("p-5 pb-0 bg-gradient-to-b", config.bg)}>
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2.5">
+            <Sparkles className="w-5 h-5 text-primary" />
+            <h2 className="text-lg font-semibold text-foreground">Vibe Check</h2>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={shuffle}
+            className={cn("min-h-[44px] min-w-[44px] transition-transform", isShuffling && "animate-spin")}
+          >
+            <RefreshCw className="w-4 h-4" />
+          </Button>
         </div>
-        <Button variant="ghost" size="icon" onClick={shuffle} className="min-h-[44px] min-w-[44px]">
-          <RefreshCw className="w-4 h-4" />
-        </Button>
+
+        {/* Mood pill */}
+        <div className="flex items-center gap-2 mb-4">
+          <span className="relative flex h-2.5 w-2.5">
+            <span className={cn("animate-ping absolute inline-flex h-full w-full rounded-full opacity-75", config.pulse)} />
+            <span className={cn("relative inline-flex rounded-full h-2.5 w-2.5", config.pulse)} />
+          </span>
+          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            Mood: {config.label} {config.emoji}
+          </span>
+        </div>
       </div>
 
-      <p className="text-xs text-muted-foreground italic text-center">{currentMeme.caption}</p>
+      {/* Caption */}
+      <div className="px-5 py-3">
+        <p className={cn(
+          "text-sm font-medium text-center text-foreground/80 italic transition-opacity duration-300",
+          isShuffling ? "opacity-0" : "opacity-100"
+        )}>
+          "{currentMeme.caption}"
+        </p>
+      </div>
 
-      <div className="rounded-lg overflow-hidden border border-border">
+      {/* Meme image */}
+      <div className={cn(
+        "mx-5 mb-5 rounded-xl overflow-hidden border border-border shadow-sm transition-all duration-300",
+        isShuffling ? "opacity-0 scale-95" : "opacity-100 scale-100"
+      )}>
         <img
           src={currentMeme.src}
           alt={currentMeme.caption}
