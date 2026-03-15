@@ -189,7 +189,7 @@ const Index = () => {
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-foreground">Weekly Overview</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground">Dashboard</h1>
             <p className="text-sm text-muted-foreground">Week of {getWeekStart()}</p>
           </div>
           <div className="flex gap-2 w-full sm:w-auto">

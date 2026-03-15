@@ -83,7 +83,7 @@ const TickerDetail = () => {
         {/* Sticky search bar */}
         <div className="sticky top-0 lg:top-0 z-30 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3 bg-background/95 backdrop-blur-sm border-b border-border">
           <div className="flex flex-col gap-1 mb-3">
-            <h1 className="text-xl sm:text-2xl font-bold text-foreground">Ticker Detail</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground">Ticker</h1>
             <p className="text-sm text-muted-foreground">Look up any tracked stock to see live price, fundamentals, and recent news</p>
           </div>
           <div className="relative max-w-md">
