@@ -114,7 +114,7 @@ export const SentimentMovers = () => {
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        <span className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500">
+        <span className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-gain/10 text-gain">
           <Radio className="w-2.5 h-2.5 animate-pulse" />
           Live
         </span>

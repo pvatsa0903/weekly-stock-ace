@@ -33,11 +33,11 @@ const filterTypes = ["ALL", "SELL", "PICK", "WATCH", "HOLD", "SKIP"] as const;
 type FilterType = (typeof filterTypes)[number];
 
 const signalConfig: Record<string, { dot: string; bg: string; icon: React.ReactNode }> = {
-  SELL: { dot: "bg-rose-500", bg: "bg-rose-500/10 text-rose-500", icon: <TrendingDown className="w-3 h-3" /> },
-  WATCH: { dot: "bg-amber-500", bg: "bg-amber-500/10 text-amber-500", icon: <Eye className="w-3 h-3" /> },
-  HOLD: { dot: "bg-emerald-500", bg: "bg-emerald-500/10 text-emerald-500", icon: <ShieldCheck className="w-3 h-3" /> },
-  PICK: { dot: "bg-emerald-500", bg: "bg-emerald-100 text-emerald-700", icon: null },
-  SKIP: { dot: "bg-rose-500", bg: "bg-rose-100 text-rose-700", icon: null },
+  SELL: { dot: "bg-loss", bg: "bg-loss/10 text-loss", icon: <TrendingDown className="w-3 h-3" /> },
+  WATCH: { dot: "bg-warning", bg: "bg-warning/10 text-warning", icon: <Eye className="w-3 h-3" /> },
+  HOLD: { dot: "bg-gain", bg: "bg-gain/10 text-gain", icon: <ShieldCheck className="w-3 h-3" /> },
+  PICK: { dot: "bg-gain", bg: "bg-[hsl(var(--pick-badge-bg))] text-[hsl(var(--pick-badge-fg))]", icon: null },
+  SKIP: { dot: "bg-loss", bg: "bg-[hsl(var(--sell-badge-bg))] text-[hsl(var(--sell-badge-fg))]", icon: null },
 };
 
 const timeAgo = (dateStr: string) => {
@@ -178,7 +178,7 @@ const Signals = () => {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-xl sm:text-2xl font-bold text-foreground">Signals</h1>
-              <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500">
+              <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-gain/10 text-gain">
                 <Radio className="w-3 h-3 animate-pulse" />
                 Live
               </span>
@@ -291,7 +291,7 @@ const Signals = () => {
                               <div className="flex items-center gap-2">
                                 <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
                                   <div
-                                    className={cn("h-full rounded-full", row.signal === "SELL" ? "bg-rose-500" : row.signal === "WATCH" ? "bg-amber-500" : "bg-emerald-500")}
+                                    className={cn("h-full rounded-full", row.signal === "SELL" ? "bg-loss" : row.signal === "WATCH" ? "bg-warning" : "bg-gain")}
                                     style={{ width: `${row.confidence}%` }}
                                   />
                                 </div>
