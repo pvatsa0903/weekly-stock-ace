@@ -118,9 +118,9 @@ const About = () => {
           <h2 className="text-2xl font-bold text-foreground">What makes this different</h2>
           <div className="grid sm:grid-cols-3 gap-4">
             {[
-              { icon: Brain, label: "AI does the heavy lifting", desc: "Gemini analyzes news, scores sentiment, and generates structured recommendations — I wrote the prompts to make it actually useful" },
+              { icon: Brain, label: "AI does the heavy lifting", desc: "Gemini analyzes news, scores sentiment, evaluates sell signals, and generates structured recommendations across PICK, SKIP, SELL, WATCH, and HOLD categories" },
               { icon: Activity, label: "5 data sources, not 1", desc: "Reddit, X, StockTwits, Finnhub news, and AI analysis — blended with custom weights. When APIs fail, smart fallbacks kick in" },
-              { icon: Shield, label: "Nothing is hidden", desc: "Every pick has a confidence %, a rationale, an ELI5 explanation, and a full audit trail. If I'm wrong, you can see exactly why" },
+              { icon: Shield, label: "Nothing is hidden", desc: "Every signal has a confidence %, a rationale, an ELI5 explanation, risk flags, and a full audit trail. The entire decision history is searchable" },
             ].map((item) => (
               <div key={item.label} className="bg-card border border-border rounded-xl p-5 space-y-3">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
