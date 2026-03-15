@@ -102,7 +102,7 @@ export const SentimentMovers = () => {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Activity className="w-5 h-5 text-primary" />
-          <h2 className="text-lg font-semibold text-foreground">Top Sentiment Movers</h2>
+          <h2 className="text-lg font-semibold text-foreground"><span className="hidden sm:inline">Top </span>Sentiment Movers</h2>
           <TooltipProvider delayDuration={200}>
             <Tooltip>
               <TooltipTrigger asChild>
