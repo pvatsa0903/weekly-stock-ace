@@ -170,6 +170,26 @@ serve(async (req) => {
     }
     console.log('News count (filtered):', news.length);
 
+    // Fetch 30-day candle data
+    let candles: { date: string; close: number }[] = [];
+    try {
+      const toTs = Math.floor(Date.now() / 1000);
+      const fromTs = toTs - 30 * 86400;
+      const candleResponse = await fetch(
+        `${FINNHUB_BASE_URL}/stock/candle?symbol=${upperSymbol}&resolution=D&from=${fromTs}&to=${toTs}&token=${FINNHUB_API_KEY}`
+      );
+      const candleData = await candleResponse.json();
+      if (candleData.s === 'ok' && candleData.c && candleData.t) {
+        candles = candleData.t.map((ts: number, i: number) => ({
+          date: new Date(ts * 1000).toISOString().split('T')[0],
+          close: candleData.c[i],
+        }));
+      }
+    } catch (e) {
+      console.log('Candle fetch failed, using empty array');
+    }
+    console.log('Candle data points:', candles.length);
+
     // Calculate sentiment scores (0-100 scale)
     const bullishPercent = newsSentiment?.sentiment?.bullishPercent || 0.5;
     const newsScore = newsSentiment?.companyNewsScore || 0.5;
