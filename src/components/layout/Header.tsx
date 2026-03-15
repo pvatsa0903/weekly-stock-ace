@@ -16,7 +16,7 @@ export const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-[hsl(var(--header-bg))] backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
@@ -24,7 +24,7 @@ export const Header = () => {
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <TrendingUp className="w-4 h-4 text-primary-foreground" />
             </div>
-            <span className="font-bold text-foreground text-sm sm:text-base">StockPulse</span>
+            <span className="font-bold text-[hsl(var(--header-foreground))] text-sm sm:text-base">StockPulse</span>
           </NavLink>
 
           {/* Desktop Nav */}
@@ -38,8 +38,8 @@ export const Header = () => {
                   className={cn(
                     "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
                     isActive
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                      ? "bg-white/15 text-white"
+                      : "text-white/60 hover:text-white hover:bg-white/10"
                   )}
                 >
                   <item.icon className="w-4 h-4" />
@@ -52,7 +52,7 @@ export const Header = () => {
           {/* Mobile Toggle */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
+            className="md:hidden p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors text-[hsl(var(--header-foreground))]"
           >
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -63,7 +63,7 @@ export const Header = () => {
       {mobileOpen && (
         <>
           <div className="fixed inset-0 top-14 bg-foreground/20 z-40 md:hidden" onClick={() => setMobileOpen(false)} />
-          <div className="md:hidden absolute top-14 left-0 right-0 bg-card border-b border-border shadow-lg z-50">
+          <div className="md:hidden absolute top-14 left-0 right-0 bg-[hsl(var(--header-bg))] border-b border-white/10 shadow-lg z-50">
             <nav className="max-w-7xl mx-auto px-3 py-2 space-y-0.5">
               {navItems.map((item) => {
                 const isActive = location.pathname === item.to;
@@ -75,8 +75,8 @@ export const Header = () => {
                     className={cn(
                       "flex items-center gap-2.5 px-3 py-3 min-h-[44px] rounded-lg text-sm font-medium transition-colors",
                       isActive
-                        ? "bg-primary text-primary-foreground"
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                        ? "bg-white/15 text-white"
+                        : "text-white/60 hover:text-white hover:bg-white/10"
                     )}
                   >
                     <item.icon className="w-4 h-4" />
