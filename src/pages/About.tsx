@@ -31,22 +31,22 @@ const pipelineSteps = [
   {
     icon: Brain,
     title: "Let the AI think",
-    description: "Google Gemini reads through news headlines for each ticker and scores them — not just positive/negative, but with a confidence level. It's like having an analyst who never sleeps and reads everything.",
-    details: ["Gemini 2.5 Flash Lite", "Weighted multi-source blend", "Graceful API fallbacks"],
+    description: "Google Gemini reads through news headlines for each ticker and scores them — not just positive/negative, but with a confidence level. It also evaluates existing positions for sell, watch, or hold signals based on 14-day sentiment trends and fundamental deterioration.",
+    details: ["Gemini 2.5 Flash Lite", "Weighted multi-source blend", "Sell signal evaluator"],
     color: "from-violet-500 to-purple-500",
   },
   {
     icon: Eye,
     title: "I review everything",
-    description: "Here's the thing — I don't trust AI blindly. Every recommendation gets reviewed by me before it goes live. I check for hallucinations, bias, and whether the AI missed something obvious (like a company being sued).",
-    details: ["Override capability", "Bias checks", "Final PICK / SKIP call"],
+    description: "Every recommendation gets reviewed before it goes live. I check for hallucinations, bias, and whether the AI missed something obvious. The system generates five signal types — PICK, SKIP, SELL, WATCH, and HOLD — each with reasoning and confidence scores.",
+    details: ["Override capability", "5 signal types", "Final decision call"],
     color: "from-amber-500 to-orange-500",
   },
   {
     icon: Zap,
     title: "Publish & track",
-    description: "Two picks go live with confidence scores, rationale, and plain-English explanations. From that moment, the system tracks performance — so we can see if the picks actually worked.",
-    details: ["Auto dashboard update", "Win/loss tracking", "Full audit trail"],
+    description: "Signals go live with confidence scores, rationale, and plain-English ELI5 explanations. The dashboard consolidates everything — weekly picks alongside active sell/watch/hold alerts — with full performance tracking over time.",
+    details: ["Unified dashboard", "Win/loss tracking", "Full audit trail"],
     color: "from-emerald-500 to-green-500",
   },
 ];
@@ -79,13 +79,13 @@ const About = () => {
           <div className="absolute -top-4 -left-4 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
           <div className="relative space-y-5">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground leading-tight">
-              What if you only had to look at <span className="text-primary">two stocks</span> a week?
+              What if you only had to look at <span className="text-primary">two stocks</span> a week — and know when to <span className="text-primary">sell</span>?
             </h1>
             <p className="text-base sm:text-lg text-muted-foreground max-w-2xl leading-relaxed">
               That's the idea behind this project. I built a system that pulls market data from 
-              multiple sources, runs it through Google Gemini for AI-powered analysis, and narrows 
-              everything down to just two weekly picks — with full transparency on <em>why</em> each 
-              one was chosen.
+              multiple sources, runs it through Google Gemini for AI-powered analysis, and delivers 
+              five types of signals — <strong>PICK, SKIP, SELL, WATCH, and HOLD</strong> — with full 
+              transparency on <em>why</em> each decision was made.
             </p>
             <p className="text-sm text-muted-foreground max-w-2xl leading-relaxed">
               It's not a trading bot. It's not financial advice. It's a{" "}
@@ -118,9 +118,9 @@ const About = () => {
           <h2 className="text-2xl font-bold text-foreground">What makes this different</h2>
           <div className="grid sm:grid-cols-3 gap-4">
             {[
-              { icon: Brain, label: "AI does the heavy lifting", desc: "Gemini analyzes news, scores sentiment, and generates structured recommendations — I wrote the prompts to make it actually useful" },
+              { icon: Brain, label: "AI does the heavy lifting", desc: "Gemini analyzes news, scores sentiment, evaluates sell signals, and generates structured recommendations across PICK, SKIP, SELL, WATCH, and HOLD categories" },
               { icon: Activity, label: "5 data sources, not 1", desc: "Reddit, X, StockTwits, Finnhub news, and AI analysis — blended with custom weights. When APIs fail, smart fallbacks kick in" },
-              { icon: Shield, label: "Nothing is hidden", desc: "Every pick has a confidence %, a rationale, an ELI5 explanation, and a full audit trail. If I'm wrong, you can see exactly why" },
+              { icon: Shield, label: "Nothing is hidden", desc: "Every signal has a confidence %, a rationale, an ELI5 explanation, risk flags, and a full audit trail. The entire decision history is searchable" },
             ].map((item) => (
               <div key={item.label} className="bg-card border border-border rounded-xl p-5 space-y-3">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -283,9 +283,9 @@ const About = () => {
           <div className="grid sm:grid-cols-2 gap-3">
             {[
               { icon: Database, text: "Data engineering — multi-source ingestion, cron-scheduled pipelines, schema design" },
-              { icon: Brain, text: "AI integration — prompt engineering, structured output parsing, fallback logic" },
-              { icon: Lightbulb, text: "Product thinking — constraints that force clarity, UX that explains itself" },
-              { icon: Shield, text: "Responsible ML — human oversight, audit trails, transparent confidence scores" },
+              { icon: Brain, text: "AI integration — prompt engineering, structured output parsing, sell signal evaluation, fallback logic" },
+              { icon: Lightbulb, text: "Product thinking — unified dashboard across 5 signal types, prioritized alerts, ticker-specific news filtering" },
+              { icon: Shield, text: "Responsible ML — human oversight, audit trails, transparent confidence scores, full decision history" },
             ].map((item) => (
               <div key={item.text} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
                 <item.icon className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
