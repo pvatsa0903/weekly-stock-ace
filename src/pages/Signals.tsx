@@ -214,14 +214,14 @@ const Signals = () => {
           <div className="flex gap-1 border border-border rounded-lg p-0.5">
             <button
               onClick={() => setView("card")}
-              className={cn("p-1.5 rounded-md transition-colors", view === "card" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}
+              className={cn("p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md transition-colors", view === "card" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}
               title="Card view"
             >
               <LayoutGrid className="w-4 h-4" />
             </button>
             <button
               onClick={() => setView("table")}
-              className={cn("p-1.5 rounded-md transition-colors", view === "table" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}
+              className={cn("p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md transition-colors", view === "table" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}
               title="Table view"
             >
               <Table2 className="w-4 h-4" />
