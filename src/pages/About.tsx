@@ -31,22 +31,22 @@ const pipelineSteps = [
   {
     icon: Brain,
     title: "Let the AI think",
-    description: "Google Gemini reads through news headlines for each ticker and scores them — not just positive/negative, but with a confidence level. It's like having an analyst who never sleeps and reads everything.",
-    details: ["Gemini 2.5 Flash Lite", "Weighted multi-source blend", "Graceful API fallbacks"],
+    description: "Google Gemini reads through news headlines for each ticker and scores them — not just positive/negative, but with a confidence level. It also evaluates existing positions for sell, watch, or hold signals based on 14-day sentiment trends and fundamental deterioration.",
+    details: ["Gemini 2.5 Flash Lite", "Weighted multi-source blend", "Sell signal evaluator"],
     color: "from-violet-500 to-purple-500",
   },
   {
     icon: Eye,
     title: "I review everything",
-    description: "Here's the thing — I don't trust AI blindly. Every recommendation gets reviewed by me before it goes live. I check for hallucinations, bias, and whether the AI missed something obvious (like a company being sued).",
-    details: ["Override capability", "Bias checks", "Final PICK / SKIP call"],
+    description: "Every recommendation gets reviewed before it goes live. I check for hallucinations, bias, and whether the AI missed something obvious. The system generates five signal types — PICK, SKIP, SELL, WATCH, and HOLD — each with reasoning and confidence scores.",
+    details: ["Override capability", "5 signal types", "Final decision call"],
     color: "from-amber-500 to-orange-500",
   },
   {
     icon: Zap,
     title: "Publish & track",
-    description: "Two picks go live with confidence scores, rationale, and plain-English explanations. From that moment, the system tracks performance — so we can see if the picks actually worked.",
-    details: ["Auto dashboard update", "Win/loss tracking", "Full audit trail"],
+    description: "Signals go live with confidence scores, rationale, and plain-English ELI5 explanations. The dashboard consolidates everything — weekly picks alongside active sell/watch/hold alerts — with full performance tracking over time.",
+    details: ["Unified dashboard", "Win/loss tracking", "Full audit trail"],
     color: "from-emerald-500 to-green-500",
   },
 ];
