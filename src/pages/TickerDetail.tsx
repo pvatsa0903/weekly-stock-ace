@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useStockData } from "@/hooks/useStockData";
 import { TickerHeader } from "@/components/ticker/TickerHeader";
 import { SellSignalCard } from "@/components/ticker/SellSignalCard";
+import { PriceChart } from "@/components/ticker/PriceChart";
 import { useSellSignalForTicker } from "@/hooks/useSellSignals";
 import { SentimentCard } from "@/components/ticker/SentimentCard";
 import { FundamentalsCard } from "@/components/ticker/FundamentalsCard";
