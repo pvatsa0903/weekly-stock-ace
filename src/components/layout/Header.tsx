@@ -18,7 +18,7 @@ export const Header = () => {
   return (
     <header className="sticky top-0 z-50 w-full" style={{ background: "linear-gradient(135deg, hsl(var(--header-bg)), hsl(var(--header-bg-end)))" }}>
       {/* Top accent bar */}
-      <div className="h-[2px] w-full bg-gradient-to-r from-[hsl(var(--header-accent))] via-[hsl(346,77%,60%)] to-transparent" />
+      <div className="h-[2px] w-full bg-gradient-to-r from-[hsl(var(--header-accent))] via-[hsl(152,69%,60%)] to-transparent" />
 
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
         <div className="flex items-center justify-between h-14">
