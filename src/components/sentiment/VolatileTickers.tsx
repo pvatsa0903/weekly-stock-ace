@@ -57,8 +57,11 @@ export const VolatileTickers = ({ data }: Props) => {
           </Tooltip>
         </TooltipProvider>
       </div>
-      <p className="text-xs text-muted-foreground mb-5 font-mono">
+      <p className="text-xs text-muted-foreground mb-2 font-mono">
         {formatDate(data[0]?.previousDate)} → {formatDate(data[0]?.latestDate)} · sentiment swing ranking
+      </p>
+      <p className="text-[10px] text-muted-foreground/60 mb-5">
+        Score: 0 = extremely bearish · 50 = neutral · 100 = extremely bullish
       </p>
 
       <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
