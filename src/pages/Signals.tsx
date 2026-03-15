@@ -296,6 +296,7 @@ const Signals = () => {
                                   />
                                 </div>
                                 <span className="text-xs font-mono text-muted-foreground">{row.confidence}%</span>
+                                <span className="text-[10px] text-muted-foreground/70">{row.confidence >= 90 ? "Very High" : row.confidence >= 75 ? "High" : row.confidence >= 60 ? "Moderate" : "Low"}</span>
                                               </div>
                                             )}
                                             {/* Issued date + price */}
