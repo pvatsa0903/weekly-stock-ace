@@ -275,7 +275,7 @@ const Decisions = () => {
                       return (
                         <tr key={`s-${s.id}`}>
                           <td className="font-mono text-sm whitespace-nowrap">
-                            {new Date(s.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                            {formatDate(s.created_at)}
                           </td>
                           <td>{typeBadge(s.signal)}</td>
                           <td>
