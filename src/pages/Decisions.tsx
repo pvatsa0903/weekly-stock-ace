@@ -228,17 +228,17 @@ const Decisions = () => {
                   {filteredRows.map((row) => {
                     if (row.type === "decision") {
                       const d = row.data as WeeklyDecision;
-                      const { range, isCurrentWeek } = formatWeekRange(d.week_ending);
+                      const currentWeek = isCurrentWeek(d.week_ending);
                       return (
                         <tr key={`d-${d.id}`}>
                           <td className="font-mono text-sm whitespace-nowrap">
                             <div className="flex items-center gap-2">
-                              {isCurrentWeek && (
+                              {currentWeek && (
                                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
                               )}
-                              <span>{range}</span>
+                              <span>{formatDate(d.week_ending)}</span>
                             </div>
-                            {isCurrentWeek && (
+                            {currentWeek && (
                               <span className="text-[10px] text-emerald-500 font-semibold uppercase tracking-wider">Current Week</span>
                             )}
                           </td>
