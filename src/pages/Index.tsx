@@ -282,7 +282,7 @@ const Index = () => {
               subtitle="Per pick"
               icon={TrendingUp}
               tooltip="Average price change from entry to exit across all picks"
-              trend={stats ? { value: Math.abs(stats.avgReturn), isPositive: stats.avgReturn >= 0 } : undefined}
+              trend={stats ? { value: Math.abs(stats.avgReturn), isPositive: stats.avgReturn >= 0, label: `${stats.avgReturn >= 0 ? "+" : ""}${stats.avgReturn}% average return per pick` } : undefined}
             />
             <StatCard
               title="Next Update"
