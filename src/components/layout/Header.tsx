@@ -24,7 +24,7 @@ export const Header = () => {
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
           <NavLink to="/" className="flex items-center gap-2.5 shrink-0 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[hsl(var(--header-accent))] to-[hsl(346,77%,40%)] flex items-center justify-center shadow-lg shadow-[hsl(var(--header-accent))]/20 group-hover:shadow-[hsl(var(--header-accent))]/40 transition-shadow">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[hsl(var(--header-accent))] to-[hsl(152,69%,35%)] flex items-center justify-center shadow-lg shadow-[hsl(var(--header-accent))]/20 group-hover:shadow-[hsl(var(--header-accent))]/40 transition-shadow">
               <TrendingUp className="w-[18px] h-[18px] text-white" />
             </div>
             <div className="flex flex-col">
