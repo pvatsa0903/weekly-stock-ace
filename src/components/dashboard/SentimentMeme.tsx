@@ -127,7 +127,7 @@ export const SentimentMeme = () => {
 
         {/* Meme image — full width, capped height */}
         <div className={cn(
-          "rounded-lg overflow-hidden border border-border shadow-sm transition-all duration-300",
+          "rounded-lg overflow-hidden transition-all duration-300",
           isShuffling ? "opacity-0 scale-95" : "opacity-100 scale-100"
         )}>
           <img
