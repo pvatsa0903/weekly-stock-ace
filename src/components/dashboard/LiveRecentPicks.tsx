@@ -1,4 +1,4 @@
-import { TrendingUp, TrendingDown, ArrowRight, Eye, ShieldCheck } from "lucide-react";
+import { TrendingUp, TrendingDown, ArrowRight, Eye, ShieldCheck, Radio } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useMultipleStocks } from "@/hooks/useStockData";
@@ -62,7 +62,10 @@ export const LiveRecentPicks = () => {
   return (
     <div className="bg-card rounded-xl border border-border">
       <div className="p-4 border-b border-border flex items-center justify-between">
-        <h3 className="font-semibold text-foreground">Market Watch</h3>
+        <div className="flex items-center gap-2">
+          <Radio className="w-5 h-5 text-primary" />
+          <h3 className="font-semibold text-foreground">Market Watch</h3>
+        </div>
         <Link to="/signals" className="text-sm text-primary hover:underline flex items-center gap-1">
           View all <ArrowRight className="w-3 h-3" />
         </Link>
