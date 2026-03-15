@@ -107,7 +107,7 @@ const Sentiment = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-foreground">Sentiment Radar</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-foreground">Sentiment Radar</h1>
               <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500">
                 <Radio className="w-3 h-3 animate-pulse" />
                 Live

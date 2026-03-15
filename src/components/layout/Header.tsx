@@ -52,7 +52,7 @@ export const Header = () => {
           {/* Mobile Toggle */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
+            className="md:hidden p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-muted transition-colors"
           >
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -73,7 +73,7 @@ export const Header = () => {
                     to={item.to}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
-                      "flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                      "flex items-center gap-2.5 px-3 py-3 min-h-[44px] rounded-lg text-sm font-medium transition-colors",
                       isActive
                         ? "bg-primary text-primary-foreground"
                         : "text-muted-foreground hover:text-foreground hover:bg-muted"
