@@ -221,7 +221,7 @@ const Landing = () => {
           <div className="flex gap-4">
             <Link to="/about" className="hover:text-foreground transition-colors">About</Link>
             <Link to="/dashboard" className="hover:text-foreground transition-colors">Dashboard</Link>
-            <Link to="/alerts" className="hover:text-foreground transition-colors">Alerts</Link>
+            <Link to="/signals" className="hover:text-foreground transition-colors">Signals</Link>
           </div>
         </div>
       </footer>
