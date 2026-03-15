@@ -82,8 +82,8 @@ export const SentimentMeme = () => {
           <Sparkles className="w-4 h-4 text-primary" />
           <h3 className="text-sm font-semibold text-foreground">Vibe Check 📊</h3>
         </div>
-        <Button variant="ghost" size="icon" onClick={shuffle} className="h-7 w-7">
-          <RefreshCw className="w-3.5 h-3.5" />
+        <Button variant="ghost" size="icon" onClick={shuffle} className="min-h-[44px] min-w-[44px]">
+          <RefreshCw className="w-4 h-4" />
         </Button>
       </div>
 

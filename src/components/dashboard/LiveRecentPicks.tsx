@@ -13,11 +13,11 @@ interface WatchItem {
 }
 
 const signalStyle: Record<string, { bg: string; icon?: React.ReactNode }> = {
-  SELL: { bg: "bg-rose-100 text-rose-700", icon: <TrendingDown className="w-3 h-3" /> },
-  PICK: { bg: "bg-emerald-100 text-emerald-700" },
-  WATCH: { bg: "bg-amber-100 text-amber-700", icon: <Eye className="w-3 h-3" /> },
-  HOLD: { bg: "bg-emerald-100 text-emerald-700", icon: <ShieldCheck className="w-3 h-3" /> },
-  SKIP: { bg: "bg-rose-100 text-rose-700" },
+  SELL: { bg: "bg-[hsl(var(--sell-badge-bg))] text-[hsl(var(--sell-badge-fg))]", icon: <TrendingDown className="w-3 h-3" /> },
+  PICK: { bg: "bg-[hsl(var(--pick-badge-bg))] text-[hsl(var(--pick-badge-fg))]" },
+  WATCH: { bg: "bg-[hsl(var(--watch-badge-bg))] text-[hsl(var(--watch-badge-fg))]", icon: <Eye className="w-3 h-3" /> },
+  HOLD: { bg: "bg-[hsl(var(--hold-badge-bg))] text-[hsl(var(--hold-badge-fg))]", icon: <ShieldCheck className="w-3 h-3" /> },
+  SKIP: { bg: "bg-[hsl(var(--sell-badge-bg))] text-[hsl(var(--sell-badge-fg))]" },
 };
 
 const MAX_ITEMS = 4;

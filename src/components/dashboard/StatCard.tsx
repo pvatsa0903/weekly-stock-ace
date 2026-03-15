@@ -47,8 +47,8 @@ export const StatCard = ({ title, value, subtitle, icon: Icon, tooltip, trend, c
               className={cn(
                 "text-xs font-semibold px-2 py-1 rounded-full",
                 trend.isPositive
-                  ? "bg-emerald-100 text-emerald-700"
-                  : "bg-rose-100 text-rose-700"
+                  ? "bg-[hsl(var(--pick-badge-bg))] text-[hsl(var(--pick-badge-fg))]"
+                  : "bg-[hsl(var(--sell-badge-bg))] text-[hsl(var(--sell-badge-fg))]"
               )}
             >
               {trend.isPositive ? "+" : ""}{trend.value}%

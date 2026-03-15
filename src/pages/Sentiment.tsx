@@ -113,8 +113,8 @@ const Sentiment = () => {
                 Live
               </span>
             </div>
-            <p className="text-muted-foreground">
-              Top 5 most volatile tickers by sentiment — aggregated from Reddit, X &amp; StockTwits over the last 7 days
+            <p className="text-sm text-muted-foreground">
+              Top 5 most volatile tickers by sentiment over the last 7 days
             </p>
           </div>
           <Button
