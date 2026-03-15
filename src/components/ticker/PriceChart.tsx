@@ -34,9 +34,7 @@ export const PriceChart = ({ candles, signalDate, signalType }: PriceChartProps)
   const min = Math.min(...prices);
   const max = Math.max(...prices);
   const padding = (max - min) * 0.1 || 1;
-  const changePct = ((prices[prices.length - 1] - prices[0]) / prices[0]) * 100;
-  const isFlat = Math.abs(changePct) <= 0.5;
-  const isUp = changePct > 0.5;
+  const isUp = prices[prices.length - 1] >= prices[0];
 
   // Find the closest candle date to the signal date for the reference line
   const signalLabel = signalDate
