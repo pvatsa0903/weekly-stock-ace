@@ -63,7 +63,7 @@ export const Header = () => {
       {mobileOpen && (
         <>
           <div className="fixed inset-0 top-14 bg-foreground/20 z-40 md:hidden" onClick={() => setMobileOpen(false)} />
-          <div className="md:hidden absolute top-14 left-0 right-0 bg-card border-b border-border shadow-lg z-50">
+          <div className="md:hidden absolute top-14 left-0 right-0 bg-[hsl(var(--header-bg))] border-b border-white/10 shadow-lg z-50">
             <nav className="max-w-7xl mx-auto px-3 py-2 space-y-0.5">
               {navItems.map((item) => {
                 const isActive = location.pathname === item.to;
@@ -75,8 +75,8 @@ export const Header = () => {
                     className={cn(
                       "flex items-center gap-2.5 px-3 py-3 min-h-[44px] rounded-lg text-sm font-medium transition-colors",
                       isActive
-                        ? "bg-primary text-primary-foreground"
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                        ? "bg-white/15 text-white"
+                        : "text-white/60 hover:text-white hover:bg-white/10"
                     )}
                   >
                     <item.icon className="w-4 h-4" />
