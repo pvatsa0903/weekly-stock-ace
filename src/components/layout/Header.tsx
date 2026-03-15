@@ -38,8 +38,8 @@ export const Header = () => {
                   className={cn(
                     "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
                     isActive
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                      ? "bg-white/15 text-white"
+                      : "text-white/60 hover:text-white hover:bg-white/10"
                   )}
                 >
                   <item.icon className="w-4 h-4" />
