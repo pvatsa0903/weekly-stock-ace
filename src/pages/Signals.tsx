@@ -291,7 +291,7 @@ const Signals = () => {
                               <div className="flex items-center gap-2">
                                 <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
                                   <div
-                                    className={cn("h-full rounded-full", row.signal === "SELL" ? "bg-rose-500" : row.signal === "WATCH" ? "bg-amber-500" : "bg-emerald-500")}
+                                    className={cn("h-full rounded-full", row.signal === "SELL" ? "bg-loss" : row.signal === "WATCH" ? "bg-warning" : "bg-gain")}
                                     style={{ width: `${row.confidence}%` }}
                                   />
                                 </div>
