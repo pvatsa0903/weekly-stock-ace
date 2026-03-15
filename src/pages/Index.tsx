@@ -46,21 +46,33 @@ const Index = () => {
   const nextUpdate = getNextSunday();
   const queryClient = useQueryClient();
   const [isRunningAI, setIsRunningAI] = useState(false);
+  const [aiStatus, setAiStatus] = useState("");
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const runAIPicker = async () => {
     setIsRunningAI(true);
-    toast.info("Running AI Stock Picker…");
+    setAiStatus("Fetching market data…");
     try {
+      await new Promise((r) => setTimeout(r, 1200));
+      setAiStatus("Running AI analysis…");
       const { data, error } = await supabase.functions.invoke("ai-stock-picker");
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-      toast.success(`AI Picker done — ${data.decision}: ${[data.pick1, data.pick2].filter(Boolean).join(", ") || "No picks"}`);
+      setAiStatus("Saving signals…");
+      await new Promise((r) => setTimeout(r, 600));
       queryClient.invalidateQueries({ queryKey: ["weekly_picks"] });
+      queryClient.invalidateQueries({ queryKey: ["sell_signals"] });
+
+      const picks = [data.pick1, data.pick2].filter(Boolean);
+      const summary = picks.length > 0
+        ? `${data.decision}: ${picks.join(", ")} · ${data.signalsGenerated ?? ""} signals processed`
+        : `Decision: ${data.decision} — no picks this week`;
+      toast.success(summary, { duration: 5000 });
     } catch (err: any) {
       toast.error(err.message || "AI Picker failed");
     } finally {
       setIsRunningAI(false);
+      setAiStatus("");
     }
   };
 
