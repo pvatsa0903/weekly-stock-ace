@@ -137,9 +137,11 @@ const Index = () => {
       type: s.signal as SuggestionType,
       confidence: s.confidence,
       why: s.reasoning,
-      eli5: s.fundamental_flags
-        ? `Key risks: ${s.fundamental_flags}`
-        : undefined,
+      eli5: s.signal === "SELL"
+        ? `Uh oh — this one's not looking so great right now! 🚨 The grown-ups who watch money stuff are worried, so we think it's time to say bye-bye and sell it.`
+        : s.signal === "WATCH"
+        ? `Hmm, this one's being a little sneaky 👀 — we're not sure if it's gonna be good or bad, so we're just gonna keep watching it like a hawk for now!`
+        : `This one's doing okay — like getting a B+ on a test! 📚 Not amazing, not terrible. We're just gonna hold onto it and see what happens next.`,
       priority: priorityMap[s.signal] ?? 5,
     });
   });
