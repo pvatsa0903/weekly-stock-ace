@@ -170,7 +170,7 @@ serve(async (req) => {
     }
     console.log('News count (filtered):', news.length);
 
-    // Fetch 30-day candle data
+    // Fetch 30-day candle data (Finnhub first, Yahoo Finance fallback)
     let candles: { date: string; close: number }[] = [];
     try {
       const toTs = Math.floor(Date.now() / 1000);
@@ -186,9 +186,35 @@ serve(async (req) => {
         }));
       }
     } catch (e) {
-      console.log('Candle fetch failed, using empty array');
+      console.log('Finnhub candle fetch failed');
     }
-    console.log('Candle data points:', candles.length);
+
+    // Fallback: Yahoo Finance chart API if Finnhub returned no candles
+    if (candles.length < 2) {
+      console.log('Finnhub candles empty, trying Yahoo Finance fallback...');
+      try {
+        const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${upperSymbol}?range=1mo&interval=1d`;
+        const yahooResponse = await fetch(yahooUrl, {
+          headers: { 'User-Agent': 'Mozilla/5.0' },
+        });
+        const yahooData = await yahooResponse.json();
+        const result = yahooData?.chart?.result?.[0];
+        if (result?.timestamp && result?.indicators?.quote?.[0]?.close) {
+          const timestamps = result.timestamp;
+          const closes = result.indicators.quote[0].close;
+          candles = timestamps
+            .map((ts: number, i: number) => ({
+              date: new Date(ts * 1000).toISOString().split('T')[0],
+              close: closes[i],
+            }))
+            .filter((c: { date: string; close: number | null }) => c.close != null);
+          console.log('Yahoo Finance fallback returned', candles.length, 'candles');
+        }
+      } catch (e) {
+        console.log('Yahoo Finance fallback also failed');
+      }
+    }
+    console.log('Final candle data points:', candles.length);
 
     // Calculate sentiment scores (0-100 scale)
     const bullishPercent = newsSentiment?.sentiment?.bullishPercent || 0.5;
