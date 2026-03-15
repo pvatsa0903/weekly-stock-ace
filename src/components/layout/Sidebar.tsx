@@ -4,7 +4,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+  { to: "/", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/alerts", icon: Bell, label: "Weekly Alerts" },
   { to: "/decisions", icon: CalendarCheck, label: "Weekly Decisions" },
   { to: "/sentiment", icon: Radar, label: "Sentiment Radar" },
