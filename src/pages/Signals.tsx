@@ -32,12 +32,12 @@ type UnifiedRow =
 const filterTypes = ["ALL", "SELL", "PICK", "WATCH", "HOLD", "SKIP"] as const;
 type FilterType = (typeof filterTypes)[number];
 
-const signalConfig: Record<string, { dot: string; bg: string; icon: React.ReactNode }> = {
-  SELL: { dot: "bg-loss", bg: "bg-loss/10 text-loss", icon: <TrendingDown className="w-3 h-3" /> },
-  WATCH: { dot: "bg-warning", bg: "bg-warning/10 text-warning", icon: <Eye className="w-3 h-3" /> },
-  HOLD: { dot: "bg-gain", bg: "bg-gain/10 text-gain", icon: <ShieldCheck className="w-3 h-3" /> },
-  PICK: { dot: "bg-gain", bg: "bg-[hsl(var(--pick-badge-bg))] text-[hsl(var(--pick-badge-fg))]", icon: null },
-  SKIP: { dot: "bg-loss", bg: "bg-[hsl(var(--sell-badge-bg))] text-[hsl(var(--sell-badge-fg))]", icon: null },
+const signalConfig: Record<string, { dot: string; bg: string; icon: React.ReactNode; subtitle: string }> = {
+  SELL: { dot: "bg-loss", bg: "bg-loss/10 text-loss", icon: <TrendingDown className="w-3 h-3" />, subtitle: "Hold signal — AI recommends selling these positions" },
+  WATCH: { dot: "bg-warning", bg: "bg-warning/10 text-warning", icon: <Eye className="w-3 h-3" />, subtitle: "Hold signal — monitor these positions for deterioration" },
+  HOLD: { dot: "bg-gain", bg: "bg-gain/10 text-gain", icon: <ShieldCheck className="w-3 h-3" />, subtitle: "Hold signal — safe to keep, no action needed" },
+  PICK: { dot: "bg-gain", bg: "bg-[hsl(var(--pick-badge-bg))] text-[hsl(var(--pick-badge-fg))]", icon: null, subtitle: "Buy signal — AI recommends buying these stocks" },
+  SKIP: { dot: "bg-loss", bg: "bg-[hsl(var(--sell-badge-bg))] text-[hsl(var(--sell-badge-fg))]", icon: null, subtitle: "Buy signal — AI recommends skipping these stocks" },
 };
 
 const timeAgo = (dateStr: string) => {
@@ -183,7 +183,7 @@ const Signals = () => {
                 Live
               </span>
             </div>
-            <p className="text-sm text-muted-foreground">All picks, skips, and sell signals in one place</p>
+            <p className="text-sm text-muted-foreground">Buy signals (PICK/SKIP) and hold signals (SELL/WATCH/HOLD) — two independent analyses in one view</p>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={runEvaluator} disabled={isRunning}>
@@ -264,10 +264,13 @@ const Signals = () => {
                 const gcfg = signalConfig[group];
                 return (
                   <div key={group} className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <span className={cn("w-2.5 h-2.5 rounded-full", gcfg.dot)} />
-                      <h2 className="text-sm font-semibold text-foreground tracking-wide uppercase">{group}</h2>
-                      <span className="text-xs text-muted-foreground">({groupRows.length})</span>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className={cn("w-2.5 h-2.5 rounded-full", gcfg.dot)} />
+                        <h2 className="text-sm font-semibold text-foreground tracking-wide uppercase">{group}</h2>
+                        <span className="text-xs text-muted-foreground">({groupRows.length})</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground/70 pl-[18px]">{gcfg.subtitle}</p>
                     </div>
                     <div className="grid gap-4 md:grid-cols-2">
                       {groupRows.map((row) => {

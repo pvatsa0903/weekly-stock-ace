@@ -65,7 +65,7 @@ export const SellSignalCard = ({ signal }: SellSignalCardProps) => {
                 {signal.signal}
               </span>
             </div>
-            <p className="text-xs text-muted-foreground">{config.label}</p>
+            <p className="text-xs text-muted-foreground">Hold Signal · {config.label}</p>
           </div>
         </div>
 

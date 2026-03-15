@@ -38,16 +38,21 @@ export const TickerHeader = ({ data }: TickerHeaderProps) => {
               />
             )}
             <span className="ticker-badge text-lg px-3 py-1.5">{data.ticker}</span>
-            <span
-              className={cn(
-                "text-sm font-bold px-3 py-1 rounded-full",
-                isPick
-                  ? "bg-emerald-500 text-white"
-                  : "bg-rose-500 text-white"
-              )}
-            >
-              {data.decision}
-            </span>
+            <div>
+              <div className="flex items-center gap-2">
+                <span
+                  className={cn(
+                    "text-sm font-bold px-3 py-1 rounded-full",
+                    isPick
+                      ? "bg-emerald-500 text-white"
+                      : "bg-rose-500 text-white"
+                  )}
+                >
+                  {data.decision}
+                </span>
+                <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Buy Signal</span>
+              </div>
+            </div>
             <span
               className={cn(
                 "text-xs font-semibold px-2.5 py-1 rounded-full border",
