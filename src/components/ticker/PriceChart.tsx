@@ -52,13 +52,15 @@ export const PriceChart = ({ candles, signalDate, signalType }: PriceChartProps)
         <span
           className={cn(
             "text-xs font-semibold px-2 py-0.5 rounded-full ml-auto",
-            isUp
-              ? "bg-[hsl(var(--pick-badge-bg))] text-[hsl(var(--pick-badge-fg))]"
-              : "bg-[hsl(var(--sell-badge-bg))] text-[hsl(var(--sell-badge-fg))]"
+            isFlat
+              ? "bg-muted text-muted-foreground"
+              : isUp
+                ? "bg-[hsl(var(--pick-badge-bg))] text-[hsl(var(--pick-badge-fg))]"
+                : "bg-[hsl(var(--sell-badge-bg))] text-[hsl(var(--sell-badge-fg))]"
           )}
         >
-          {isUp ? "+" : ""}
-          {(((prices[prices.length - 1] - prices[0]) / prices[0]) * 100).toFixed(1)}%
+          {changePct > 0 ? "+" : ""}
+          {changePct.toFixed(1)}%
         </span>
       </div>
       <ResponsiveContainer width="100%" height={200}>
