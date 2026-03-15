@@ -22,7 +22,7 @@ export const SellAlertsBanner = () => {
     <div className="space-y-3">
       {/* Sell alerts */}
       {sellSignals.length > 0 && (
-        <Link to="/alerts" className="block">
+        <Link to="/signals" className="block">
           <div className="rounded-xl bg-gradient-to-r from-rose-500/10 to-rose-600/5 border border-rose-200 dark:border-rose-800 p-4 hover:shadow-md transition-all">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
