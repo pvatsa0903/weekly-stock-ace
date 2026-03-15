@@ -117,26 +117,25 @@ export const SentimentMeme = () => {
           </Button>
         </div>
 
-        <div className="flex items-center gap-4">
-          {/* Meme image — compact */}
-          <div className={cn(
-            "w-24 h-24 sm:w-32 sm:h-32 rounded-lg overflow-hidden border border-border shadow-sm flex-shrink-0 transition-all duration-300",
-            isShuffling ? "opacity-0 scale-95" : "opacity-100 scale-100"
-          )}>
-            <img
-              src={currentMeme.src}
-              alt={currentMeme.caption}
-              className="w-full h-full object-cover"
-              loading="lazy"
-            />
-          </div>
-          {/* Caption */}
-          <p className={cn(
-            "text-sm font-medium text-foreground/80 italic transition-opacity duration-300 leading-relaxed",
-            isShuffling ? "opacity-0" : "opacity-100"
-          )}>
-            "{currentMeme.caption}"
-          </p>
+        {/* Caption */}
+        <p className={cn(
+          "text-sm font-medium text-foreground/80 italic transition-opacity duration-300 leading-relaxed mb-3",
+          isShuffling ? "opacity-0" : "opacity-100"
+        )}>
+          "{currentMeme.caption}"
+        </p>
+
+        {/* Meme image — full width, capped height */}
+        <div className={cn(
+          "rounded-lg overflow-hidden border border-border shadow-sm transition-all duration-300",
+          isShuffling ? "opacity-0 scale-95" : "opacity-100 scale-100"
+        )}>
+          <img
+            src={currentMeme.src}
+            alt={currentMeme.caption}
+            className="w-full h-auto max-h-52 object-cover"
+            loading="lazy"
+          />
         </div>
       </div>
     </Card>
