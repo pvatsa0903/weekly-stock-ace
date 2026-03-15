@@ -165,7 +165,45 @@ const TickerDetail = () => {
                 signalType={sellSignal?.signal}
               />
             )}
-            {sellSignal && <SellSignalCard signal={sellSignal} />}
+            {/* Signals grouped together */}
+            <div className="space-y-4">
+              <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Signals</h2>
+              <div className="grid gap-4 md:grid-cols-2">
+                {/* Buy Signal */}
+                <div className="bg-card rounded-xl border border-border p-5 space-y-2">
+                  <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Buy Signal</p>
+                  <div className="flex items-center gap-3">
+                    <span className={cn(
+                      "text-sm font-bold px-3 py-1 rounded-full text-white",
+                      data.decision === "PICK" ? "bg-emerald-500" : "bg-rose-500"
+                    )}>
+                      {data.decision}
+                    </span>
+                    <span className={cn(
+                      "text-xs font-semibold px-2.5 py-1 rounded-full border",
+                      data.confidence >= 70
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                        : data.confidence >= 50
+                        ? "bg-amber-50 text-amber-700 border-amber-200"
+                        : "bg-rose-50 text-rose-700 border-rose-200"
+                    )}>
+                      {data.confidence}% confidence
+                    </span>
+                  </div>
+                  {data.eli5 && (
+                    <p className="text-sm text-muted-foreground leading-relaxed mt-2">{data.eli5}</p>
+                  )}
+                </div>
+                {/* Hold Signal */}
+                {sellSignal ? (
+                  <SellSignalCard signal={sellSignal} />
+                ) : (
+                  <div className="bg-card rounded-xl border border-border p-5 flex items-center justify-center">
+                    <p className="text-sm text-muted-foreground">No active hold signal</p>
+                  </div>
+                )}
+              </div>
+            </div>
             <FundamentalsCard fundamentals={data.fundamentals} />
             <NewsCard news={data.recentNews} />
           </>
