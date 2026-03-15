@@ -176,16 +176,10 @@ const Alerts = () => {
               · All picks, skips, and sell signals
             </p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => setShowHistory(!showHistory)}>
-              <History className="w-4 h-4 mr-2" />
-              {showHistory ? "This Week" : "All History"}
-            </Button>
-            <Button size="sm" onClick={runEvaluator} disabled={isRunning}>
-              <Bot className={cn("w-4 h-4 mr-2", isRunning && "animate-pulse")} />
-              {isRunning ? "Evaluating…" : "Run Evaluator"}
-            </Button>
-          </div>
+          <Button size="sm" onClick={runEvaluator} disabled={isRunning}>
+            <Bot className={cn("w-4 h-4 mr-2", isRunning && "animate-pulse")} />
+            {isRunning ? "Evaluating…" : "Run Evaluator"}
+          </Button>
         </div>
 
         {/* Filters */}
