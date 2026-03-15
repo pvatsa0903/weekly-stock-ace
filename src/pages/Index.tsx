@@ -274,7 +274,7 @@ const Index = () => {
               subtitle="All time"
               icon={Target}
               tooltip="Percentage of AI picks that ended higher than their entry price"
-              trend={stats && stats.winRate >= 50 ? { value: stats.winRate - 50, isPositive: true } : undefined}
+              trend={stats && stats.winRate >= 50 ? { value: stats.winRate - 50, isPositive: true, label: `+${stats.winRate - 50}% above 50% baseline` } : undefined}
             />
             <StatCard
               title="Avg Return"
