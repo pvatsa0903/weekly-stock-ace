@@ -114,10 +114,13 @@ export const SentimentMovers = () => {
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        <span className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 ml-auto">
+        <span className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500">
           <Radio className="w-2.5 h-2.5 animate-pulse" />
           Live
         </span>
+        <Link to="/sentiment" className="text-sm text-primary hover:underline flex items-center gap-1 ml-2">
+          View all <ArrowRight className="w-3 h-3" />
+        </Link>
       </div>
       <div className="space-y-3">
         {movers.map((m) => {
