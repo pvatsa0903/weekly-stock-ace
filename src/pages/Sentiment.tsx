@@ -108,7 +108,7 @@ const Sentiment = () => {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-xl sm:text-2xl font-bold text-foreground">Sentiments</h1>
-              <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500">
+              <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-gain/10 text-gain">
                 <Radio className="w-3 h-3 animate-pulse" />
                 Live
               </span>
