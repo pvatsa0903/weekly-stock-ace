@@ -151,8 +151,8 @@ const Signals = () => {
     return acc;
   }, []);
 
-  // Filter + search
-  const filteredRows = deduped.filter((row) => {
+  // Filter + search, ensure newest first
+  const filteredRows = deduped.sort((a, b) => new Date(b.sortDate).getTime() - new Date(a.sortDate).getTime()).filter((row) => {
     if (filterType !== "ALL" && row.signal !== filterType) return false;
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
