@@ -150,7 +150,17 @@ const Alerts = () => {
               </span>
             </div>
             <p className="text-muted-foreground">
-              All picks, skips, and sell signals for this week
+              {(() => {
+                const now = new Date();
+                const day = now.getDay();
+                const monday = new Date(now);
+                monday.setDate(now.getDate() - ((day + 6) % 7));
+                const sunday = new Date(monday);
+                sunday.setDate(monday.getDate() + 6);
+                const fmt = (d: Date) => d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+                return `${fmt(monday)} – ${fmt(sunday)}, ${sunday.getFullYear()}`;
+              })()}{" "}
+              · All picks, skips, and sell signals
             </p>
           </div>
           <div className="flex gap-2">
