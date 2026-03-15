@@ -60,23 +60,23 @@ export const LiveRecentPicks = () => {
   stocksData?.forEach((s) => { if (s.data) stockMap.set(s.data.ticker, s.data); });
 
   return (
-    <div className="bg-card rounded-xl border border-border">
-      <div className="p-4 border-b border-border flex items-center justify-between">
+    <div className="bg-card rounded-xl border border-border p-6">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Radio className="w-5 h-5 text-primary" />
-          <h3 className="font-semibold text-foreground">Market Watch</h3>
+          <h2 className="text-lg font-semibold text-foreground">Market Watch</h2>
         </div>
         <Link to="/signals" className="text-sm text-primary hover:underline flex items-center gap-1">
           View all <ArrowRight className="w-3 h-3" />
         </Link>
       </div>
-      <div className="divide-y divide-border">
+      <div className="space-y-3">
         {tickers.length === 0 && !isLoading && (
-          <div className="p-6 text-center text-sm text-muted-foreground">No active signals or picks yet</div>
+          <div className="text-center text-sm text-muted-foreground py-4">No active signals or picks yet</div>
         )}
         {isLoading
           ? Array.from({ length: MAX_ITEMS }).map((_, i) => (
-              <div key={i} className="p-3.5 flex items-center justify-between">
+              <div key={i} className="flex items-center justify-between rounded-lg bg-muted/50 px-4 py-3">
                 <div className="flex items-center gap-3">
                   <Skeleton className="h-6 w-14 rounded" />
                   <Skeleton className="h-4 w-20" />
@@ -91,7 +91,7 @@ export const LiveRecentPicks = () => {
                 <Link
                   key={item.ticker}
                   to={`/ticker?symbol=${item.ticker}`}
-                  className="p-3.5 flex items-center justify-between hover:bg-muted/30 transition-colors block"
+                  className="flex items-center justify-between rounded-lg bg-muted/50 px-4 py-3 hover:bg-muted/70 transition-colors block"
                 >
                   <div className="flex items-center gap-2.5">
                     <span className="ticker-badge text-xs">{item.ticker}</span>
@@ -100,7 +100,7 @@ export const LiveRecentPicks = () => {
                     </span>
                   </div>
                   {stock && (
-                    <div className={cn("flex items-center gap-1 text-sm font-mono font-medium", stock.change >= 0 ? "text-gain" : "text-loss")}>
+                    <div className={cn("flex items-center gap-1 text-sm font-mono font-semibold", stock.change >= 0 ? "text-gain" : "text-loss")}>
                       {stock.change >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                       {stock.change >= 0 ? "+" : ""}{stock.changePercent.toFixed(2)}%
                     </div>
