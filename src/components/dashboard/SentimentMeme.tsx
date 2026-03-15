@@ -91,7 +91,7 @@ export const SentimentMeme = () => {
 
   return (
     <Card className={cn("overflow-hidden border", config.border)}>
-      <div className={cn("p-4 bg-gradient-to-b", config.bg)}>
+      <div className="p-4">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2.5">
             <Sparkles className="w-4 h-4 text-primary" />
@@ -133,7 +133,7 @@ export const SentimentMeme = () => {
           <img
             src={currentMeme.src}
             alt={currentMeme.caption}
-            className="w-full h-auto max-h-52 object-cover"
+            className="w-full h-auto max-h-80 object-contain"
             loading="lazy"
           />
         </div>
