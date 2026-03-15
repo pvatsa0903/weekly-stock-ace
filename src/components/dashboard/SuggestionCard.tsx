@@ -23,7 +23,7 @@ const typeConfig: Record<SuggestionType, {
 }> = {
   PICK: { gradient: "from-emerald-500 to-emerald-600", expandBg: "bg-emerald-700", icon: ThumbsUp, label: "Buy Signal" },
   SKIP: { gradient: "from-slate-500 to-slate-600", expandBg: "bg-slate-700", icon: ThumbsDown, label: "Skip — No Action" },
-  SELL: { gradient: "from-rose-500 to-rose-600", expandBg: "bg-rose-700", icon: TrendingDown, label: "Sell Signal" },
+  SELL: { gradient: "from-amber-600 to-amber-700", expandBg: "bg-[#1f1f1f]", icon: TrendingDown, label: "Sell Signal" },
   WATCH: { gradient: "from-amber-500 to-orange-500", expandBg: "bg-amber-700", icon: Eye, label: "Watch — Monitor" },
   HOLD: { gradient: "from-sky-500 to-sky-600", expandBg: "bg-sky-700", icon: ShieldCheck, label: "Hold — Stay In" },
 };
