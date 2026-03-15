@@ -39,6 +39,7 @@ export interface StockData {
   }[];
   logo?: string;
   industry?: string;
+  candles?: { date: string; close: number }[];
 }
 
 async function fetchStockData(symbol: string): Promise<StockData> {

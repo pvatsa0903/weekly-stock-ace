@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useStockData } from "@/hooks/useStockData";
 import { TickerHeader } from "@/components/ticker/TickerHeader";
 import { SellSignalCard } from "@/components/ticker/SellSignalCard";
+import { PriceChart } from "@/components/ticker/PriceChart";
 import { useSellSignalForTicker } from "@/hooks/useSellSignals";
 import { SentimentCard } from "@/components/ticker/SentimentCard";
 import { FundamentalsCard } from "@/components/ticker/FundamentalsCard";
@@ -157,6 +158,13 @@ const TickerDetail = () => {
         {data && !isLoading && (
           <>
             <TickerHeader data={data} />
+            {data.candles && data.candles.length > 1 && (
+              <PriceChart
+                candles={data.candles}
+                signalDate={sellSignal?.created_at?.split("T")[0]}
+                signalType={sellSignal?.signal}
+              />
+            )}
             {sellSignal && <SellSignalCard signal={sellSignal} />}
             <FundamentalsCard fundamentals={data.fundamentals} />
             <NewsCard news={data.recentNews} />
