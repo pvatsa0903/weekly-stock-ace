@@ -4,7 +4,7 @@ import { StatCard } from "@/components/dashboard/StatCard";
 import { LiveRecentPicks } from "@/components/dashboard/LiveRecentPicks";
 import { SentimentMovers } from "@/components/dashboard/SentimentMovers";
 import { SentimentMeme } from "@/components/dashboard/SentimentMeme";
-import { Target, TrendingUp, Bot, RefreshCw, ShieldAlert, Calendar } from "lucide-react";
+import { Target, TrendingUp, Bot, RefreshCw, ShieldAlert, Calendar, BarChart3 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -254,38 +254,44 @@ const Index = () => {
           </div>
         )}
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard
-            title="Active Signals"
-            value={sellSignals.length || "—"}
-            subtitle={`${sellSignals.filter(s => s.signal === "SELL").length} sell · ${sellSignals.filter(s => s.signal === "WATCH").length} watch · ${sellSignals.filter(s => s.signal === "HOLD").length} hold`}
-            icon={ShieldAlert}
-            tooltip="Total active sell, watch, and hold signals being tracked"
-          />
-          <StatCard
-            title="Win Rate"
-            value={stats ? `${stats.winRate}%` : "—"}
-            subtitle="All time"
-            icon={Target}
-            tooltip="Percentage of AI picks that ended higher than their entry price"
-            trend={stats && stats.winRate >= 50 ? { value: stats.winRate - 50, isPositive: true } : undefined}
-          />
-          <StatCard
-            title="Avg Return"
-            value={stats ? `${stats.avgReturn >= 0 ? "+" : ""}${stats.avgReturn}%` : "—"}
-            subtitle="Per pick"
-            icon={TrendingUp}
-            tooltip="Average price change from entry to exit across all picks"
-            trend={stats ? { value: Math.abs(stats.avgReturn), isPositive: stats.avgReturn >= 0 } : undefined}
-          />
-          <StatCard
-            title="Next Update"
-            value={nextUpdate.value}
-            subtitle={nextUpdate.label}
-            icon={Calendar}
-            tooltip="New picks and signals are generated every week after fresh data is pulled"
-          />
+        {/* Performance Snapshot */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 text-primary" />
+            <h2 className="text-lg font-semibold text-foreground">Performance Snapshot</h2>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <StatCard
+              title="Active Signals"
+              value={sellSignals.length || "—"}
+              subtitle={`${sellSignals.filter(s => s.signal === "SELL").length} sell · ${sellSignals.filter(s => s.signal === "WATCH").length} watch · ${sellSignals.filter(s => s.signal === "HOLD").length} hold`}
+              icon={ShieldAlert}
+              tooltip="Total active sell, watch, and hold signals being tracked"
+            />
+            <StatCard
+              title="Win Rate"
+              value={stats ? `${stats.winRate}%` : "—"}
+              subtitle="All time"
+              icon={Target}
+              tooltip="Percentage of AI picks that ended higher than their entry price"
+              trend={stats && stats.winRate >= 50 ? { value: stats.winRate - 50, isPositive: true } : undefined}
+            />
+            <StatCard
+              title="Avg Return"
+              value={stats ? `${stats.avgReturn >= 0 ? "+" : ""}${stats.avgReturn}%` : "—"}
+              subtitle="Per pick"
+              icon={TrendingUp}
+              tooltip="Average price change from entry to exit across all picks"
+              trend={stats ? { value: Math.abs(stats.avgReturn), isPositive: stats.avgReturn >= 0 } : undefined}
+            />
+            <StatCard
+              title="Next Update"
+              value={nextUpdate.value}
+              subtitle={nextUpdate.label}
+              icon={Calendar}
+              tooltip="New picks and signals are generated every week after fresh data is pulled"
+            />
+          </div>
         </div>
 
         {/* Vibe Check — compact accent between stats and data */}
