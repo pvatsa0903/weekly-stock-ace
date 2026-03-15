@@ -138,7 +138,7 @@ const Signals = () => {
     })),
   ].sort((a, b) => new Date(b.sortDate).getTime() - new Date(a.sortDate).getTime());
 
-  // Deduplicate by ticker — keep highest priority
+  // Deduplicate by ticker — keep highest priority (for card view)
   const priorityOrder: Record<string, number> = { SELL: 0, PICK: 1, WATCH: 2, HOLD: 3, SKIP: 4 };
   const deduped = unifiedRows.reduce<UnifiedRow[]>((acc, row) => {
     const key = row.ticker;
@@ -151,8 +151,12 @@ const Signals = () => {
     return acc;
   }, []);
 
-  // Filter + search, ensure newest first
-  const filteredRows = deduped.sort((a, b) => new Date(b.sortDate).getTime() - new Date(a.sortDate).getTime()).filter((row) => {
+  // For card view: deduplicated. For table view: all rows, sorted newest first.
+  const baseRows = view === "table" ? [...unifiedRows] : [...deduped];
+  baseRows.sort((a, b) => new Date(b.sortDate).getTime() - new Date(a.sortDate).getTime());
+
+  // Filter + search
+  const filteredRows = baseRows.filter((row) => {
     if (filterType !== "ALL" && row.signal !== filterType) return false;
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
