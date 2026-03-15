@@ -270,34 +270,8 @@ const Index = () => {
           <SentimentMeme />
           <div className="md:col-span-2 lg:col-span-1">
             <LiveRecentPicks />
-        </div>
-
-        {/* Quick Links */}
-        <div className="space-y-3">
-          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Explore</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            {[
-              { to: "/alerts", icon: Bell, label: "Weekly Alerts", desc: "Sell & watch signals", color: "text-rose-500 bg-rose-500/10" },
-              { to: "/decisions", icon: ClipboardList, label: "Decisions", desc: "Full pick history", color: "text-violet-500 bg-violet-500/10" },
-              { to: "/sentiment", icon: Activity, label: "Sentiment", desc: "Heatmaps & trends", color: "text-amber-500 bg-amber-500/10" },
-              { to: "/ticker", icon: Search, label: "Ticker Detail", desc: "Deep dive any stock", color: "text-cyan-500 bg-cyan-500/10" },
-              { to: "/about", icon: Info, label: "About", desc: "How it all works", color: "text-emerald-500 bg-emerald-500/10" },
-            ].map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className="bg-card border border-border rounded-xl p-4 hover:border-primary/30 transition-colors group"
-              >
-                <div className={`w-9 h-9 rounded-lg flex items-center justify-center mb-3 ${link.color}`}>
-                  <link.icon className="w-4.5 h-4.5" />
-                </div>
-                <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">{link.label}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">{link.desc}</p>
-              </Link>
-            ))}
           </div>
         </div>
-      </div>
       </div>
     </DashboardLayout>
   );
