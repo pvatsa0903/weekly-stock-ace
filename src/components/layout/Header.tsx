@@ -1,6 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { LayoutDashboard, Radio, Radar, Search, BookOpen, TrendingUp, Menu, X, Activity } from "lucide-react";
-import { useState } from "react";
+import { LayoutDashboard, Radio, Search, BookOpen, TrendingUp, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -13,7 +12,6 @@ const navItems = [
 
 export const Header = () => {
   const location = useLocation();
-  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 w-full" style={{ background: "linear-gradient(135deg, hsl(var(--header-bg)), hsl(var(--header-bg-end)))" }}>
@@ -33,7 +31,7 @@ export const Header = () => {
             </div>
           </NavLink>
 
-          {/* Desktop Nav */}
+          {/* Desktop Nav — labels + icons */}
           <nav className="hidden md:flex items-center gap-0.5">
             {navItems.map((item) => {
               const isActive = location.pathname === item.to;
@@ -58,45 +56,32 @@ export const Header = () => {
             })}
           </nav>
 
-          {/* Mobile Toggle */}
-          <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors text-white"
-          >
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+          {/* Mobile Nav — icon-only, always visible */}
+          <nav className="flex md:hidden items-center gap-0.5">
+            {navItems.map((item) => {
+              const isActive = location.pathname === item.to;
+              return (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={cn(
+                    "relative flex items-center justify-center min-w-[44px] min-h-[44px] rounded-lg transition-all duration-200",
+                    isActive
+                      ? "bg-white/[0.12] text-white"
+                      : "text-white/40 hover:text-white/80 hover:bg-white/[0.06]"
+                  )}
+                  title={item.label}
+                >
+                  <item.icon className={cn("w-5 h-5", isActive && "text-[hsl(var(--header-accent))]")} />
+                  {isActive && (
+                    <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-4 h-[2px] rounded-full bg-[hsl(var(--header-accent))]" />
+                  )}
+                </NavLink>
+              );
+            })}
+          </nav>
         </div>
       </div>
-
-      {/* Mobile Nav Dropdown */}
-      {mobileOpen && (
-        <>
-          <div className="fixed inset-0 top-[58px] bg-black/40 z-40 md:hidden backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
-          <div className="md:hidden absolute top-[58px] left-0 right-0 border-t border-white/5 shadow-2xl z-50" style={{ background: "linear-gradient(180deg, hsl(var(--header-bg)), hsl(var(--header-bg-end)))" }}>
-            <nav className="max-w-7xl mx-auto px-3 py-2 space-y-0.5">
-              {navItems.map((item) => {
-                const isActive = location.pathname === item.to;
-                return (
-                  <NavLink
-                    key={item.to}
-                    to={item.to}
-                    onClick={() => setMobileOpen(false)}
-                    className={cn(
-                      "flex items-center gap-3 px-3 py-3 min-h-[44px] rounded-lg text-sm font-medium transition-colors",
-                      isActive
-                        ? "bg-white/[0.12] text-white"
-                        : "text-white/50 hover:text-white hover:bg-white/[0.06]"
-                    )}
-                  >
-                    <item.icon className={cn("w-4.5 h-4.5", isActive ? "text-[hsl(var(--header-accent))]" : "")} />
-                    {item.label}
-                  </NavLink>
-                );
-              })}
-            </nav>
-          </div>
-        </>
-      )}
     </header>
   );
 };
