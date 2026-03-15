@@ -1,4 +1,4 @@
-import { TrendingUp, TrendingDown, ArrowRight, Eye, ShieldCheck } from "lucide-react";
+import { TrendingUp, TrendingDown, ArrowRight, Eye, ShieldCheck, Radio } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useMultipleStocks } from "@/hooks/useStockData";
