@@ -129,10 +129,10 @@ export const SuggestionCard = ({ ticker, type, confidence, why, eli5 }: Suggesti
 
       {/* ELI5 expandable */}
       {eli5 && (
-        <div className={cn("border-t border-white/10", config.expandBg)}>
+        <div className={cn("border-t border-white/10 rounded-b-2xl", config.expandBg)}>
           <button
-            onClick={() => setExpanded(!expanded)}
-            className="w-full flex items-center justify-between px-6 py-2.5 text-white/90 hover:text-white transition-colors text-sm font-medium"
+            onClick={(e) => { e.preventDefault(); setExpanded(!expanded); }}
+            className="w-full flex items-center justify-between px-6 py-2.5 text-white/90 hover:text-white transition-colors text-sm font-medium min-h-[44px]"
           >
             <span>ELI5 (Explain Like I'm 5)</span>
             {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
