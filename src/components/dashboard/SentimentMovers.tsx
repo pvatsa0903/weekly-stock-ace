@@ -1,7 +1,8 @@
 import { useEffect, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowUp, ArrowDown, Activity, Radio, Info } from "lucide-react";
+import { ArrowUp, ArrowDown, Activity, Radio, Info, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { getSentimentColor } from "@/lib/sentiment";
 import { Skeleton } from "@/components/ui/skeleton";
