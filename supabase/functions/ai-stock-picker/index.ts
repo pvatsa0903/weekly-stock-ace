@@ -137,7 +137,7 @@ OUTPUT FORMAT (strict JSON only):
     "ticker": "AAAA",
     "decision": "PICK" | "SKIP",
     "confidence": 65-95,
-    "eli5": "A 2-3 sentence plain-English explanation a 5-year-old could understand",
+    "eli5": "A 2-3 sentence explanation using words and analogies an actual 5-year-old would understand — use playground metaphors, toys, candy, lemonade stands, allowance money, recess, etc. Keep it fun and silly!",
     "why": "A 2-3 sentence technical rationale covering sentiment + fundamentals + engagement alignment"
   },
   "pick2": {

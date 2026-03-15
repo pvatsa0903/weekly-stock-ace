@@ -268,13 +268,13 @@ function getDateString(daysOffset: number): string {
 function generateELI5(name: string, decision: string, sentiment: number, changePercent: number): string {
   const positive = decision === 'PICK';
   const templates = positive ? [
-    `${name} is like a popular kid at school - everyone wants to be their friend! The news is saying nice things, and people on the internet are excited about what they're doing.`,
-    `Think of ${name} as a store that everyone loves to shop at. More and more people are talking about how great they are, which usually means good things ahead!`,
-    `${name} is getting a lot of gold stars right now! The people who study stocks for a living think they're doing really well.`,
+    `Okay so ${name} is like the kid who keeps getting picked first for dodgeball — everyone wants them on their team! People really really like them right now so we think they're gonna do great! 🎉`,
+    `You know how sometimes your favorite toy is THE toy everyone wants? That's ${name} right now! Lots of people are super happy about it and want to buy it!`,
+    `${name} is like getting straight A's on your report card — everything looks really good! The grown-ups who watch money stuff say "yes yes yes!" so we're saying yes too!`,
   ] : [
-    `${name} is having a tough time, like when it rains on your birthday party. People are worried, and the news hasn't been very cheerful lately.`,
-    `Imagine ${name} as a lemonade stand where fewer people are stopping by. The experts think it might be better to wait before buying.`,
-    `${name} is like a team that's been losing some games lately. The fans (investors) are a bit nervous, so we're suggesting to watch from the sidelines for now.`,
+    `${name} is kinda like when nobody wants to trade lunch snacks with you — not a great sign! The money grown-ups are saying "hmm maybe not right now" so we're gonna skip it.`,
+    `Think of ${name} like a lemonade stand on a rainy day — not many people are stopping by. We think it's better to save your allowance for something else!`,
+    `${name} is having a boo-boo week 🩹 — like when your team keeps losing at recess. We're gonna sit this one out and wait for a sunnier day!`,
   ];
   
   return templates[Math.floor(Math.random() * templates.length)];
