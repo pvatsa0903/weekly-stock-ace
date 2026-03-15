@@ -296,8 +296,15 @@ const Signals = () => {
                                   />
                                 </div>
                                 <span className="text-xs font-mono text-muted-foreground">{row.confidence}%</span>
-                              </div>
-                            )}
+                                              </div>
+                                            )}
+                                            {/* Issued date + price */}
+                                            <p className="text-[11px] text-muted-foreground/70">
+                                              Issued {formatDate(row.sortDate)}
+                                              {!isDecision && s?.price_at_signal != null && (
+                                                <> at <span className="font-mono">${Number(s.price_at_signal).toFixed(2)}</span></>
+                                              )}
+                                            </p>
                             <p className="text-sm text-muted-foreground">{row.summary}</p>
                             {isDecision && d?.why_summary && (
                               <p className="text-xs text-muted-foreground/70 border-t border-border pt-2">{d.why_summary}</p>
