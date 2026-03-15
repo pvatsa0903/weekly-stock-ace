@@ -104,16 +104,18 @@ const Decisions = () => {
 
   const isLoading = decisionsLoading || signalsLoading;
 
-  const formatWeekRange = (weekEndingStr: string) => {
+  const formatDate = (dateStr: string) => {
+    const d = new Date(dateStr.includes("T") ? dateStr : dateStr + "T00:00:00");
+    return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  };
+
+  const isCurrentWeek = (weekEndingStr: string) => {
     const end = new Date(weekEndingStr + "T00:00:00");
     const start = new Date(end);
     start.setDate(end.getDate() - 6);
-    const fmt = (d: Date) =>
-      d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
     const now = new Date();
     now.setHours(0, 0, 0, 0);
-    const isCurrentWeek = now >= start && now <= end;
-    return { range: `${fmt(start)} – ${fmt(end)}`, isCurrentWeek };
+    return now >= start && now <= end;
   };
 
   const timeAgo = (dateStr: string) => {
@@ -226,17 +228,17 @@ const Decisions = () => {
                   {filteredRows.map((row) => {
                     if (row.type === "decision") {
                       const d = row.data as WeeklyDecision;
-                      const { range, isCurrentWeek } = formatWeekRange(d.week_ending);
+                      const currentWeek = isCurrentWeek(d.week_ending);
                       return (
                         <tr key={`d-${d.id}`}>
                           <td className="font-mono text-sm whitespace-nowrap">
                             <div className="flex items-center gap-2">
-                              {isCurrentWeek && (
+                              {currentWeek && (
                                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
                               )}
-                              <span>{range}</span>
+                              <span>{formatDate(d.week_ending)}</span>
                             </div>
-                            {isCurrentWeek && (
+                            {currentWeek && (
                               <span className="text-[10px] text-emerald-500 font-semibold uppercase tracking-wider">Current Week</span>
                             )}
                           </td>
@@ -273,7 +275,7 @@ const Decisions = () => {
                       return (
                         <tr key={`s-${s.id}`}>
                           <td className="font-mono text-sm whitespace-nowrap">
-                            {new Date(s.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                            {formatDate(s.created_at)}
                           </td>
                           <td>{typeBadge(s.signal)}</td>
                           <td>
