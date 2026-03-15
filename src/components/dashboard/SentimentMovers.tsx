@@ -99,26 +99,28 @@ export const SentimentMovers = () => {
 
   return (
     <div className="bg-card rounded-xl border border-border p-6">
-      <div className="flex items-center gap-2 mb-4">
-        <Activity className="w-5 h-5 text-primary" />
-        <h2 className="text-lg font-semibold text-foreground">Top Sentiment Movers</h2>
-        <TooltipProvider delayDuration={200}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button className="text-muted-foreground hover:text-foreground transition-colors">
-                <Info className="w-3.5 h-3.5" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="top" className="max-w-[240px] text-xs">
-              Stocks with the biggest sentiment score changes since yesterday. Score is 0–100 (bearish → bullish).
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        <span className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-gain/10 text-gain">
-          <Radio className="w-2.5 h-2.5 animate-pulse" />
-          Live
-        </span>
-        <Link to="/sentiment" className="text-sm text-primary hover:underline flex items-center gap-1 ml-2">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <Activity className="w-5 h-5 text-primary" />
+          <h2 className="text-lg font-semibold text-foreground">Top Sentiment Movers</h2>
+          <TooltipProvider delayDuration={200}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button className="text-muted-foreground hover:text-foreground transition-colors">
+                  <Info className="w-3.5 h-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[240px] text-xs">
+                Stocks with the biggest sentiment score changes since yesterday. Score is 0–100 (bearish → bullish).
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <span className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-gain/10 text-gain">
+            <Radio className="w-2.5 h-2.5 animate-pulse" />
+            Live
+          </span>
+        </div>
+        <Link to="/sentiment" className="text-sm text-primary hover:underline flex items-center gap-1">
           View all <ArrowRight className="w-3 h-3" />
         </Link>
       </div>
