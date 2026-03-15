@@ -115,7 +115,7 @@ export const PriceChart = ({ candles, signalDate, signalType }: PriceChartProps)
           <Area
             type="monotone"
             dataKey="close"
-            stroke={isUp ? "hsl(142, 71%, 45%)" : "hsl(0, 84%, 60%)"}
+            stroke={isFlat ? "hsl(var(--muted-foreground))" : isUp ? "hsl(142, 71%, 45%)" : "hsl(0, 84%, 60%)"}
             strokeWidth={2}
             fill="url(#priceGrad)"
             dot={false}
