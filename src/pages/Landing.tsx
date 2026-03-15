@@ -9,9 +9,6 @@ import {
   ShieldAlert,
   ArrowRight,
   BarChart3,
-  Brain,
-  Zap,
-  Eye,
 } from "lucide-react";
 
 const Landing = () => {
