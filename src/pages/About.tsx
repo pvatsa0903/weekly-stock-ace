@@ -79,13 +79,13 @@ const About = () => {
           <div className="absolute -top-4 -left-4 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
           <div className="relative space-y-5">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground leading-tight">
-              What if you only had to look at <span className="text-primary">two stocks</span> a week?
+              What if you only had to look at <span className="text-primary">two stocks</span> a week — and know when to <span className="text-primary">sell</span>?
             </h1>
             <p className="text-base sm:text-lg text-muted-foreground max-w-2xl leading-relaxed">
               That's the idea behind this project. I built a system that pulls market data from 
-              multiple sources, runs it through Google Gemini for AI-powered analysis, and narrows 
-              everything down to just two weekly picks — with full transparency on <em>why</em> each 
-              one was chosen.
+              multiple sources, runs it through Google Gemini for AI-powered analysis, and delivers 
+              five types of signals — <strong>PICK, SKIP, SELL, WATCH, and HOLD</strong> — with full 
+              transparency on <em>why</em> each decision was made.
             </p>
             <p className="text-sm text-muted-foreground max-w-2xl leading-relaxed">
               It's not a trading bot. It's not financial advice. It's a{" "}
