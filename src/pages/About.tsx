@@ -283,9 +283,9 @@ const About = () => {
           <div className="grid sm:grid-cols-2 gap-3">
             {[
               { icon: Database, text: "Data engineering — multi-source ingestion, cron-scheduled pipelines, schema design" },
-              { icon: Brain, text: "AI integration — prompt engineering, structured output parsing, fallback logic" },
-              { icon: Lightbulb, text: "Product thinking — constraints that force clarity, UX that explains itself" },
-              { icon: Shield, text: "Responsible ML — human oversight, audit trails, transparent confidence scores" },
+              { icon: Brain, text: "AI integration — prompt engineering, structured output parsing, sell signal evaluation, fallback logic" },
+              { icon: Lightbulb, text: "Product thinking — unified dashboard across 5 signal types, prioritized alerts, ticker-specific news filtering" },
+              { icon: Shield, text: "Responsible ML — human oversight, audit trails, transparent confidence scores, full decision history" },
             ].map((item) => (
               <div key={item.text} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
                 <item.icon className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
