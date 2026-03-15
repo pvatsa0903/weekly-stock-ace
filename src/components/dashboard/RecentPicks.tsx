@@ -23,7 +23,7 @@ export const RecentPicks = () => {
       <div className="p-4 border-b border-border flex items-center justify-between">
         <h3 className="font-semibold text-foreground">Recent Decisions</h3>
         <Link
-          to="/decisions"
+          to="/signals"
           className="text-sm text-primary hover:underline flex items-center gap-1"
         >
           View all <ArrowRight className="w-3 h-3" />

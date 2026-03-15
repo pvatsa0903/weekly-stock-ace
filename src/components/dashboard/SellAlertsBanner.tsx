@@ -46,7 +46,7 @@ export const SellAlertsBanner = () => {
 
       {/* Watch alerts */}
       {watchSignals.length > 0 && (
-        <Link to="/alerts" className="block">
+        <Link to="/signals" className="block">
           <div className="rounded-xl bg-gradient-to-r from-amber-500/10 to-amber-600/5 border border-amber-200 dark:border-amber-800 p-4 hover:shadow-md transition-all">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
