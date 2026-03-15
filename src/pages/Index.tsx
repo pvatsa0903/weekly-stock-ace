@@ -127,21 +127,44 @@ const Index = () => {
 
   // Build unified suggestions ranked by priority
   // Priority: SELL (1) > PICK (2) > WATCH (3) > HOLD (4) > SKIP (5)
+  const sellEli5Templates = [
+    (t: string) => `Uh oh — ${t} is not looking so great right now! 🚨 The grown-ups who watch money stuff are worried, so we think it's time to say bye-bye and sell it before it gets worse! 👋💸`,
+    (t: string) => `${t} is like a sandcastle that's starting to wash away 🏖️🌊 — we had fun, but it's time to pack up and go home before the tide takes everything!`,
+    (t: string) => `Yikes! ${t} is acting like a balloon slowly losing air 🎈💨 — the smart thing to do is let go before it goes totally flat!`,
+  ];
+  const watchEli5Templates = [
+    (t: string) => `Hmm, ${t} is being a little sneaky 👀 — we're not sure if it's gonna be good or bad yet! We're watching it super carefully, like a cat watching a fish tank 🐱🐟`,
+    (t: string) => `${t} is like a mystery box 🎁❓ — could be awesome, could be meh. We're peeking through the keyhole to figure it out before we open it!`,
+    (t: string) => `${t} is sitting on the fence right now 🤔🧐 — not jumping left or right. We'll keep an eye on it like a lifeguard at the pool! 🏊`,
+  ];
+  const holdEli5Templates = [
+    (t: string) => `${t} is doing okay — like getting a B+ on a test! 📚✨ Not amazing, not terrible. We're holding onto it like your favorite stuffed animal! 🧸`,
+    (t: string) => `${t} is cruising along nicely, like a bike ride on a flat road 🚲😎 — no hills, no bumps, just keep pedaling!`,
+    (t: string) => `${t} is like a plant that's growing steady 🌱☀️ — we just need to keep watering it and be patient. No need to pull it out of the ground!`,
+  ];
+
+  const pickTemplate = (templates: ((t: string) => string)[], ticker: string) => {
+    // Use ticker charCode sum as a stable seed so each ticker always gets the same message
+    const seed = ticker.split("").reduce((sum, c) => sum + c.charCodeAt(0), 0);
+    return templates[seed % templates.length](ticker);
+  };
+
   const suggestions: Suggestion[] = [];
 
   // Add sell/watch/hold signals
   sellSignals.forEach((s) => {
     const priorityMap: Record<string, number> = { SELL: 1, WATCH: 3, HOLD: 4 };
+    const eli5 = s.signal === "SELL"
+      ? pickTemplate(sellEli5Templates, s.ticker)
+      : s.signal === "WATCH"
+      ? pickTemplate(watchEli5Templates, s.ticker)
+      : pickTemplate(holdEli5Templates, s.ticker);
     suggestions.push({
       ticker: s.ticker,
       type: s.signal as SuggestionType,
       confidence: s.confidence,
       why: s.reasoning,
-      eli5: s.signal === "SELL"
-        ? `Uh oh — this one's not looking so great right now! 🚨 The grown-ups who watch money stuff are worried, so we think it's time to say bye-bye and sell it before it gets worse! 👋💸`
-        : s.signal === "WATCH"
-        ? `Hmm, this one's being a little sneaky 👀 — we're not sure if it's gonna be good or bad yet! We're gonna keep watching it super carefully, like a cat watching a fish tank 🐱🐟`
-        : `This one's doing okay — like getting a B+ on a test! 📚✨ Not amazing, not terrible. We're just gonna hold onto it like your favorite stuffed animal and see what happens next! 🧸`,
+      eli5,
       priority: priorityMap[s.signal] ?? 5,
     });
   });
