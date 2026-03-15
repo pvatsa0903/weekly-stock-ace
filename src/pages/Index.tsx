@@ -4,7 +4,7 @@ import { StatCard } from "@/components/dashboard/StatCard";
 import { LiveRecentPicks } from "@/components/dashboard/LiveRecentPicks";
 import { SentimentMovers } from "@/components/dashboard/SentimentMovers";
 import { SentimentMeme } from "@/components/dashboard/SentimentMeme";
-import { Target, TrendingUp, Bot, RefreshCw, ShieldAlert, Calendar } from "lucide-react";
+import { Target, TrendingUp, Bot, RefreshCw, ShieldAlert, Calendar, BarChart3 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
