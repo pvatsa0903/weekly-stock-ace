@@ -231,6 +231,13 @@ const Index = () => {
         {/* Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
+            title="Active Signals"
+            value={sellSignals.length || "—"}
+            subtitle={`${sellSignals.filter(s => s.signal === "SELL").length} sell · ${sellSignals.filter(s => s.signal === "WATCH").length} watch · ${sellSignals.filter(s => s.signal === "HOLD").length} hold`}
+            icon={ShieldAlert}
+            tooltip="Total active sell, watch, and hold signals being tracked"
+          />
+          <StatCard
             title="Win Rate"
             value={stats ? `${stats.winRate}%` : "—"}
             subtitle="All time"
@@ -247,18 +254,11 @@ const Index = () => {
             trend={stats ? { value: Math.abs(stats.avgReturn), isPositive: stats.avgReturn >= 0 } : undefined}
           />
           <StatCard
-            title="Total Picks"
-            value={stats?.total ?? "—"}
-            subtitle="All time"
-            icon={BarChart3}
-            tooltip="Total number of stocks the AI has recommended since launch"
-          />
-          <StatCard
             title="Next Update"
             value={nextUpdate.value}
             subtitle={nextUpdate.label}
             icon={Calendar}
-            tooltip="New picks are generated every week after fresh data is pulled"
+            tooltip="New picks and signals are generated every week after fresh data is pulled"
           />
         </div>
 
