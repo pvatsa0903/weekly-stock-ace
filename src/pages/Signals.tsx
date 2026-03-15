@@ -183,7 +183,7 @@ const Signals = () => {
                 Live
               </span>
             </div>
-            <p className="text-sm text-muted-foreground">All picks, skips, and sell signals in one place</p>
+            <p className="text-sm text-muted-foreground">Buy signals (PICK/SKIP) and hold signals (SELL/WATCH/HOLD) — two independent analyses in one view</p>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={runEvaluator} disabled={isRunning}>
