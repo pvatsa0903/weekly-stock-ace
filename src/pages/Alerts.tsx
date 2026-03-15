@@ -114,7 +114,20 @@ const Alerts = () => {
     })),
   ].sort((a, b) => new Date(b.sortDate).getTime() - new Date(a.sortDate).getTime());
 
-  const filteredRows = filterType === "ALL" ? unifiedRows : unifiedRows.filter((r) => r.signal === filterType);
+  // Deduplicate by ticker — keep highest priority signal per ticker
+  const priorityOrder: Record<string, number> = { SELL: 0, PICK: 1, WATCH: 2, HOLD: 3, SKIP: 4 };
+  const deduped = unifiedRows.reduce<UnifiedRow[]>((acc, row) => {
+    const key = row.ticker;
+    if (!key) { acc.push(row); return acc; }
+    const existing = acc.find((r) => r.ticker === key);
+    if (!existing) { acc.push(row); }
+    else if ((priorityOrder[row.signal] ?? 99) < (priorityOrder[existing.signal] ?? 99)) {
+      acc[acc.indexOf(existing)] = row;
+    }
+    return acc;
+  }, []);
+
+  const filteredRows = filterType === "ALL" ? deduped : deduped.filter((r) => r.signal === filterType);
 
   const isLoading = signalsLoading || decisionsLoading;
 
