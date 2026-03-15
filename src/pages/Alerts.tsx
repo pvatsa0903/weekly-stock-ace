@@ -221,56 +221,69 @@ const Alerts = () => {
           </div>
         )}
 
-        {/* Cards */}
+        {/* Grouped Cards */}
         {!isLoading && filteredRows.length > 0 && (
-          <div className="grid gap-4 md:grid-cols-2">
-            {filteredRows.map((row) => {
-              const cfg = signalConfig[row.signal];
-              const isDecision = row.type === "decision";
-              const d = isDecision ? (row.data as WeeklyDecision) : null;
-              const s = !isDecision ? (row.data as SellSignal) : null;
-
-              return (
-                <div key={`${row.type}-${isDecision ? d!.id : s!.id}`} className="bg-card rounded-xl border border-border p-5 space-y-3">
-                  {/* Top row */}
-                  <div className="flex items-center justify-between">
+          <div className="space-y-8">
+            {(["SELL", "PICK", "WATCH", "HOLD", "SKIP"] as const)
+              .filter((group) => filterType === "ALL" || filterType === group)
+              .map((group) => {
+                const groupRows = filteredRows.filter((r) => r.signal === group);
+                if (groupRows.length === 0) return null;
+                const gcfg = signalConfig[group];
+                return (
+                  <div key={group} className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <span className={cn("w-2 h-2 rounded-full", cfg.dot)} />
-                      <span className={cn("inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full", cfg.bg)}>
-                        {cfg.icon} {row.signal}
-                      </span>
-                      {row.ticker && <span className="ticker-badge">{row.ticker}</span>}
-                      {isDecision && d?.pick2 && <span className="ticker-badge">{d.pick2}</span>}
+                      <span className={cn("w-2.5 h-2.5 rounded-full", gcfg.dot)} />
+                      <h2 className="text-sm font-semibold text-foreground tracking-wide uppercase">{group}</h2>
+                      <span className="text-xs text-muted-foreground">({groupRows.length})</span>
                     </div>
-                    <span className="text-xs text-muted-foreground">{timeAgo(row.sortDate)}</span>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      {groupRows.map((row) => {
+                        const cfg = signalConfig[row.signal];
+                        const isDecision = row.type === "decision";
+                        const d = isDecision ? (row.data as WeeklyDecision) : null;
+                        const s = !isDecision ? (row.data as SellSignal) : null;
+
+                        return (
+                          <div key={`${row.type}-${isDecision ? d!.id : s!.id}`} className="bg-card rounded-xl border border-border p-5 space-y-3">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <span className={cn("inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full", cfg.bg)}>
+                                  {cfg.icon} {row.signal}
+                                </span>
+                                {row.ticker && <span className="ticker-badge">{row.ticker}</span>}
+                                {isDecision && d?.pick2 && <span className="ticker-badge">{d.pick2}</span>}
+                              </div>
+                              <span className="text-xs text-muted-foreground">{timeAgo(row.sortDate)}</span>
+                            </div>
+
+                            {row.confidence != null && (
+                              <div className="flex items-center gap-2">
+                                <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                                  <div
+                                    className={cn("h-full rounded-full", row.signal === "SELL" ? "bg-rose-500" : row.signal === "WATCH" ? "bg-amber-500" : "bg-emerald-500")}
+                                    style={{ width: `${row.confidence}%` }}
+                                  />
+                                </div>
+                                <span className="text-xs font-mono text-muted-foreground">{row.confidence}%</span>
+                              </div>
+                            )}
+
+                            <p className="text-sm text-muted-foreground">{row.summary}</p>
+
+                            {isDecision && d?.why_summary && (
+                              <p className="text-xs text-muted-foreground/70 border-t border-border pt-2">{d.why_summary}</p>
+                            )}
+                            {!isDecision && s?.fundamental_flags && (
+                              <p className="text-xs text-muted-foreground/70 border-t border-border pt-2">{s.fundamental_flags}</p>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
-
-                  {/* Confidence */}
-                  {row.confidence != null && (
-                    <div className="flex items-center gap-2">
-                      <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
-                        <div
-                          className={cn("h-full rounded-full", row.signal === "SELL" ? "bg-rose-500" : row.signal === "WATCH" ? "bg-amber-500" : "bg-emerald-500")}
-                          style={{ width: `${row.confidence}%` }}
-                        />
-                      </div>
-                      <span className="text-xs font-mono text-muted-foreground">{row.confidence}%</span>
-                    </div>
-                  )}
-
-                  {/* Summary */}
-                  <p className="text-sm text-muted-foreground">{row.summary}</p>
-
-                  {/* Extra info */}
-                  {isDecision && d?.why_summary && (
-                    <p className="text-xs text-muted-foreground/70 border-t border-border pt-2">{d.why_summary}</p>
-                  )}
-                  {!isDecision && s?.fundamental_flags && (
-                    <p className="text-xs text-muted-foreground/70 border-t border-border pt-2">{s.fundamental_flags}</p>
-                  )}
-                </div>
-              );
-            })}
+                );
+              })}
           </div>
         )}
       </div>
