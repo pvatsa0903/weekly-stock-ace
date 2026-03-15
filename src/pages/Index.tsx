@@ -245,7 +245,7 @@ const Index = () => {
               disabled={isRunningAI}
             >
               <Bot className={`h-4 w-4 mr-2 ${isRunningAI ? "animate-pulse" : ""}`} />
-              {isRunningAI ? "Running…" : "Run AI Picker"}
+              {isRunningAI ? aiStatus || "Running…" : "Run AI Picker"}
             </Button>
           </div>
         </div>
