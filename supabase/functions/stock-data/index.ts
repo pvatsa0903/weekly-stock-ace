@@ -258,6 +258,7 @@ serve(async (req) => {
       })),
       logo: profile.logo,
       industry: profile.finnhubIndustry,
+      candles,
     };
 
     console.log('Returning data for', upperSymbol);
