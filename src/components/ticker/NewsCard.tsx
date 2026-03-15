@@ -105,7 +105,7 @@ export const NewsCard = ({ news }: NewsCardProps) => {
         <span className="text-xs text-muted-foreground ml-auto">{news.length} articles</span>
       </div>
 
-      <div className="space-y-2">
+      <div className="divide-y divide-border">
         {news.map((item, index) => {
           const sentiment = getSentimentStyle(item.sentiment);
           return (
@@ -114,38 +114,33 @@ export const NewsCard = ({ news }: NewsCardProps) => {
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className={cn(
-                "flex items-start gap-3 p-3.5 rounded-lg border transition-all group hover:shadow-sm",
-                sentiment.bg
-              )}
+              className="flex items-start gap-3 py-3.5 px-1 transition-colors group hover:bg-muted/30 first:pt-0 last:pb-0"
             >
               {/* Source logo */}
               <img
                 src={getSourceLogo(item.source)}
                 alt={item.source}
-                className="w-6 h-6 rounded mt-0.5 flex-shrink-0 bg-white"
+                className="w-5 h-5 rounded mt-0.5 flex-shrink-0"
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = "none";
                 }}
               />
 
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">
                   {item.title}
                 </p>
-                <div className="flex items-center gap-2 mt-1.5">
-                  <span className="text-xs font-semibold text-muted-foreground">{item.source}</span>
-                  <span className="text-muted-foreground/50">•</span>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-xs text-muted-foreground">{item.source}</span>
+                  <span className="text-muted-foreground/40">·</span>
                   <span className="text-xs text-muted-foreground">{item.date}</span>
-                  <span className="text-muted-foreground/50">•</span>
-                  <span className={cn("inline-flex items-center gap-1 text-[10px] font-semibold", sentiment.text)}>
+                  <span className="text-muted-foreground/40">·</span>
+                  <span className={cn("inline-flex items-center gap-1 text-[11px]", sentiment.text)}>
                     {sentiment.icon}
                     {sentiment.label}
                   </span>
                 </div>
               </div>
-
-              <ExternalLink className="w-4 h-4 text-muted-foreground/50 group-hover:text-primary transition-colors flex-shrink-0 mt-1" />
             </a>
           );
         })}
