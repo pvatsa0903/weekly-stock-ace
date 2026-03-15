@@ -264,10 +264,13 @@ const Signals = () => {
                 const gcfg = signalConfig[group];
                 return (
                   <div key={group} className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <span className={cn("w-2.5 h-2.5 rounded-full", gcfg.dot)} />
-                      <h2 className="text-sm font-semibold text-foreground tracking-wide uppercase">{group}</h2>
-                      <span className="text-xs text-muted-foreground">({groupRows.length})</span>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className={cn("w-2.5 h-2.5 rounded-full", gcfg.dot)} />
+                        <h2 className="text-sm font-semibold text-foreground tracking-wide uppercase">{group}</h2>
+                        <span className="text-xs text-muted-foreground">({groupRows.length})</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground/70 pl-[18px]">{gcfg.subtitle}</p>
                     </div>
                     <div className="grid gap-4 md:grid-cols-2">
                       {groupRows.map((row) => {
