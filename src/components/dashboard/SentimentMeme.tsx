@@ -39,7 +39,7 @@ export const SentimentMeme = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-primary" />
-          <h3 className="text-sm font-semibold text-foreground">Meme of the Week</h3>
+          <h3 className="text-sm font-semibold text-foreground">Vibe Check 📊</h3>
         </div>
         {memeUrl && (
           <Button variant="ghost" size="icon" onClick={generateMeme} disabled={isGenerating} className="h-7 w-7">
