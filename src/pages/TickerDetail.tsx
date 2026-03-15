@@ -8,7 +8,7 @@ import { TickerHeader } from "@/components/ticker/TickerHeader";
 import { SellSignalCard } from "@/components/ticker/SellSignalCard";
 import { PriceChart } from "@/components/ticker/PriceChart";
 import { useSellSignalForTicker } from "@/hooks/useSellSignals";
-import { SentimentCard } from "@/components/ticker/SentimentCard";
+
 import { FundamentalsCard } from "@/components/ticker/FundamentalsCard";
 import { NewsCard } from "@/components/ticker/NewsCard";
 import { Skeleton } from "@/components/ui/skeleton";
