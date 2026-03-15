@@ -133,7 +133,7 @@ export const SentimentMeme = () => {
           <img
             src={currentMeme.src}
             alt={currentMeme.caption}
-            className="w-full h-auto max-h-52 object-cover"
+            className="w-full h-auto max-h-80 object-contain"
             loading="lazy"
           />
         </div>
