@@ -18,13 +18,13 @@ export const Header = () => {
   return (
     <header className="sticky top-0 z-50 w-full" style={{ background: "linear-gradient(135deg, hsl(var(--header-bg)), hsl(var(--header-bg-end)))" }}>
       {/* Top accent bar */}
-      <div className="h-[2px] w-full bg-gradient-to-r from-[hsl(var(--header-accent))] via-[hsl(346,77%,60%)] to-transparent" />
+      <div className="h-[2px] w-full bg-gradient-to-r from-[hsl(var(--header-accent))] via-[hsl(152,69%,60%)] to-transparent" />
 
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
           <NavLink to="/" className="flex items-center gap-2.5 shrink-0 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[hsl(var(--header-accent))] to-[hsl(346,77%,40%)] flex items-center justify-center shadow-lg shadow-[hsl(var(--header-accent))]/20 group-hover:shadow-[hsl(var(--header-accent))]/40 transition-shadow">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[hsl(var(--header-accent))] to-[hsl(152,69%,35%)] flex items-center justify-center shadow-lg shadow-[hsl(var(--header-accent))]/20 group-hover:shadow-[hsl(var(--header-accent))]/40 transition-shadow">
               <TrendingUp className="w-[18px] h-[18px] text-white" />
             </div>
             <div className="flex flex-col">
