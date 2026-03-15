@@ -1,16 +1,15 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { LayoutDashboard, Table2, LineChart, Settings, TrendingUp, Menu, X, Activity, Info, AlertTriangle } from "lucide-react";
-import { useState, useMemo } from "react";
+import { LayoutDashboard, CalendarCheck, Bell, Radar, Search, BookOpen, Settings, TrendingUp, Menu, X } from "lucide-react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
-
 
 const navItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
-  { to: "/decisions", icon: Table2, label: "Weekly Decisions" },
-  { to: "/alerts", icon: AlertTriangle, label: "Weekly Alerts" },
-  { to: "/sentiment", icon: Activity, label: "Sentiment Radar" },
-  { to: "/ticker", icon: LineChart, label: "Ticker Detail" },
-  { to: "/about", icon: Info, label: "About" },
+  { to: "/decisions", icon: CalendarCheck, label: "Weekly Decisions" },
+  { to: "/alerts", icon: Bell, label: "Weekly Alerts" },
+  { to: "/sentiment", icon: Radar, label: "Sentiment Radar" },
+  { to: "/ticker", icon: Search, label: "Ticker Detail" },
+  { to: "/about", icon: BookOpen, label: "About" },
   { to: "/settings", icon: Settings, label: "Settings" },
 ];
 
