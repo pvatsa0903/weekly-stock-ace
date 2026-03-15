@@ -79,8 +79,8 @@ export const SentimentMeme = () => {
     <Card className="p-5 space-y-3 overflow-hidden">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-primary" />
-          <h3 className="text-sm font-semibold text-foreground">Vibe Check 📊</h3>
+          <Sparkles className="w-5 h-5 text-primary" />
+          <h2 className="text-lg font-semibold text-foreground">Vibe Check 📊</h2>
         </div>
         <Button variant="ghost" size="icon" onClick={shuffle} className="min-h-[44px] min-w-[44px]">
           <RefreshCw className="w-4 h-4" />
